@@ -39,7 +39,7 @@ python train_nerf.py --config configs/nerfsv2/nerf_fern_base01.py \
 
 ## Test
 
-训练blender数据集中的lego
+测试blender数据集中的lego
 ```
 srun --partition=3dmr-sensevideo --mpi=pmi2 \
 --job-name=train_generator --kill-on-bad-exit=0 \
