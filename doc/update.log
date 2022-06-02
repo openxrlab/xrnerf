@@ -1,0 +1,71 @@
+
+
+0602.v0.10.5
+增加了test入口
+1、config使用与train完全相同的文件，但是需要增加一些内容 a. model.cfg增加phase='train'     b. 增加testdata_cfg     c.data中增加test条目
+2、调用参数中parse_args，增加了--test_only， 如果加入这个语句，会从api中调用test_nerf函数
+3、network里，增加了test_step函数，用于image  by image的跑测试集
+4、hooks增加了CalTestMetricsHook，专门用于计算测试时的metrics
+5、NerfDataset中增加了mode=='test'的情况，该情况下会逐张选择测试集的图片
+使用：
+config与train时一样不用动，只要运行时python run_nerf.py --config nerf_lego_base01.py --test_only 多一个 --test_only
+
+0527.v0.10.4
+1、整合训练部分为接口函数run_nerf
+2、config有改变，新增method用于区分算法；新增optimizer，创建opt使用mmcv的build_optimizer；删除lr_rate
+3、hook，runner放在了core下面；utils目前只保留logger
+4、对于测试的情况，只需要将workflow改为[('val', 1)]，max_iters改为1，load_from取消注释
+
+0525.v0.10.3
+1、Rays相关的数据处理增加参数和if判断，兼容mipnerf
+2、network的构造函数，增加if判断，兼容mipnerf
+
+0524.v0.10.2
+1、BaseEmbedder之前是接收数据字典data, 输出embedded，这不利于hashnerf的兼容；现在改为输出数据字典data
+
+0523.v0.10.1 fix-bugs
+1、render的forward中不再接受ret作为输入，这部分挪到network中用函数做
+2、BaseEmbedder的forward加了判断，兼容kilo-nerf
+3、config文件的bool类型后不再加逗号
+
+0513.v0.10.1
+1、将datas改命名为data
+2、NerfEmbedder直接作为基类，删除BaseEmbedder
+3、nerf_mlp.py中hardcode注明原因
+4、BaseEmbedder中从args读参数，而不是init里写
+
+0507.v0.10.1
+1、修复了NerfEmbedder的一个bug，该bug会导致viewdirs未嵌入，继而引起指标下降
+
+0506.v0.10.0
+1、embedder合并进入mlp
+2、sample_pdf使用函数实现，network里一行代码实现
+3、NerfNetwork里的输入输出都存放在一个dict datas里面，清晰化代码
+4、NerfNetwork进一步精简化，无关操作移出，冗余函数删除
+5、修改repo名称和主文件夹名字
+
+0428.v0.9.1
+1、修正了NerfNetwork中的一个bug，该bug会让fine网络未生效，导致指标无法对齐
+
+0427.v0.9.0
+1、模型拆分为[ network / embedder / mlp / render ] 四个部分，其中可学习参数在mlp
+2、数据处理拆分成[ dataset / samplers / pipelines / load_data ] 四个部分，其中数据处理全部抽象为pipeline中的类
+3、dataset和模型全部加入注册器机制
+4、支持precrop，通过PassIterHook传给dataset当前的iter，根据iter判定是否precrop
+5、改动较大，初步完成各个模块的抽象构想，本版本为正式版本v1.0.0发布前的预版本
+
+0422.v0.1.3
+1、重构dataset，通过注册机制构建，根据是否batching现在有2个dataset
+   重构后的2种dataset，继承nerf_datset基类，获取数据后由基类统一处理数据
+   后续data_pipeline将在nerf_datset基类内完成
+   对网络而言2种dataset现在已经无差异，为下一步的重构打好了基础
+   config使用nerfsv2下的文件
+   
+0421.v0.1.2
+1、支持多卡
+   llff数据下no_batching为false时，允许batch size大于1，允许多卡
+   
+0420.v0.1.1
+1、render_path部分将计算指标/保存数据的code全部抽离出来，放在evalute_hooks.py中
+   注意config中log_config/evalute_config/log_config的设置有所更新
+   

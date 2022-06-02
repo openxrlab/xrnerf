@@ -1,0 +1,7 @@
+/__pycache__/
+/data/
+/scripts/
+/work_dirs/
+sftp-config.json
+push.sh
+*.pyc
