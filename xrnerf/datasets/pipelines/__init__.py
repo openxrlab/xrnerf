@@ -1,12 +1,23 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .compose import Compose
-from .create import GetViewdirs, GetZvals, GetPts, GetRays, DeleteUseless
-from .transforms import ToNDC, FlattenRays
 from .augment import PerturbZvals, SelectRays
+from .compose import Compose, ToTensor
+from .create import (BatchSample, DeleteUseless, GetPts, GetRays, GetViewdirs,
+                     GetZvals, Sample)
+from .transforms import FlattenRays, ToNDC
 
 __all__ = [
     'Compose',
-    'GetViewdirs', 'GetZvals', 'GetPts', 'GetBounds', 'GetRays', 'DeleteUseless',
-    'ToNDC', 'FlattenRays',
-    'PerturbZvals', 'SelectRays',
+    'GetViewdirs',
+    'GetZvals',
+    'GetPts',
+    'GetBounds',
+    'GetRays',
+    'Sample',
+    'BatchSample',
+    'DeleteUseless',
+    'ToNDC',
+    'ToTensor',
+    'FlattenRays',
+    'PerturbZvals',
+    'SelectRays',
 ]

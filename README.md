@@ -9,7 +9,7 @@
 
 ## Environment
 cd /mnt/lustre/share/spring
-source deactivate 
+source deactivate
 source s0.3.4
 然后安装mmcv，参考[安装教程](https://mmcv.readthedocs.io/zh_CN/latest/get_started/build.html#linux-macos-mmcv)
 
@@ -55,6 +55,3 @@ python train_nerf.py --config configs/nerfsv2/nerf_lego_base01.py \
 
 检查
 ```pre-commit run --all-files```
-
-
-

@@ -1,4 +1,13 @@
 
+0610.v0.1.3
+1、根据https://gitlab.bj.sensetime.com/openxrlab/xrnerf/-/merge_requests/3修改
+
+0608.v0.1.2
+1、相同类型的数据集用一个config
+2、runner由config指定
+3、hook由config指定
+4、set_val_pipeline挪入hook
+5、dataset结构调整，现在只有1个BaseDataset和1个SceneBaseDataset，batching和nobatching合并入SceneBaseDataset
 
 0602.v0.10.5
 增加了test入口
@@ -60,12 +69,11 @@ config与train时一样不用动，只要运行时python run_nerf.py --config ne
    后续data_pipeline将在nerf_datset基类内完成
    对网络而言2种dataset现在已经无差异，为下一步的重构打好了基础
    config使用nerfsv2下的文件
-   
+
 0421.v0.1.2
 1、支持多卡
    llff数据下no_batching为false时，允许batch size大于1，允许多卡
-   
+
 0420.v0.1.1
 1、render_path部分将计算指标/保存数据的code全部抽离出来，放在evalute_hooks.py中
    注意config中log_config/evalute_config/log_config的设置有所更新
-   

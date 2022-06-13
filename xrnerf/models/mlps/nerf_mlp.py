@@ -10,9 +10,16 @@ from .base import BaseMLP
 
 @MLPS.register_module()
 class NerfMLP(BaseMLP):
-    def __init__(self, skips=[4], netdepth=8, netwidth=256, output_ch=4, use_viewdirs=True, 
-                netchunk=1024*32, embedder=None, **kwarg):
-        super().__init__() # 对于集成了nn.Module的类型，如果有可学习参数，必须加上这个
+    def __init__(self,
+                 skips=[4],
+                 netdepth=8,
+                 netwidth=256,
+                 output_ch=4,
+                 use_viewdirs=True,
+                 netchunk=1024 * 32,
+                 embedder=None,
+                 **kwarg):
+        super().__init__()  # 对于集成了nn.Module的类型，如果有可学习参数，必须加上这个
         self.skips = skips
         self.chunk = netchunk
         self.use_viewdirs = use_viewdirs
@@ -23,33 +30,46 @@ class NerfMLP(BaseMLP):
         D, W = netdepth, netwidth
         self.input_ch, self.input_ch_dirs = self.embedder.get_embed_ch()
 
-        self.pts_linears = nn.ModuleList(
-            [nn.Linear(self.input_ch, W)] + [nn.Linear(W, W) if i not in self.skips else nn.Linear(W + self.input_ch, W) for i in range(D-1)])
-        
+        self.pts_linears = nn.ModuleList([nn.Linear(self.input_ch, W)] + [
+            nn.Linear(W, W) if i not in
+            self.skips else nn.Linear(W + self.input_ch, W)
+            for i in range(D - 1)
+        ])
+
         if self.use_viewdirs:
-            self.views_linears = nn.ModuleList([nn.Linear(self.input_ch_dirs + W, W//2)])
+            self.views_linears = nn.ModuleList(
+                [nn.Linear(self.input_ch_dirs + W, W // 2)])
             self.feature_linear = nn.Linear(W, W)
             self.alpha_linear = nn.Linear(W, 1)
-            self.rgb_linear = nn.Linear(W//2, 3) # need to fit the output shape of self.views_linears
+            self.rgb_linear = nn.Linear(
+                W // 2,
+                3)  # need to fit the output shape of self.views_linears
         else:
             self.output_linear = nn.Linear(W, output_ch)
-        return 
+        return
 
     def forward(self, data):
         data = self.embedder(data)
         outputs_flat = self.batchify_run_mlp(data['embedded'])
-        data['raw'] = torch.reshape(outputs_flat, list(data['pts'].shape[:-1]) + [outputs_flat.shape[-1]])
+        data['raw'] = torch.reshape(
+            outputs_flat,
+            list(data['unflatten_shape']) + [outputs_flat.shape[-1]])
+        del data['unflatten_shape']
         return data
 
     def batchify_run_mlp(self, x):
         if self.chunk is None:
             return self.run_mlp(x)
         else:
-            outputs = torch.cat([self.run_mlp(x[i:i+self.chunk]) for i in range(0, x.shape[0], self.chunk)], 0)
+            outputs = torch.cat([
+                self.run_mlp(x[i:i + self.chunk])
+                for i in range(0, x.shape[0], self.chunk)
+            ], 0)
             return outputs
 
     def run_mlp(self, x):
-        input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_dirs], dim=-1)
+        input_pts, input_views = torch.split(
+            x, [self.input_ch, self.input_ch_dirs], dim=-1)
         h = input_pts
         for i, l in enumerate(self.pts_linears):
             h = self.pts_linears[i](h)
@@ -61,7 +81,7 @@ class NerfMLP(BaseMLP):
             alpha = self.alpha_linear(h)
             feature = self.feature_linear(h)
             h = torch.cat([feature, input_views], -1)
-        
+
             for i, l in enumerate(self.views_linears):
                 h = self.views_linears[i](h)
                 h = F.relu(h)
@@ -71,5 +91,4 @@ class NerfMLP(BaseMLP):
         else:
             outputs = self.output_linear(h)
 
-        return outputs    
-
+        return outputs
