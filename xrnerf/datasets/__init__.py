@@ -1,11 +1,10 @@
-
-from .nerf_dataset import NerfDataset
-from .batching_dataset import NerfBatchingDataset
-from .nobatching_dataset import NerfNoBatchingDataset
-from .builder import (DATASETS, build_dataset)
+from .builder import DATASETS, build_dataset
 from .samplers import DistributedSampler
+from .scene_dataset import SceneBaseDataset
 
 __all__ = [
-    'NerfDataset', 'NerfBatchingDataset', 'NerfNoBatchingDataset', 'DATASETS',
-    'build_dataset', 'DistributedSampler',
+    'SceneBaseDataset',
+    'DATASETS',
+    'build_dataset',
+    'DistributedSampler',
 ]

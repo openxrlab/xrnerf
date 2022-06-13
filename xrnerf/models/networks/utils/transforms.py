@@ -1,6 +1,5 @@
-
-import torch
 import numpy as np
+import torch
 
 
 def recover_shape(data, to_shape):
@@ -9,10 +8,11 @@ def recover_shape(data, to_shape):
     data = torch.reshape(data, to_shape)
     return data
 
+
 def merge_ret(ret, fine_ret):
-    ret['rgb0'] = ret['rgb']
-    ret['disp0'] = ret['disp']
-    ret['acc0'] = ret['acc']
+    ret['coarse_rgb'] = ret['rgb']
+    ret['coarse_disp'] = ret['disp']
+    ret['coarse_acc'] = ret['acc']
 
     ret['rgb'] = fine_ret['rgb']
     ret['disp'] = fine_ret['disp']

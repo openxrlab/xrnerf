@@ -5,3 +5,4 @@
 sftp-config.json
 push.sh
 *.pyc
+*.log

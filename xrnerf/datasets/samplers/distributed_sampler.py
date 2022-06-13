@@ -5,6 +5,7 @@ from torch.utils.data import DistributedSampler as _DistributedSampler
 class DistributedSampler(_DistributedSampler):
     """DistributedSampler inheriting from
     ``torch.utils.data.DistributedSampler``.
+
     In pytorch of lower versions, there is no ``shuffle`` argument. This child
     class will port one to DistributedSampler.
     """
@@ -14,9 +15,7 @@ class DistributedSampler(_DistributedSampler):
                  rank=None,
                  shuffle=True,
                  seed=0):
-        super().__init__(dataset,
-                         num_replicas=num_replicas,
-                         rank=rank)
+        super().__init__(dataset, num_replicas=num_replicas, rank=rank)
         # for the compatibility from PyTorch 1.3+
         self.shuffle = shuffle
         self.seed = seed if seed is not None else 0
