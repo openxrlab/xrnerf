@@ -1,5 +1,8 @@
+import time
+
 import numpy as np
 import torch
+from mmcv.runner import get_dist_info
 
 from ..builder import PIPELINES
 
@@ -25,6 +28,40 @@ class Sample:
             img_i = results['i_data'][idx]
             results['pose'] = results['poses'][img_i, :3, :4]
             results['target_s'] = results['images'][img_i]
+        return results
+
+    def __repr__(self):
+        return '{}:slice a batch of rays from all rays'.format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class MipMultiScaleSample:
+    """sample from dataset
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, N_rand=1024, keys=[], **kwargs):
+        self.enable = enable
+        self.keys = keys
+        self.N_rand = N_rand
+
+    def __call__(self, results):
+        """BatchSlice
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            rank, _ = get_dist_info()
+            np.random.seed(
+                int(time.time()) + rank
+            )  # to aviod sampling same rays over different gpu cards in ddp
+
+            ray_indices = np.random.randint(0, results[self.keys[0]].shape[0],
+                                            (self.N_rand, ))
+            for k in self.keys:
+                results[k] = results[k][ray_indices]
         return results
 
     def __repr__(self):
@@ -155,11 +192,11 @@ class GetBounds:
     Args:
         keys (Sequence[str]): Required keys to be converted.
     """
-    def __init__(self, enable=True, **kwargs):
+    def __init__(self, enable=True, near=-1, far=-1, **kwargs):
         self.enable = enable
         # kwargs来自于dataset读取完毕后，记录的datainfo信息
-        self.near = kwargs['near']
-        self.far = kwargs['far']
+        self.near = near if near != -1 else kwargs['near']
+        self.far = far if far != -1 else kwargs['far']
 
     def __call__(self, results):
         """get bound(near and far)
@@ -184,10 +221,16 @@ class GetZvals:
     Args:
         keys (Sequence[str]): Required keys to be converted.
     """
-    def __init__(self, enable=True, lindisp=False, N_samples=64, **kwargs):
+    def __init__(self,
+                 enable=True,
+                 lindisp=False,
+                 N_samples=64,
+                 randomized=False,
+                 **kwargs):
         self.enable = enable
         self.lindisp = lindisp
         self.N_samples = N_samples
+        self.randomized = randomized
 
     def __call__(self, results):
         """get intervals between samples
@@ -197,7 +240,6 @@ class GetZvals:
         """
         if self.enable:
             device = results['rays_o'].device
-            N_rays = results['rays_o'].shape[0]
             t_vals = torch.linspace(0., 1., steps=self.N_samples).to(device)
             if not self.lindisp:
                 z_vals = results['near'] * (1. -
@@ -205,7 +247,20 @@ class GetZvals:
             else:
                 z_vals = 1. / (1. / results['near'] *
                                (1. - t_vals) + 1. / results['far'] * (t_vals))
-            results['z_vals'] = z_vals.expand([N_rays, self.N_samples])
+
+            if self.randomized:
+                mids = 0.5 * (z_vals[..., 1:] + z_vals[..., :-1])
+                upper = torch.cat([mids, z_vals[..., -1:]], -1)
+                lower = torch.cat([z_vals[..., :1], mids], -1)
+                z_rand = torch.rand(
+                    list(results['rays_o'].shape[:-1]) +
+                    [self.N_samples]).to(device)
+                z_vals = lower + (upper - lower) * z_rand
+            else:
+                z_vals = z_vals.expand(
+                    list(results['rays_o'].shape[:-1]) + [self.N_samples])
+
+            results['z_vals'] = z_vals
         return results
 
     def __repr__(self):

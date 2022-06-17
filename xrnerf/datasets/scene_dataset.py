@@ -14,8 +14,8 @@ class SceneBaseDataset(BaseDataset):
         super().__init__()
         self.iter_n = 0
         self.cfg = cfg
-        self.mode = cfg.mode
-        self.is_batching = cfg.is_batching
+        if 'mode' in cfg: self.mode = cfg.mode
+        if 'is_batching' in cfg: self.is_batching = cfg.is_batching
         self._init_load()
         self._init_pipeline(pipeline)
 

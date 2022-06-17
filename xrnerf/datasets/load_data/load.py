@@ -4,6 +4,7 @@ from .load_blender import load_blender_data
 from .load_deepvoxels import load_dv_data
 from .load_LINEMOD import load_LINEMOD_data
 from .load_llff import load_llff_data
+from .load_multiscale import load_multiscale_data
 
 
 def load_data(args):
@@ -88,6 +89,12 @@ def load_data(args):
         hemi_R = np.mean(np.linalg.norm(poses[:, :3, -1], axis=-1))
         near = hemi_R - 1.
         far = hemi_R + 1.
+
+    elif args.dataset_type == 'multiscale':
+        meta, images, n_examples = load_multiscale_data(
+            args.datadir, args.mode, args.white_bkgd)
+        print('Load MultiScale Blender', len(images))
+        return meta, images, n_examples
 
     else:
         print('Unknown dataset type', args.dataset_type, 'exiting')

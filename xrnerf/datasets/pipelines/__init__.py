@@ -2,7 +2,7 @@
 from .augment import PerturbZvals, SelectRays
 from .compose import Compose, ToTensor
 from .create import (BatchSample, DeleteUseless, GetPts, GetRays, GetViewdirs,
-                     GetZvals, Sample)
+                     GetZvals, MipMultiScaleSample, Sample)
 from .transforms import FlattenRays, ToNDC
 
 __all__ = [
@@ -20,4 +20,5 @@ __all__ = [
     'FlattenRays',
     'PerturbZvals',
     'SelectRays',
+    'MipMultiScaleSample',
 ]

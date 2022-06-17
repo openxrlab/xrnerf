@@ -1,0 +1,29 @@
+# @Author: zcy
+# @Date:   2022-06-15 15:57:48
+# @Last Modified by:   zcy
+# @Last Modified time: 2022-06-15 16:32:36
+
+import numpy as np
+from skimage.metrics import structural_similarity as ssim
+
+
+def to8b(x):
+    return (255 * np.clip(x, 0, 1)).astype(np.uint8)
+
+
+def img2mse(x, y):
+    return np.mean((x - y)**2)
+
+
+def mse2psnr(x):
+    return -10. * np.log(x) / np.log(np.array([10.]))
+
+
+def calculate_ssim(im1, im2, data_range=255, multichannel=True):
+    full_ssim = ssim(im1,
+                     im2,
+                     val_range=data_range,
+                     multichannel=multichannel,
+                     full=True)[1]
+    out_ssim = full_ssim.mean()
+    return out_ssim

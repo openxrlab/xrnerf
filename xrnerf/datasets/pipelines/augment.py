@@ -2,6 +2,7 @@ import time
 
 import numpy as np
 import torch
+from mmcv.runner import get_dist_info
 
 from ..builder import PIPELINES
 
@@ -52,8 +53,10 @@ class SelectRays:
                     -1)  # (H, W, 2)
             coords = torch.reshape(coords, [-1, 2])  # (H * W, 2)
 
+            rank, _ = get_dist_info(
+            )  # to aviod sampling same rays over different gpu cards in ddp
             np.random.seed(
-                int(time.time())
+                int(time.time() + rank)
             )  # fix a bug, for detials please ref to https://github.com/pytorch/pytorch/issues/5059
 
             select_inds = np.random.choice(coords.shape[0],
