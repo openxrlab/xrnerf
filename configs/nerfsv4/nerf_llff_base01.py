@@ -28,9 +28,10 @@ train_hooks = [
     dict(type='SetValPipelineHook',
          params=dict(),
          variables=dict(valset='valset')),
-    dict(type='SaveTestHook', params=dict()),
-    dict(type='SaveSpiralHook', params=dict()),
-    dict(type='CalMetricsHook', params=dict()),
+    dict(type='ValidateHook',
+         params=dict(save_folder='visualizations/validation')),
+    dict(type='SaveSpiralHook',
+         params=dict(save_folder='visualizations/spiral')),
     dict(type='PassIterHook', params=dict()),  # 将当前iter数告诉dataset
     dict(type='OccupationHook',
          params=dict()),  # no need for open-source vision
@@ -41,7 +42,7 @@ test_hooks = [
     dict(type='SetValPipelineHook',
          params=dict(),
          variables=dict(valset='testset')),
-    dict(type='CalTestMetricsHook', params=dict()),
+    dict(type='TestHook', params=dict()),
 ]
 
 # runner

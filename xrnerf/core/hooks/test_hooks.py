@@ -1,8 +1,9 @@
 # @Author: zcy
 # @Date:   2022-04-20 17:05:14
 # @Last Modified by:   zcy
-# @Last Modified time: 2022-06-02 12:24:18
+# @Last Modified time: 2022-06-15 17:02:42
 
+import json
 import os
 
 import imageio
@@ -10,40 +11,34 @@ import numpy as np
 import torch
 from mmcv.runner import get_dist_info
 from mmcv.runner.hooks import HOOKS, Hook
-from skimage.metrics import structural_similarity as ssim
 
-img2mse = lambda x, y: np.mean((x - y)**2)
-mse2psnr = lambda x: -10. * np.log(x) / np.log(np.array([10.]))
-
-
-def calculate_ssim(im1, im2, data_range=255, multichannel=True):
-    if multichannel:
-        full_ssim = ssim(im1,
-                         im2,
-                         val_range=data_range,
-                         multichannel=True,
-                         full=True)[1]
-        out_ssim = full_ssim.mean()
-    else:
-        full_ssim = ssim(im1,
-                         im2,
-                         val_range=data_range,
-                         multichannel=False,
-                         full=True)[1]
-        out_ssim = full_ssim.mean()
-
-    return out_ssim
+from .utils import calculate_ssim, img2mse, mse2psnr, to8b
 
 
 @HOOKS.register_module()
-class CalTestMetricsHook(Hook):
-    """In test phase, calculate metrics over all testset."""
-    def __init__(self, cfg=None):
-        self.cfg = cfg
+class TestHook(Hook):
+    """In test phase, calculate metrics over all testset.
+
+    ndown: multiscales for mipnerf, set to 0 for others
+    """
+    def __init__(self,
+                 ndown=1,
+                 save_img=False,
+                 dump_json=False,
+                 save_folder='test'):
+        self.ndown = ndown
+        self.dump_json = dump_json
+        self.save_img = save_img
+        self.save_folder = save_folder
 
     def before_val_epoch(self, runner):
-        self.rgbs = []
-        self.gt_imgs = []
+        self.psnr = {}
+        self.ssim = {}
+        self.mse = {}
+        for i in range(self.ndown):
+            self.psnr[i] = []
+            self.mse[i] = []
+            self.ssim[i] = []
 
     def after_val_iter(self, runner):
         rank, _ = get_dist_info()
@@ -51,35 +46,48 @@ class CalTestMetricsHook(Hook):
             cur_iter = runner.iter
             rgb = runner.outputs['rgb']
             gt_img = runner.outputs['gt_img']
-            self.rgbs.append(rgb)
-            self.gt_imgs.append(gt_img)
+            idx = runner.outputs['idx']
+
+            if self.save_img:  # save image
+                testset_dir = os.path.join(runner.work_dir, self.save_folder)
+                os.makedirs(testset_dir, exist_ok=True)
+                filename = os.path.join(testset_dir, '{:03d}.png'.format(idx))
+                imageio.imwrite(filename, to8b(rgb))
+
+            # cal metrics
+            mse = img2mse(rgb, gt_img)
+            psnr = mse2psnr(mse)
+            ssim = calculate_ssim(rgb,
+                                  gt_img,
+                                  data_range=gt_img.max() - gt_img.min(),
+                                  multichannel=True)
+
+            scale = idx % self.ndown  # for 'self.ndown==1', scale is 0
+            self.psnr[scale].append(float(psnr))
+            self.mse[scale].append(float(mse))
+            self.ssim[scale].append(float(ssim))
 
     def after_val_epoch(self, runner):
         rank, _ = get_dist_info()
         if rank == 0:
-            mse_list, psnr_list, ssim_list = [], [], []
-            for i, rgb in enumerate(self.rgbs):
-                gt_img = self.gt_imgs[i]
-                if isinstance(gt_img, torch.Tensor):
-                    gt_img = gt_img.cpu().numpy()
-
-                mse = img2mse(rgb, gt_img)
-                psnr = mse2psnr(mse)
-                ssim = calculate_ssim(rgb,
-                                      gt_img,
-                                      data_range=gt_img.max() - gt_img.min(),
-                                      multichannel=True)
-                mse_list.append(mse.item())
-                psnr_list.append(psnr.item())
-                ssim_list.append(ssim)
-
-            average_mse = sum(mse_list) / len(mse_list)
-            average_psnr = sum(psnr_list) / len(psnr_list)
-            average_ssim = sum(ssim_list) / len(ssim_list)
-
-            metrics = 'In test phase on whole testset, mse is {:.5f}, psnr is {:.5f}, ssim is {:.5f}'.format(
-                average_mse, average_psnr, average_ssim)
+            metrics = 'In test phase on whole testset, \n  '
+            for scale in range(self.ndown):
+                average_mse = sum(self.mse[scale]) / len(self.mse[scale])
+                average_psnr = sum(self.psnr[scale]) / len(self.psnr[scale])
+                average_ssim = sum(self.ssim[scale]) / len(self.ssim[scale])
+                metrics += f' for scale {scale}, mse is {average_mse}, psnr is {average_psnr}, ssim is {average_ssim}. \n'
             runner.logger.info(metrics)
+
+            if self.dump_json:
+                filename = os.path.join(runner.work_dir, self.save_folder,
+                                        'test_results.json')
+                with open(filename, 'w') as f:
+                    json.dump(
+                        {
+                            'results': metrics,
+                            'psnrs': self.psnr,
+                            'ssims': self.ssim
+                        }, f)
             '''
                 in mmcv's EpochBasedRunner, only 'after_train_epoch' epoch will be updated
                 but in our test phase, we only want to run ('val', 1),

@@ -28,20 +28,20 @@ train_hooks = [
     dict(type='SetValPipelineHook',
          params=dict(),
          variables=dict(valset='valset')),
-    dict(type='SaveTestHook', params=dict()),
-    dict(type='SaveSpiralHook', params=dict()),
-    dict(type='CalMetricsHook', params=dict()),
+    dict(type='ValidateHook',
+         params=dict(save_folder='visualizations/validation')),
+    dict(type='SaveSpiralHook',
+         params=dict(save_folder='visualizations/spiral')),
     dict(type='PassIterHook', params=dict()),  # 将当前iter数告诉dataset
     dict(type='OccupationHook',
          params=dict()),  # no need for open-source vision
-    # dict(type='SaveDistillResultsHook', params=dict(), variables=dict(model='network', cfg='cfg', trainset='trainset')), # kilo示例
 ]
 
 test_hooks = [
     dict(type='SetValPipelineHook',
          params=dict(),
          variables=dict(valset='testset')),
-    dict(type='CalTestMetricsHook', params=dict()),
+    dict(type='TestHook', params=dict(save_img=True)),
 ]
 
 # runner
@@ -139,7 +139,7 @@ testdata_cfg = basedata_cfg.copy()
 
 traindata_cfg.update(dict())
 valdata_cfg.update(dict(mode='val'))
-testdata_cfg.update(dict(mode='test', testskip=0))
+testdata_cfg.update(dict(mode='test', testskip=100))
 
 train_pipeline = [
     dict(type='Sample'),

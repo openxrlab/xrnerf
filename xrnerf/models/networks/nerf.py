@@ -140,11 +140,12 @@ class NerfNetwork(BaseNerfNetwork):
         """
         rank, world_size = get_dist_info()
         if rank == 0:
+            for k in data:
+                data[k] = unfold_batching(data[k])
+
             image = data['image']
             idx = data['idx'].item()
 
-            for k in data:
-                data[k] = unfold_batching(data[k])
             data = self.val_pipeline({'pose': data['pose']})
 
             ret = self.batchify_forward(data, is_test=True)

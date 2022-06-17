@@ -1,7 +1,7 @@
 # @Author: zcy
 # @Date:   2022-04-20 17:05:14
 # @Last Modified by:   zcy
-# @Last Modified time: 2022-06-08 10:28:13
+# @Last Modified time: 2022-06-15 16:18:47
 
 import os
 
@@ -10,6 +10,7 @@ import numpy as np
 import torch
 from mmcv.runner import get_dist_info
 from mmcv.runner.hooks import HOOKS, Hook
+from mmcv.runner.hooks.lr_updater import LrUpdaterHook
 
 
 @HOOKS.register_module()
@@ -18,8 +19,8 @@ class PassIterHook(Hook):
     getitem/100926/3
     https://github.com/ptrblck/pytorch_misc/blob/master/shared_array.py#L57
     通过这个hook，把iter传给train的dataset."""
-    def __init__(self, cfg=None):
-        self.cfg = cfg
+    def __init__(self):
+        pass
 
     def after_train_iter(self, runner):
         # print(runner.iter, flush=True)
@@ -31,7 +32,7 @@ class PassIterHook(Hook):
 class OccupationHook(Hook):
     """GPU source occupation hook GPU cards are fucking hard to queue recently
     Don't blame on me, I need only one card."""
-    def __init__(self, cfg=None):
+    def __init__(self):
         self.first_run = True
 
     def func(self, runner):
@@ -50,3 +51,34 @@ class OccupationHook(Hook):
 
     def after_val_iter(self, runner):
         self.func(runner)
+
+
+@HOOKS.register_module()
+class MipLrUpdaterHook(LrUpdaterHook):
+    def __init__(self,
+                 lr_init,
+                 lr_final,
+                 max_steps,
+                 lr_delay_steps=0,
+                 lr_delay_mult=1,
+                 **kwargs):
+        super().__init__(**kwargs)
+        self.lr_init = lr_init
+        self.lr_final = lr_final
+        self.max_steps = max_steps
+        self.lr_delay_steps = lr_delay_steps
+        self.lr_delay_mult = lr_delay_mult
+
+    def get_lr(self, runner, base_lr):
+        step = runner.epoch if self.by_epoch else runner.iter
+        if self.lr_delay_steps > 0:
+            # A kind of reverse cosine decay.
+            delay_rate = self.lr_delay_mult + (
+                1 - self.lr_delay_mult) * np.sin(
+                    0.5 * np.pi * np.clip(step / self.lr_delay_steps, 0, 1))
+        else:
+            delay_rate = 1.
+        t = np.clip(step / self.max_steps, 0, 1)
+        log_lerp = np.exp(
+            np.log(self.lr_init) * (1 - t) + np.log(self.lr_final) * t)
+        return delay_rate * log_lerp
