@@ -36,7 +36,7 @@ class MipNerfEmbedder(BaseEmbedder):
         """Estimates mean and variance of sin(z), z ~ N(x, var)."""
         y = torch.exp(-0.5 * x_var) * torch.sin(x)
         y_var = torch.maximum(
-            torch.tensor(0).cuda(),
+            torch.tensor(0).to(x.device),
             0.5 * (1 - torch.exp(-2 * x_var) * torch.cos(2 * x)) - y**2)
         return y, y_var
 
@@ -44,7 +44,7 @@ class MipNerfEmbedder(BaseEmbedder):
         if self.diag:
             x, x_cov_diag = x_coord
             scales = torch.tensor(
-                [2**i for i in range(self.min_deg, self.max_deg)]).cuda()
+                [2**i for i in range(self.min_deg, self.max_deg)]).to(x.device)
             shape = list(x.shape[:-1]) + [-1]
             y = torch.reshape(x[..., None, :] * scales[:, None], shape)
             y_var = torch.reshape(
@@ -55,23 +55,23 @@ class MipNerfEmbedder(BaseEmbedder):
             basis = torch.cat([
                 2**i * torch.eye(num_dims)
                 for i in range(self.min_deg, self.max_deg)
-            ], 1).cuda()
+            ], 1).to(x.device)
             y = torch.matmul(x, basis)
             y_var = torch.sum((torch.matmul(x_cov, basis)) * basis, -2)
 
         return self.expected_sin(
-            torch.cat([y, y + 0.5 * torch.tensor(math.pi).cuda()], -1),
+            torch.cat([y, y + 0.5 * torch.tensor(math.pi).to(x.device)], -1),
             torch.cat([y_var] * 2, -1))[0]
 
     def pos_enc(self, x):
         """The positional encoding used by the original NeRF paper."""
         scales = torch.tensor([
             2**i for i in range(self.min_deg_view, self.max_deg_view)
-        ]).cuda()
+        ]).to(x.device)
         xb = torch.reshape((x[..., None, :] * scales[:, None]),
                            list(x.shape[:-1]) + [-1])
         four_feat = torch.sin(
-            torch.cat([xb, xb + 0.5 * torch.tensor(math.pi).cuda()], dim=-1))
+            torch.cat([xb, xb + 0.5 * torch.tensor(math.pi).to(x.device)], dim=-1))
         if self.append_identity:
             return torch.cat([x] + [four_feat], dim=-1)
         else:

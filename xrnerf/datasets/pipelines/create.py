@@ -192,11 +192,12 @@ class GetBounds:
     Args:
         keys (Sequence[str]): Required keys to be converted.
     """
-    def __init__(self, enable=True, near=-1, far=-1, **kwargs):
+    def __init__(self, enable=True, near_new=None, far_new=None, **kwargs):
         self.enable = enable
         # kwargs来自于dataset读取完毕后，记录的datainfo信息
-        self.near = near if near != -1 else kwargs['near']
-        self.far = far if far != -1 else kwargs['far']
+        # use near_new if it's not None, else use 'near' from dataset info
+        self.near = near_new if near_new is not None else kwargs['near']
+        self.far = far_new if far_new is not None else kwargs['far']
 
     def __call__(self, results):
         """get bound(near and far)
