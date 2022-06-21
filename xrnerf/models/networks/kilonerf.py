@@ -1,90 +1,53 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import time
 
+import kilonerf_cuda
 import torch
 from mmcv.runner import get_dist_info
 from torch import nn
 from tqdm import tqdm
 
-from .. import builder
 from ..builder import NETWORKS
-from .base import BaseNerfNetwork
-from .utils import *
+from .nerf import NerfNetwork
+from .utils import unfold_batching, img2mse, mse2psnr, recover_shape
 
 
 @NETWORKS.register_module()
-class NerfNetwork(BaseNerfNetwork):
-    """There are 3 kinds of forward mode for Network:
-
-    1. 'train': phase=='train' and use 'train_step()' to forward, input a batch of rays
-    2. 'val': phase=='train' and 'val_step()' to forward, input all testset's poses&images in one 'val_step()'
-    3. 'test': phase=='test' and 'test_step()' to forward, input all testset one by one
-    """
+class KiloNerfNetwork(NerfNetwork):
+    """KiloNerfNetwork extends NerfNetwork, but KiloNerfNetwork has  a mlp
+    structure which is a multi_network and adds l2_regularization loss."""
     def __init__(self, cfg, mlp=None, mlp_fine=None, render=None):
-        super().__init__()
+        super().__init__(cfg, mlp=mlp, mlp_fine=mlp_fine, render=render)
 
-        self.phase = cfg.get('phase', 'train')
-        if 'chunk' in cfg: self.chunk = cfg.chunk
-        if 'bs_data' in cfg: self.bs_data = cfg.bs_data
-        if 'is_perturb' in cfg: self.is_perturb = cfg.is_perturb
-        if 'N_importance' in cfg: self.N_importance = cfg.N_importance
-
-        if mlp is not None:
-            self.mlp = builder.build_mlp(mlp)
-        if mlp_fine is not None:
-            self.mlp_fine = builder.build_mlp(mlp_fine)
-        if render is not None:
-            self.render = builder.build_render(render)
-
-    def forward(self, data, is_test=False):
-
-        data, ret = self.render(self.mlp(data), is_test)
-        if self.N_importance > 0:
-            data = sample_pdf(data, self.N_importance, self.is_perturb,
-                              is_test)
-            _, fine_ret = self.render(self.mlp_fine(data), is_test)
-            ret = merge_ret(ret, fine_ret)  # add fine-net's returns to ret
-
-        return ret
-
-    def batchify_forward(self, data, is_test=False):
-        """forward in smaller minibatches to avoid OOM."""
-        # self.bs_data's shape[0] indicates the real batch-size, this's also the num of rays
-        N = data[self.bs_data].shape[0]
-        all_ret = {}
-        for i in range(0, N, self.chunk):
-            data_chunk = {}
-            for k in data:
-                if data[k].shape[0] == N:
-                    data_chunk[k] = data[k][i:i + self.chunk]
-                else:
-                    data_chunk[k] = data[k]
-
-            ret = self.forward(data_chunk, is_test)
-
-            for k in ret:
-                if k not in all_ret: all_ret[k] = []
-                all_ret[k].append(ret[k])
-        all_ret = {k: torch.cat(all_ret[k], 0) for k in all_ret}
-        return all_ret
+        if 'l2_regularization_lambda' in cfg:
+            self.l2_regularization_lambda = cfg.l2_regularization_lambda
 
     def train_step(self, data, optimizer, **kwargs):
         for k in data:
             data[k] = unfold_batching(data[k])
         ret = self.forward(data, is_test=False)
 
-        img_loss = img2mse(
-            ret['rgb'],
-            data['target_s'])  # rgb: fine network's out, coarse_rgb: coarse's
+        img_loss = img2mse(ret['rgb'], data['target_s'])
         psnr = mse2psnr(img_loss)
         loss = img_loss
+
+        if self.l2_regularization_lambda is not None:
+            l2_reg_term = self.mlp.get_view_dependent_parameters()[0].norm(2)
+            for param in self.mlp.get_view_dependent_parameters()[1:]:
+                l2_reg_term = l2_reg_term + param.norm(2)
+            l2_loss = self.l2_regularization_lambda * l2_reg_term
+            loss = loss + l2_loss
 
         if 'coarse_rgb' in ret:
             coarse_img_loss = img2mse(ret['coarse_rgb'], data['target_s'])
             loss = loss + coarse_img_loss
             coarse_psnr = mse2psnr(coarse_img_loss)
 
-        log_vars = {'loss': loss.item(), 'psnr': psnr.item()}
+        log_vars = {
+            'loss': loss.item(),
+            'psnr': psnr.item(),
+            'L2 reg': l2_loss.item()
+        }
         outputs = {
             'loss': loss,
             'log_vars': log_vars,
@@ -103,14 +66,18 @@ class NerfNetwork(BaseNerfNetwork):
             poses = data['poses']
             images = data['images']
             spiral_poses = data['spiral_poses']
+            global_domain_min = data['global_domain_min']
+            global_domain_max = data['global_domain_max']
 
             rgbs, disps, gt_imgs = [], [], []
             elapsed_time_list = []
             for i in tqdm(range(poses.shape[0])):
                 start = time.time()
                 data = self.val_pipeline({'pose': poses[i]})
+                data['global_domain_min'], data[
+                    'global_domain_max'] = global_domain_min, global_domain_max
                 ret = self.batchify_forward(
-                    data, is_test=True)  # 测试时 raw_noise_std=False
+                    data, is_test=True)  # when testing, raw_noise_std=False
                 end = time.time()
                 # elapsed_time includes pipeline time and forward time
                 elapsed_time = end - start
@@ -124,6 +91,8 @@ class NerfNetwork(BaseNerfNetwork):
             spiral_rgbs, spiral_disps = [], []
             for i in tqdm(range(spiral_poses.shape[0])):
                 data = self.val_pipeline({'pose': spiral_poses[i]})
+                data['global_domain_min'], data[
+                    'global_domain_max'] = global_domain_min, global_domain_max
                 ret = self.batchify_forward(data, is_test=True)
                 rgb = recover_shape(ret['rgb'], data['src_shape'])
                 disp = recover_shape(ret['disp'], data['src_shape'])
@@ -143,32 +112,28 @@ class NerfNetwork(BaseNerfNetwork):
         return outputs
 
     def test_step(self, data, **kwargs):
-        """in mmcv's runner, there is only train_step and val_step so use.
-
-        [val_step() + phase=='test'] to represent test.
-        """
+        """in mmcv's runner, there is only train_step and val_step so use
+        [val_step() + phase=='test'] to represent test."""
         rank, world_size = get_dist_info()
         if rank == 0:
             for k in data:
                 data[k] = unfold_batching(data[k])
 
             image = data['image']
-            idx = data['idx'].item()
+            global_domain_min = data['global_domain_min']
+            global_domain_max = data['global_domain_max']
 
             data = self.val_pipeline({'pose': data['pose']})
-
+            data['global_domain_min'], data[
+                'global_domain_max'] = global_domain_min, global_domain_max
             ret = self.batchify_forward(data, is_test=True)
-            rgb = recover_shape(ret['rgb'], data['src_shape'])
 
+            rgb = recover_shape(ret['rgb'], data['src_shape'])
             rgb = rgb.cpu().numpy()
             image = image.cpu().numpy()
 
-            outputs = {'rgb': rgb, 'gt_img': image, 'idx': idx}
+            outputs = {'rgb': rgb, 'gt_img': image}
 
         else:
             outputs = {}
         return outputs
-
-    def set_val_pipeline(self, func):
-        self.val_pipeline = func
-        return

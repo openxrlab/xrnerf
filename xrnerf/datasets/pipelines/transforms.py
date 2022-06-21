@@ -83,3 +83,5 @@ class FlattenRays:
     def __repr__(self):
         return '{}:change rays from (H, W, ..) to (H*W, ...)'.format(
             self.__class__.__name__)
+        
+

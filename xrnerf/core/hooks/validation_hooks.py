@@ -111,3 +111,27 @@ class ValidateHook(Hook):
             metrics = 'On testset, mse is {:.5f}, psnr is {:.5f}, ssim is {:.5f}'.format(
                 average_mse, average_psnr, average_ssim)
             runner.logger.info(metrics)
+
+@HOOKS.register_module()
+class CalElapsedTimeHook(Hook):
+    """calculate average elapsed_time in val step."""
+    def __init__(self, cfg=None):
+        self.cfg = cfg
+
+    def after_val_iter(self, runner):
+        rank, _ = get_dist_info()
+        if rank == 0:
+            if 'elapsed_time' in runner.outputs:
+                elapsed_time_list = runner.outputs['elapsed_time']
+            else:
+                elapsed_time_list = []
+            if len(elapsed_time_list) == 0: return
+
+            #calculate average elapsed time
+            average_elapsed_time = 1000 * sum(elapsed_time_list) / len(
+                elapsed_time_list)
+
+            metrics = 'On testset, elapsed_time is {:7.2f} ms'.format(
+                average_elapsed_time)
+            runner.logger.info(metrics)
+            # exit(0)

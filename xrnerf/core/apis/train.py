@@ -21,9 +21,11 @@ def train_nerf(cfg):
     val_loader, valset = build_dataloader(cfg, mode='val')
     dataloaders = [train_loader, val_loader]
 
+
     network = build_network(cfg.model)
 
     optimizer = get_optimizer(network, cfg)
+
 
     if cfg.distributed:
         print('init_dist...', flush=True)
@@ -43,7 +45,9 @@ def train_nerf(cfg):
                     work_dir=cfg.work_dir,
                     logger=get_root_logger(log_level=cfg.log_level),
                     meta=None)
+
     runner.timestamp = cfg.get('timestamp', None)
+
 
     # register hooks
     print('register hooks...', flush=True)

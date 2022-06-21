@@ -1,7 +1,7 @@
 import argparse
 import importlib
 import warnings
-from functools import partial
+from functools import partial, reduce
 
 import torch
 from mmcv import Config
@@ -43,8 +43,17 @@ def replace_dataname(dataname, cfg):
 
 
 def kilo_replace(dataname, cfg):
-    resolution = resolution_table[dataname]
-    cfg.resolution = resolution
+    resolution = cfg.resolution_table[dataname]
+    # print("resolution:", resolution)
+    if cfg.phase == 'pretrain':
+        cfg.build_occupancy_tree_config.update({'resolution': resolution})
+    elif cfg.phase == 'distill':
+        cfg.fix_resolution = resolution
+        cfg.total_num_networks = reduce(lambda x, y: x * y, resolution)
+        cfg.data['train'].cfg.update({'fixed_resolution': resolution})
+        cfg.data['val'].cfg.update({'fixed_resolution': resolution})
+    else:
+        cfg.model['mlp'].update({'resolution': resolution})
     return cfg
 
 

@@ -5,6 +5,9 @@ import torch
 from mmcv.runner import get_dist_info
 
 from ..builder import PIPELINES
+import kilonerf_cuda
+
+from ..builder import PIPELINES
 
 
 @PIPELINES.register_module()
@@ -151,6 +154,61 @@ class GetRays:
                 dx = torch.cat([dx, dx[-2:-1, :]], 0)
                 results['radii'] = dx[..., None] * 2 / torch.sqrt(
                     torch.tensor(12)).to(device)
+
+        return results
+
+    def __repr__(self):
+        return "{}:get rays from pose and camera's params".format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class KilonerfGetRays:
+    """get rays from pose using kilonerf cuda
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """get rays by kilonerf cuda
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            pose = results['pose']
+            c2w = pose[:3, :4]
+            compute_capability = torch.cuda.get_device_capability(pose.device)
+            if compute_capability[0] >= 6:
+                # GPU: >= NVIDIA GTX 1080 Ti
+                root_num_blocks = 64  # => 4096 blocks
+                root_num_threads = 16  # => 256 threads per block
+            H, W, K = self.kwargs['H'], self.kwargs['W'], self.kwargs['K']
+            rays_d = kilonerf_cuda.get_rays_d(H, W, K[0][2], K[1][2], K[0][0],
+                                              K[1][1],
+                                              c2w[:3, :3].contiguous(),
+                                              root_num_blocks,
+                                              root_num_threads)
+            '''
+            i, j = torch.meshgrid(torch.linspace(0, W-1, W), torch.linspace(0, H-1, H))  # pytorch's meshgrid has indexing='ij'
+            i = i.t()
+            j = j.t()
+            dirs = torch.stack([(i - intrinsics.cx) / intrinsics.fx, -(j - intrinsics.cy) / intrinsics.fy, -torch.ones_like(i)], -1)
+            # Rotate ray directions from camera frame to the world frame
+            rays_d = torch.sum(dirs[..., np.newaxis, :] * c2w[:3,:3], -1)  # dot product, equals to: [c2w.dot(dir) for dir in dirs]
+            '''
+            # Translate camera frame's origin to the world frame. It is the origin of all rays.
+            rays_o = c2w[:3, -1].expand(rays_d.shape)
+            if self.kwargs['expand_origin']:
+                rays_o = rays_o.expand(rays_d.shape)
+            else:
+                rays_o = rays_o.contiguous()
+
+            results['rays_d'] = rays_d
+            results['rays_o'] = rays_o
 
         return results
 
@@ -318,3 +376,32 @@ class DeleteUseless:
 
     def __repr__(self):
         return '{}:delete useless params'.format(self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class ExampleSample:
+    """sample from examples
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, train_batch_size=0, **kwargs):
+        self.enable = enable
+        self.train_batch_size = train_batch_size
+
+    def __call__(self, results):
+        """ExampleSample
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            num_examples_per_network = results['all_examples'].size(1)
+            indices = np.random.choice(num_examples_per_network,
+                                       size=(self.train_batch_size, ))
+            # print("indices",indices)
+            results['batch_examples'] = results['all_examples'][:, indices]
+        return results
+
+    def __repr__(self):
+        return '{}:slice a batch of examples from all examples'.format(
+            self.__class__.__name__)
