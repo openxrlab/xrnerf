@@ -1,5 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .mipnerf import MipNerfNetwork
 from .nerf import NerfNetwork
+from .mipnerf import MipNerfNetwork
+from .kilonerf import KiloNerfNetwork
+from .student_nerf import StudentNerfNetwork
 
-__all__ = ['NerfNetwork', 'MipNerfNetwork']
+__all__ = ['NerfNetwork', 'MipNerfNetwork','KiloNerfNetwork','StudentNerfNetwork',]
+

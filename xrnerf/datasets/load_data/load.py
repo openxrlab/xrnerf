@@ -5,6 +5,8 @@ from .load_deepvoxels import load_dv_data
 from .load_LINEMOD import load_LINEMOD_data
 from .load_llff import load_llff_data
 from .load_multiscale import load_multiscale_data
+from .load_nsvf_dataset import load_nsvf_dataset
+
 
 
 def load_data(args):
@@ -95,6 +97,41 @@ def load_data(args):
             args.datadir, args.mode, args.white_bkgd)
         print('Load MultiScale Blender', len(images))
         return meta, images, n_examples
+
+        #nsvf dataset type
+    elif args.dataset_type == 'nsvf':
+        test_traj_path = args.test_traj_path if 'test_traj_path' in args else None
+        images, poses, intrinsics, near, far, background_color, render_poses, i_split = load_nsvf_dataset(
+            args.datadir, args.testskip, test_traj_path)
+        hwf = [intrinsics.H, intrinsics.W, intrinsics.fx]
+        print('Loaded a NSVF-style dataset', images.shape, poses.shape,
+              render_poses.shape, args.datadir)
+
+        i_train, i_val, i_test = i_split
+        if i_test.size == 0:
+            i_test = i_val
+
+        if args.white_bkgd and images.shape[-1] == 4:
+            images = images[..., :3] * images[..., -1:] + (1. -
+                                                           images[..., -1:])
+        else:
+            images = images[..., :3]
+
+        render_subset = 'custom_path'
+        if args.render_test:
+            render_subset = 'test'
+        if 'render_subset' in args:
+            render_subset = args.render_subset
+
+        #render_poses of nsvf is None，need to use poses by render_subset type
+        if render_subset == 'train':
+            i_render = i_train
+        elif render_subset == 'val':
+            i_render = i_val
+        elif render_subset == 'test':
+            i_render = i_test
+        if render_subset != 'custom_path':
+            render_poses = np.array(poses[i_render])
 
     else:
         print('Unknown dataset type', args.dataset_type, 'exiting')
