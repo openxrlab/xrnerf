@@ -1,5 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import kilonerf_cuda
+try:
+    import kilonerf_cuda
+except:
+    print('Please install kilonerf_cuda for training KiloNeRF')
 import torch
 from torch import nn
 

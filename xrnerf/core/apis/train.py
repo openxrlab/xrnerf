@@ -21,11 +21,9 @@ def train_nerf(cfg):
     val_loader, valset = build_dataloader(cfg, mode='val')
     dataloaders = [train_loader, val_loader]
 
-
     network = build_network(cfg.model)
 
     optimizer = get_optimizer(network, cfg)
-
 
     if cfg.distributed:
         print('init_dist...', flush=True)

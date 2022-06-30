@@ -1,5 +1,8 @@
 from .builder import DATASETS, build_dataset
 from .mip_multiscale_dataset import MipMultiScaleDataset
+
+from .neuralbody_dataset import NeuralBodyDataset
+from .aninerf_dataset import AniNeRFDataset
 from .samplers import DistributedSampler
 from .scene_dataset import SceneBaseDataset
 from .kilonerf_dataset import KiloNerfDataset
@@ -14,4 +17,6 @@ __all__ = [
     'MipMultiScaleDataset',
     'KiloNerfDataset',
     'KiloNerfNodeDataset',
+    'NeuralBodyDataset',
+    'AniNeRFDataset'
 ]

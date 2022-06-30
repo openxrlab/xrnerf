@@ -1,7 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import itertools
 
-import kilonerf_cuda
+try:
+    import kilonerf_cuda
+except:
+    print('Please install kilonerf_cuda for training KiloNeRF')
 import torch
 import torch.nn.functional as F
 from mmcv import Config
@@ -13,8 +16,11 @@ from .. import builder
 from ..builder import MLPS
 from .base import BaseMLP
 
-kilonerf_cuda.init_stream_pool(16)
-kilonerf_cuda.init_magma()
+try:
+    kilonerf_cuda.init_stream_pool(16)
+    kilonerf_cuda.init_magma()
+except:
+    pass
 
 
 @MLPS.register_module()

@@ -3,6 +3,7 @@ import numpy as np
 import torch
 
 from ..builder import PIPELINES
+from ..utils import get_rigid_transformation
 
 
 @PIPELINES.register_module()
@@ -83,5 +84,60 @@ class FlattenRays:
     def __repr__(self):
         return '{}:change rays from (H, W, ..) to (H*W, ...)'.format(
             self.__class__.__name__)
-        
 
+
+@PIPELINES.register_module()
+class CalculateSkelTransf:
+    """Calculate skeletal transformation
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+
+    def __call__(self, results):
+        """
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            smpl_pose = results['smpl_pose']
+            joints = results['joints']
+            parents = results['parents']
+            # calculate the skeleton transformation
+            smpl_pose = smpl_pose.reshape(-1, 3)
+            A = get_rigid_transformation(smpl_pose, joints, parents)
+            results['A'] = A
+        return results
+
+    def __repr__(self):
+        return '{}:calculate the skeletal transformation'.format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class AninerfIdxConversion:
+    """Convert latent index to indices of blend weight and color
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+
+    def __call__(self, results):
+        """
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            results['bw_latent_idx'] = results['latent_idx'].copy()
+            results['color_latent_idx'] = results['latent_idx'].copy()
+            if results['cfg'].phase == 'novel_pose':
+                results['color_latent_idx'][:] = 0
+        return results
+
+    def __repr__(self):
+        return '{}:convert the aninerf index'.format(
+            self.__class__.__name__)
