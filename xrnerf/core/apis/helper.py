@@ -91,7 +91,12 @@ def build_dataloader(cfg, mode='train'):
 
 
 def get_optimizer(model, cfg):
-    optimizer = build_optimizer(model, cfg.optimizer)
+    if cfg.method == 'animatable_nerf':
+        params = model.get_params()
+        lr = cfg.optimizer.lr
+        optimizer = torch.optim.Adam(params=params, lr=lr)
+    else:
+        optimizer = build_optimizer(model, cfg.optimizer)
     return optimizer
 
 

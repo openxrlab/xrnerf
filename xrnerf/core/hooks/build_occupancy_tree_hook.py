@@ -6,7 +6,10 @@
 import os
 
 import imageio
-import kilonerf_cuda
+try:
+    import kilonerf_cuda
+except:
+    print('Please install kilonerf_cuda for training KiloNeRF')
 import numpy as np
 import torch
 from mmcv.runner import get_dist_info

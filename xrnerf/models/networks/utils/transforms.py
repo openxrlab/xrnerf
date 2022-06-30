@@ -9,6 +9,18 @@ def recover_shape(data, to_shape):
     return data
 
 
+def nb_recover_shape(data, to_shape, mask):
+    num_data = torch.cumprod(to_shape[:-1], -1)[-1].item()
+    to_shape = list(to_shape[:-1]) + list(data.shape[1:])
+    if len(data.shape) > 1:
+        full_data = torch.zeros([num_data, data.shape[-1]]).to(data)
+    else:
+        full_data = torch.zeros([num_data]).to(data)
+    full_data[mask] = data
+    full_data = full_data.view(to_shape)
+    return full_data
+
+
 def merge_ret(ret, fine_ret):
     ret['coarse_rgb'] = ret['rgb']
     ret['coarse_disp'] = ret['disp']

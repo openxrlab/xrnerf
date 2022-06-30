@@ -1,11 +1,17 @@
 import time
+import os
 
 import numpy as np
+import imageio
+import cv2
 import torch
 from mmcv.runner import get_dist_info
 
 from ..builder import PIPELINES
-import kilonerf_cuda
+try:
+    import kilonerf_cuda
+except:
+    print('Please install kilonerf_cuda for training KiloNeRF')
 
 from ..builder import PIPELINES
 
@@ -218,6 +224,49 @@ class KilonerfGetRays:
 
 
 @PIPELINES.register_module()
+class NBGetRays:
+    """get rays from pose
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """get viewdirs
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            H, W = results['img'].shape[:2]
+            K, R, T = results['cam_K'], results['cam_R'], results['cam_T']
+
+            # calculate the camera origin
+            rays_o = -np.dot(R.T, T).ravel()
+            # calculate the world coodinates of pixels
+            i, j = np.meshgrid(np.arange(W, dtype=np.float32),
+                               np.arange(H, dtype=np.float32),
+                               indexing='xy')
+            xy1 = np.stack([i, j, np.ones_like(i)], axis=2)
+            pixel_camera = np.dot(xy1, np.linalg.inv(K).T)
+            pixel_world = np.dot(pixel_camera - T.ravel(), R)
+            # calculate the ray direction
+            rays_d = pixel_world - rays_o[None, None]
+            rays_d = rays_d / np.linalg.norm(rays_d, axis=2, keepdims=True)
+            rays_o = np.broadcast_to(rays_o, rays_d.shape)
+
+            results['rays_d'] = rays_d
+            results['rays_o'] = rays_o
+
+        return results
+
+    def __repr__(self):
+        return "{}:get rays from pose and camera's params".format(self.__class__.__name__)
+
+
+@PIPELINES.register_module()
 class GetViewdirs:
     """get viewdirs from rays_d
     Args:
@@ -404,4 +453,116 @@ class ExampleSample:
 
     def __repr__(self):
         return '{}:slice a batch of examples from all examples'.format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class LoadImageAndCamera:
+    """load the image and camera parameter
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+
+    def __call__(self, results):
+        """
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            data_root = results['data_root']
+            ims = results['ims']
+            cams = results['cams']
+            idx = results['idx']
+
+            # load data
+            img_path = os.path.join(data_root, ims[idx])
+            cam_ind = results['cam_inds'][idx]
+            K = np.array(cams['K'][cam_ind])
+            D = np.array(cams['D'][cam_ind])
+            R = np.array(cams['R'][cam_ind])
+            T = np.array(cams['T'][cam_ind]) / results['cfg'].unit
+
+            # 此时选择一张图，从该图里面随机选择N_rand个射线
+            img = imageio.imread(img_path).astype(np.float32) / 255.
+
+            msk_path = os.path.join(data_root, 'mask',
+                                    ims[idx])[:-4] + '.png'
+            if not os.path.exists(msk_path):
+                msk_path = os.path.join(data_root, 'mask_cihp',
+                                        ims[idx])[:-4] + '.png'
+            msk = imageio.imread(msk_path)
+            msk = (msk != 0).astype(np.uint8)
+
+            # process image and mask
+            H, W = img.shape[:2]
+            msk = cv2.resize(msk, (W, H), interpolation=cv2.INTER_NEAREST)
+            img = cv2.undistort(img, K, D)
+            msk = cv2.undistort(msk, K, D)
+
+            # reduce the image resolution by ratio
+            ratio = results['cfg'].ratio
+            H, W = int(img.shape[0] * ratio), int(img.shape[1] * ratio)
+            img = cv2.resize(img, (W, H), interpolation=cv2.INTER_AREA)
+            msk = cv2.resize(msk, (W, H), interpolation=cv2.INTER_NEAREST)
+            K[:2] = K[:2] * ratio
+
+            # remove the background
+            img[msk == 0] = 0
+            if results['cfg'].white_bkgd:
+                img[msk == 0] = 1
+
+            results.update({'img': img, 'msk': msk, 'cam_K': K, 'cam_R': R, 'cam_T': T,
+                            'img_path': img_path})
+
+        return results
+
+    def __repr__(self):
+        return '{}:load the image and camera parameter'.format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class LoadSmplParam:
+    """load the SMPL parameter
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+
+    def __call__(self, results):
+        """
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            data_root = results['data_root']
+            idx = results['idx']
+            cfg = results['cfg']
+            num_cams = results['num_cams']
+            img_path = results['img_path']
+
+            # load smpl parameters
+            smpl_idx = cfg.img_path_to_smpl_idx(img_path)
+            vert_path = os.path.join(data_root, cfg.smpl_vertices_dir, '{}.npy'.format(smpl_idx))
+            param_path = os.path.join(data_root, cfg.smpl_params_dir, '{}.npy'.format(smpl_idx))
+
+            smpl_verts = np.load(vert_path).astype(np.float32)
+            params = np.load(param_path, allow_pickle=True).item()
+            Rh = params['Rh']
+            smpl_R = cv2.Rodrigues(Rh)[0].astype(np.float32)
+            smpl_T = params['Th'].astype(np.float32)
+            smpl_pose = params['poses'].astype(np.float32)
+
+            frame_idx = cfg.img_path_to_frame_idx(img_path)
+            latent_idx = np.array([idx // num_cams])
+
+            results.update({'smpl_verts': smpl_verts, 'smpl_R': smpl_R,
+                            'smpl_T': smpl_T, 'smpl_pose': smpl_pose,
+                            'latent_idx': latent_idx})
+
+        return results
+
+    def __repr__(self):
+        return '{}:load the SMPL parameter'.format(
             self.__class__.__name__)

@@ -1,6 +1,9 @@
 import math
 
-import kilonerf_cuda
+try:
+    import kilonerf_cuda
+except:
+    print('Please install kilonerf_cuda for training KiloNeRF')
 import torch
 import torch.nn.functional as F
 from torch import nn
