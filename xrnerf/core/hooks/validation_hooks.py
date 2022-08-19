@@ -1,7 +1,7 @@
 # @Author: zcy
 # @Date:   2022-04-20 17:05:14
 # @Last Modified by:   zcy
-# @Last Modified time: 2022-06-15 17:03:30
+# @Last Modified time: 2022-07-23 20:13:00
 
 import os
 
@@ -55,6 +55,45 @@ class SaveSpiralHook(Hook):
 
 
 @HOOKS.register_module()
+class NBSaveSpiralHook(Hook):
+    """save testset's render results with spiral poses 在每次val_step()之后调用
+    用于保存test数据集的环型pose渲染图片 这些图片是没有groundtruth的 以视频方式保存."""
+    def __init__(self, save_folder='validation'):
+        self.save_folder = save_folder
+        self.rgbs = []
+        self.disps = []
+
+    def after_val_iter(self, runner):
+        rank, _ = get_dist_info()
+        if rank == 0:
+            cur_iter = runner.iter
+            self.rgbs.append(runner.outputs['rgbs'][0])
+            self.disps.append(runner.outputs['disps'][0])
+
+    def after_val_epoch(self, runner):
+        spiral_dir = os.path.join(runner.work_dir, self.save_folder)
+        os.makedirs(spiral_dir, exist_ok=True)
+
+        spiral_rgbs = np.array(self.rgbs)
+        spiral_disps = np.array(self.disps)
+
+        imageio.mimwrite(os.path.join(spiral_dir, 'rgb.mp4'),
+                         to8b(spiral_rgbs),
+                         fps=30,
+                         quality=8)
+        imageio.mimwrite(os.path.join(spiral_dir, 'disp.mp4'),
+                         to8b(spiral_disps / np.max(spiral_disps)),
+                         fps=30,
+                         quality=8)
+        '''
+            in mmcv's EpochBasedRunner, only 'after_train_epoch' epoch will be updated
+            but in our test phase, we only want to run ('val', 1),
+            so we need to update runner_epoch additionally
+        '''
+        runner._epoch += 1
+
+
+@HOOKS.register_module()
 class ValidateHook(Hook):
     """在测试集上计算ssim psnr指标 保存图片."""
     def __init__(self, save_folder='validation'):
@@ -65,7 +104,6 @@ class ValidateHook(Hook):
         if rank == 0:
             cur_iter = runner.iter
             rgbs = runner.outputs['rgbs']
-            disps = runner.outputs['disps']
             gt_imgs = runner.outputs['gt_imgs']
             if len(rgbs) == 0:
                 return
@@ -111,6 +149,7 @@ class ValidateHook(Hook):
             metrics = 'On testset, mse is {:.5f}, psnr is {:.5f}, ssim is {:.5f}'.format(
                 average_mse, average_psnr, average_ssim)
             runner.logger.info(metrics)
+
 
 @HOOKS.register_module()
 class CalElapsedTimeHook(Hook):

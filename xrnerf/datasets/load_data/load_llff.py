@@ -270,8 +270,7 @@ def load_llff_data(basedir,
                    spherify=False,
                    path_zflat=False):
 
-    poses, bds, imgs = _load_data(
-        basedir, factor=factor)  # factor=8 downsamples original imgs by 8x
+    poses, bds, imgs = _load_data(basedir, factor=factor)
     print('Loaded', basedir, bds.min(), bds.max())
 
     # Correct rotation matrix ordering and move variable dim to axis 0

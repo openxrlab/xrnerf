@@ -69,8 +69,8 @@ class FlattenRays:
         """
         if self.enable:
             # 测试模式下，rays_d和rays_o本来是(h,w,..)的，需要变成(h*w,...)网络才能处理
-            src_shape = results[
-                'rays_d'].shape  # [..., 3] 记录一下，最后reshape test的rays
+            # [..., 3] 记录一下，最后reshape test的rays
+            src_shape = results['rays_d'].shape
             results['rays_o'] = torch.reshape(results['rays_o'],
                                               [-1, 3]).float()
             results['rays_d'] = torch.reshape(results['rays_d'],
@@ -139,5 +139,4 @@ class AninerfIdxConversion:
         return results
 
     def __repr__(self):
-        return '{}:convert the aninerf index'.format(
-            self.__class__.__name__)
+        return '{}:convert the aninerf index'.format(self.__class__.__name__)

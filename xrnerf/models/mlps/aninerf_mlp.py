@@ -1,7 +1,7 @@
-from torch import nn
+import numpy as np
 import torch
 import torch.nn.functional as F
-import numpy as np
+from torch import nn
 
 from .. import builder
 from ..builder import MLPS
@@ -41,9 +41,11 @@ class DeformField(nn.Module):
 
         with torch.no_grad():
             smpl_verts = datas['smpl_verts'][None]
-            posed_smpl_verts = world_points_to_pose_points(smpl_verts, smpl_R, smpl_T)
+            posed_smpl_verts = world_points_to_pose_points(
+                smpl_verts, smpl_R, smpl_T)
 
-            pbw, pnorm = sample_closest_points(posed_pts, posed_smpl_verts, smpl_bw)
+            pbw, pnorm = sample_closest_points(posed_pts, posed_smpl_verts,
+                                               smpl_bw)
             pnorm = pnorm[..., 0]
             norm_th = self.smpl_threshold
             pind = pnorm < norm_th
@@ -59,14 +61,16 @@ class DeformField(nn.Module):
         """
         # initial blend weights of points at i
         world_verts = datas['smpl_verts']
-        posed_smpl_verts = torch.matmul(world_verts - datas['smpl_T'], datas['smpl_R'])[None]
-        init_pbw, _ = sample_closest_points(pose_pts, posed_smpl_verts, datas['smpl_bw'][None])
+        posed_smpl_verts = torch.matmul(world_verts - datas['smpl_T'],
+                                        datas['smpl_R'])[None]
+        init_pbw, _ = sample_closest_points(pose_pts, posed_smpl_verts,
+                                            datas['smpl_bw'][None])
         init_pbw = init_pbw.permute(0, 2, 1)
 
         # neural blend weights of points at i
         if self.phase == 'novel_pose':
-            pbw = self.novel_pose_bw_mlp.calculate_neural_blend_weights(pose_pts, init_pbw,
-                    datas['bw_latent_idx'])
+            pbw = self.novel_pose_bw_mlp.calculate_neural_blend_weights(
+                pose_pts, init_pbw, datas['bw_latent_idx'])
         else:
             pbw = self.bw_mlp.calculate_neural_blend_weights(
                 pose_pts, init_pbw, datas['bw_latent_idx'] + 1)
@@ -75,8 +79,7 @@ class DeformField(nn.Module):
         tpose = pose_points_to_tpose_points(pose_pts, pbw, datas['A'][None])
         tpose = tpose_points_to_pose_points(tpose, pbw, datas['big_A'][None])
 
-        init_tdirs = pose_dirs_to_tpose_dirs(pose_dirs, pbw,
-                                             datas['A'][None])
+        init_tdirs = pose_dirs_to_tpose_dirs(pose_dirs, pbw, datas['A'][None])
         tpose_dirs = tpose_dirs_to_pose_dirs(init_tdirs, pbw,
                                              datas['big_A'][None])
 
@@ -85,7 +88,8 @@ class DeformField(nn.Module):
     def calculate_tpose_tbw(self, tpose, datas):
         smpl_bw = datas['smpl_bw'][None]
         canonical_smpl_verts = datas['canonical_smpl_verts'][None]
-        init_tbw, _ = sample_closest_points(tpose, canonical_smpl_verts, smpl_bw)
+        init_tbw, _ = sample_closest_points(tpose, canonical_smpl_verts,
+                                            smpl_bw)
         init_tbw = init_tbw.permute(0, 2, 1)
         ind = torch.zeros_like(datas['bw_latent_idx'])
         tbw = self.bw_mlp.calculate_neural_blend_weights(tpose, init_tbw, ind)
@@ -93,9 +97,11 @@ class DeformField(nn.Module):
 
     def forward(self, datas):
         posed_pts, posed_dirs = self.get_posed_point_viewdir(datas)
-        posed_pts, posed_dirs, pind = self.get_points_near_smpl(posed_pts, posed_dirs, datas)
+        posed_pts, posed_dirs, pind = self.get_points_near_smpl(
+            posed_pts, posed_dirs, datas)
         # transform points from the pose space to the tpose space
-        tpose, pbw, tpose_dirs = self.transform_to_tpose(posed_pts, posed_dirs, datas)
+        tpose, pbw, tpose_dirs = self.transform_to_tpose(
+            posed_pts, posed_dirs, datas)
 
         # calculate neural blend weights of points at the tpose space
         tbw = self.calculate_tpose_tbw(tpose, datas)
@@ -280,7 +286,7 @@ class AN_DensityMLP(nn.Module):
             if weight_norm:
                 lin = nn.utils.weight_norm(lin)
 
-            setattr(self, "lin" + str(l), lin)
+            setattr(self, 'lin' + str(l), lin)
 
         if activation == 'softplus':
             self.activation = nn.Softplus(beta=100)
@@ -292,7 +298,7 @@ class AN_DensityMLP(nn.Module):
         inputs = self.embedder.run_embed(inputs, self.embedder.embed_fns)
         x = inputs
         for l in range(0, self.num_layers - 1):
-            lin = getattr(self, "lin" + str(l))
+            lin = getattr(self, 'lin' + str(l))
 
             if l in self.skip_in:
                 x = torch.cat([x, inputs], 1) / np.sqrt(2)
@@ -320,7 +326,6 @@ class AN_ColorMLP(nn.Module):
         dims = [d_in + d_feature] + [d_hidden
                                      for _ in range(n_layers)] + [d_out]
 
-
         self.embedder = builder.build_embedder(embedder)
         _, input_ch = self.embedder.get_embed_ch()
         dims[0] += (input_ch - 3)
@@ -335,17 +340,17 @@ class AN_ColorMLP(nn.Module):
 
         weight_norm = True
         for l in range(0, self.num_layers - 1):
-            lin = getattr(self, "lin" + str(l))
+            lin = getattr(self, 'lin' + str(l))
             if weight_norm:
                 lin = nn.utils.weight_norm(lin)
 
         self.relu = nn.ReLU()
 
-    def forward(self, points, view_dirs, feature_vectors,
-                latent_index):
-        view_dirs = self.embedder.run_embed(view_dirs, self.embedder.embed_fns_dirs)
-        rendering_input = torch.cat(
-            [points, view_dirs, feature_vectors], dim=-1)
+    def forward(self, points, view_dirs, feature_vectors, latent_index):
+        view_dirs = self.embedder.run_embed(view_dirs,
+                                            self.embedder.embed_fns_dirs)
+        rendering_input = torch.cat([points, view_dirs, feature_vectors],
+                                    dim=-1)
 
         x = rendering_input
         net = self.relu(self.lin0(x))

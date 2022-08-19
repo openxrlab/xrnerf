@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .embedders import BaseEmbedder, MipNerfEmbedder, KiloNerfFourierEmbedder
-from .mlps import NerfMLP, KiloNerfMultiNetwork, KiloNerfMLP
-from .networks import MipNerfNetwork, NerfNetwork, KiloNerfNetwork
-from .renders import MipNerfRender, NerfRender, KiloNerfSimpleRender
+from .embedders import BaseEmbedder, KiloNerfFourierEmbedder, MipNerfEmbedder
+from .mlps import KiloNerfMLP, KiloNerfMultiNetwork, NerfMLP
+from .networks import KiloNerfNetwork, MipNerfNetwork, NerfNetwork
+from .renders import KiloNerfSimpleRender, MipNerfRender, NerfRender
+from .samplers import NGPGridSampler
 
 __all__ = [
     'NerfNetwork',
@@ -17,5 +18,5 @@ __all__ = [
     'KiloNerfMLP',
     'KiloNerfNetwork',
     'KiloNerfSimpleRender',
-    
+    'NGPGridSampler',
 ]

@@ -122,9 +122,9 @@ class KiloNerfNodeDataset(SceneBaseDataset):
         global_domain_max = np.array(global_domain_max)
         voxel_size = (global_domain_max - global_domain_min) / fixed_resolution
         nodes = []
-        for voxel_indices in itertools.product(*[
-                range(axis_resolution) for axis_resolution in fixed_resolution
-        ]):
+        for voxel_indices in itertools.product(
+                *
+            [range(axis_resolution) for axis_resolution in fixed_resolution]):
             node = Node()
             node.domain_min = (global_domain_min +
                                voxel_indices * voxel_size).tolist()

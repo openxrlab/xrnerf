@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .augment import PerturbZvals, SelectRays, NBSelectRays
+from .augment import NBSelectRays, PerturbZvals, RandomBGColor, SelectRays
 from .compose import Compose, ToTensor
 from .create import (BatchSample, DeleteUseless, ExampleSample, GetPts,
-                     GetRays, GetViewdirs, GetZvals, KilonerfGetRays, Sample, NBGetRays,
-                     LoadImageAndCamera)
+                     GetRays, GetViewdirs, GetZvals, HashBatchSample,
+                     HashGetRays, HashSetImgids, KilonerfGetRays,
+                     LoadImageAndCamera, NBGetRays, Sample)
 from .transforms import FlattenRays, ToNDC
 
 __all__ = [
@@ -22,8 +23,12 @@ __all__ = [
     'PerturbZvals',
     'SelectRays',
     'KilonerfGetRays',
+    'HashGetRays',
+    'HashSetImgids',
     'ExampleSample',
     'NBGetRays',
     'NBSelectRays',
-    'LoadImageAndCamera'
+    'RandomBGColor',
+    'LoadImageAndCamera',
+    'HashBatchSample',
 ]

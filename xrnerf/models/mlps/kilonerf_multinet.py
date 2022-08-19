@@ -4,17 +4,16 @@ import itertools
 try:
     import kilonerf_cuda
 except:
-    print('Please install kilonerf_cuda for training KiloNeRF')
+    pass
 import torch
 import torch.nn.functional as F
 from mmcv import Config
 from torch import nn
 
-from .multi_modules import MultiNetwork
-
 from .. import builder
 from ..builder import MLPS
 from .base import BaseMLP
+from .multi_modules import MultiNetwork
 
 try:
     kilonerf_cuda.init_stream_pool(16)

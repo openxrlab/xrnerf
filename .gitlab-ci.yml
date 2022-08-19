@@ -1,0 +1,58 @@
+# image: registry.sensetime.com/zoetrope/pytorch@sha256:fa23a6b9ed9b5d90f2ec9ea34e99987e8b44d8ae80acd2149df6fe5b97a4e488
+image: pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+    # - linting
+    - test
+
+before_script:
+  - echo $PATH
+  - python -c "import torch; print(torch.__version__, torch.version.cuda, torch.backends.cudnn.version())"
+  - export http_proxy=http://172.16.1.135:3128/
+  - export https_proxy=http://172.16.1.135:3128/
+  - export HTTP_PROXY=http://172.16.1.135:3128/
+  - export HTTPS_PROXY=http://172.16.1.135:3128/
+
+# linting:
+#   stage: linting
+#   script:
+#     - pre-commit install
+#     - pre-commit run --all-files --verbose
+#     - echo "Docstring coverage results:"
+#     - interrogate -vinmMI -f 40 xrnerf/
+
+test:
+  stage: test
+  tags:
+    - gpu
+  script:
+    - rm /etc/apt/sources.list.d/cuda.list
+    - rm /etc/apt/sources.list.d/nvidia-ml.list
+    - apt-key del 7fa2af80
+    - cp -f docker/sources.list /etc/apt/
+
+    # - echo $PATH
+    # - export CUDA_HOME=/usr/local/cuda
+    # - export PATH=/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+    # - apt-get update && apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1 -f
+    # - apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # # - pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    # - pip install opencv-python>=3 yapf imageio scikit-image -i https://pypi.tuna.tsinghua.edu.cn/simple
+    # - pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html
+    # - pip install spconv-cu113 pytorch3d -i https://pypi.tuna.tsinghua.edu.cn/simple
+    # - pip install coverage pytest -i https://pypi.tuna.tsinghua.edu.cn/simple
+    # - echo "pip install ok !!!"
+
+    # # - cd extensions/ngp_raymarch
+    # # - rm -rf build
+    # # - python setup.py build_ext --inplace
+    # # - python setup.py install
+    # # - cd ../../
+    # # - echo "Start building extension ok !!!"
+
+    # - coverage run --source xrnerf -m pytest -s test/
+    # - coverage report -m

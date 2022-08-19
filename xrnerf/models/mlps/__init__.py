@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .aninerf_mlp import DeformField, TPoseHuman
+from .hashnerf_mlp import HashNerfMLP
 from .kilonerf_mlp import KiloNerfMLP
 from .kilonerf_multinet import KiloNerfMultiNetwork
-from .nerf_mlp import NerfMLP
-from .aninerf_mlp import TPoseHuman, DeformField
 from .nb_mlp import NB_NeRFMLP
+from .nerf_mlp import NerfMLP
 
 __all__ = [
     'NerfMLP',
@@ -11,5 +12,6 @@ __all__ = [
     'KiloNerfMultiNetwork',
     'TPoseHuman',
     'DeformField',
-    'NB_NeRFMLP'
+    'NB_NeRFMLP',
+    'HashNerfMLP',
 ]

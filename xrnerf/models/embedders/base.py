@@ -55,8 +55,8 @@ class BaseEmbedder(nn.Module):
         return self.embed_ch, self.embed_ch_dirs
 
     def forward(self, data):
-        data['unflatten_shape'] = data[
-            'pts'].shape[:-1]  # pts shape before reshape
+        # pts shape before reshape
+        data['unflatten_shape'] = data['pts'].shape[:-1]
         inputs, viewdirs = data['pts'], data['viewdirs']
         inputs_flat = torch.reshape(inputs, [-1, inputs.shape[-1]])
         embedded = self.run_embed(inputs_flat, self.embed_fns)

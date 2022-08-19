@@ -1,7 +1,7 @@
-from torch import nn
+import numpy as np
 import torch
 import torch.nn.functional as F
-import numpy as np
+from torch import nn
 
 from .. import builder
 from ..builder import MLPS
@@ -47,11 +47,15 @@ class NB_NeRFMLP(nn.Module):
         num_pixel, num_sample = datas['pts'].shape[:2]
         viewdirs = datas['rays_d']
         viewdirs = viewdirs[:, None].expand(datas['pts'].shape)
-        viewdirs = self.embedder.run_embed(viewdirs, self.embedder.embed_fns_dirs)
-        viewdirs = viewdirs.view(num_pixel * num_sample, -1)[None].transpose(1, 2)
+        viewdirs = self.embedder.run_embed(viewdirs,
+                                           self.embedder.embed_fns_dirs)
+        viewdirs = viewdirs.view(num_pixel * num_sample,
+                                 -1)[None].transpose(1, 2)
 
-        light_pts = self.embedder.run_embed(datas['pts'], self.embedder.embed_fns)
-        light_pts = light_pts.view(num_pixel * num_sample, -1)[None].transpose(1, 2)
+        light_pts = self.embedder.run_embed(datas['pts'],
+                                            self.embedder.embed_fns)
+        light_pts = light_pts.view(num_pixel * num_sample,
+                                   -1)[None].transpose(1, 2)
 
         features = torch.cat((features, viewdirs, light_pts), dim=1)
 

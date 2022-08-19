@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
-from torch import nn
-import torch.nn.functional as F
-from tqdm import tqdm
-from mmcv.runner import load_checkpoint, get_dist_info
 import numpy as np
+import torch
+import torch.nn.functional as F
+from mmcv.runner import get_dist_info, load_checkpoint
+from torch import nn
+from tqdm import tqdm
 
 from .. import builder
 from ..builder import NETWORKS
@@ -14,13 +14,13 @@ from .utils import *
 
 @NETWORKS.register_module()
 class AniNeRFNetwork(NeuralBodyNetwork):
-
     def __init__(self, cfg, render=None):
         nn.Module.__init__(self)
 
         self.cfg = cfg
         self.chunk = cfg.chunk
         self.bs_data = cfg.bs_data
+        self.phase = cfg.phase
         self.idx = 0
 
         self.tpose_human = builder.build_mlp(cfg.tpose_human)
@@ -49,7 +49,8 @@ class AniNeRFNetwork(NeuralBodyNetwork):
         # predict the color and density
         raw = self.tpose_human(deform_ret, datas)
 
-        datas, tpose_ret = self.tpose_human.filter_and_format_prediction(raw, deform_ret, datas)
+        datas, tpose_ret = self.tpose_human.filter_and_format_prediction(
+            raw, deform_ret, datas)
 
         datas, ret = self.render(datas, is_test)
         ret['pbw'] = tpose_ret['pbw']
@@ -67,8 +68,12 @@ class AniNeRFNetwork(NeuralBodyNetwork):
         bw_loss = F.smooth_l1_loss(ret['pbw'], ret['tbw'])
         loss = loss + bw_loss
 
-        log_vars = {'loss':loss.item(), 'psnr':psnr.item()}
-        outputs = {'loss':loss, 'log_vars':log_vars, 'num_samples':ret['rgb'].shape[0]}
+        log_vars = {'loss': loss.item(), 'psnr': psnr.item()}
+        outputs = {
+            'loss': loss,
+            'log_vars': log_vars,
+            'num_samples': ret['rgb'].shape[0]
+        }
 
         return outputs
 

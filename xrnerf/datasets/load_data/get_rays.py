@@ -9,26 +9,91 @@ def get_rays_np(H, W, K, c2w):
         [(i - K[0][2]) / K[0][0], -(j - K[1][2]) / K[1][1], -np.ones_like(i)],
         -1)
     # Rotate ray directions from camera frame to the world frame
-    rays_d = np.sum(
-        dirs[..., np.newaxis, :] * c2w[:3, :3],
-        -1)  # dot product, equals to: [c2w.dot(dir) for dir in dirs]
+    # dot product, equals to: [c2w.dot(dir) for dir in dirs]
+    rays_d = np.sum(dirs[..., np.newaxis, :] * c2w[:3, :3], -1)
     # Translate camera frame's origin to the world frame. It is the origin of all rays.
     rays_o = np.broadcast_to(c2w[:3, -1], np.shape(rays_d))
+
     return rays_o, rays_d
 
 
 def load_rays(H, W, K, poses, images, i_data):
-    rays = np.stack([get_rays_np(H, W, K, p) for p in poses[:, :3, :4]],
-                    0)  # [N, ro+rd, H, W, 3]
-    rays_rgb = np.concatenate([rays, images[:, None]],
-                              1)  # [N, ro+rd+rgb, H, W, 3]
-    rays_rgb = np.transpose(rays_rgb,
-                            [0, 2, 3, 1, 4])  # [N, H, W, ro+rd+rgb, 3]
-    rays_rgb = np.stack([rays_rgb[i] for i in i_data],
-                        0)  # train self.images only
+    # [N, ro+rd, H, W, 3]
+    rays = np.stack([get_rays_np(H, W, K, p) for p in poses[:, :3, :4]], 0)
+    # [N, ro+rd+rgb, H, W, 3]
+    rays_rgb = np.concatenate([rays, images[:, None]], 1)
+    # [N, H, W, ro+rd+rgb, 3]
+    rays_rgb = np.transpose(rays_rgb, [0, 2, 3, 1, 4])
+    rays_rgb = np.stack([rays_rgb[i] for i in i_data], 0)
     rays_rgb = np.reshape(rays_rgb, [-1, 3, 3])  # [(N-1)*H*W, ro+rd+rgb, 3]
     rays_rgb = rays_rgb.astype(np.float32)
     np.random.shuffle(rays_rgb)
+    return rays_rgb
+
+
+def get_rays_np_hash(H, W, K, c2w):
+
+    c2w = c2w.transpose(1, 0)
+
+    i, j = np.meshgrid(np.arange(W, dtype=np.float32),
+                       np.arange(H, dtype=np.float32),
+                       indexing='xy')
+    i, j = i + 0.5, j + 0.5  # tmp
+
+    dirs = np.stack([(i - K[0][2]) / K[0][0], (j - K[1][2]) / K[1][1],
+                     np.ones_like(i)], -1)
+
+    rays_d = np.matmul(c2w[:3, :3], dirs[:, :, :, np.newaxis])[..., 0]
+    # print('rays_d', rays_d.max(), rays_d.min(), rays_d.shape)
+    # exit(0)
+    # print(dirs.shape, dirs[..., 0].min(), dirs[..., 0].max(), dirs[..., 0].mean())
+    # print(dirs.shape, dirs[..., 1].min(), dirs[..., 1].max(), dirs[..., 1].mean())
+
+    # rays_d = np.sum(dirs[..., np.newaxis, :] * c2w[:3, :3], -1)
+    # print('rays_d', rays_d.max(), rays_d.min(), rays_d.shape)
+    # exit(0)
+
+    rays_d = rays_d / np.linalg.norm(rays_d, axis=-1, keepdims=True)
+    # print('rays_d', rays_d.max(), rays_d.min(), rays_d.shape)
+    # exit(0)
+
+    # print('dirs',dirs.max(), dirs.min(), dirs.shape)
+    # Translate camera frame's origin to the world frame. It is the origin of all rays.
+    rays_o = np.broadcast_to(c2w[:3, -1], np.shape(rays_d))
+
+    # print('rays_d',rays_d.max(), rays_d.min(), rays_d.shape)
+    # print('rays_o',rays_o.max(), rays_o.min(), rays_o.shape)
+    # exit(0)
+
+    return rays_o, rays_d
+
+
+def load_rays_hash(H, W, K, poses, images):
+
+    # 1. do not shuffle   2. add img_index   3. no 'i_data'
+    # [N, H, W, ro3+rd3] get ray_o_d
+    print('start get rays...', flush=True)
+    rays = np.stack(
+        [np.concatenate(get_rays_np_hash(H, W, K, p), 2) for p in poses], 0)
+    print('get rays ok', flush=True)
+
+    # rays_d = rays[:,:,:,3:]
+    # print('rays_d',rays_d.max(), rays_d.min(), rays_d.mean(), rays_d.shape)
+    # rays_o = rays[:,:,:,:3]
+    # print('rays_o',rays_o.max(), rays_o.min(), rays_o.mean(), rays_o.shape)
+    # exit(0)
+
+    # [N, H, W, ro3+rd3+rgba4] add rgba
+    rays_rgb = np.concatenate([rays, images], 3)
+    # [N, 1, 1, 1]
+    img_ids = np.array(range(images.shape[0])).reshape((-1, 1, 1, 1))
+    # [N, H, W, 1]
+    img_ids = np.broadcast_to(img_ids, list(rays_rgb.shape[:3]) + [1])
+    # [N, H, W, 10+1]
+    rays_rgb = np.concatenate([rays_rgb, img_ids], 3)
+    # [N*H*W, 10+1]
+    rays_rgb = np.reshape(rays_rgb, [-1, 11])
+    rays_rgb = rays_rgb.astype(np.float32)
     return rays_rgb
 
 

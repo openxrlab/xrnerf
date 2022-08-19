@@ -4,7 +4,7 @@ import time
 try:
     import kilonerf_cuda
 except:
-    print('Please install kilonerf_cuda for training KiloNeRF')
+    pass
 import torch
 from mmcv.runner import get_dist_info
 from torch import nn
@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from ..builder import NETWORKS
 from .nerf import NerfNetwork
-from .utils import unfold_batching, img2mse, mse2psnr, recover_shape
+from .utils import img2mse, mse2psnr, recover_shape, unfold_batching
 
 
 @NETWORKS.register_module()
@@ -115,8 +115,10 @@ class KiloNerfNetwork(NerfNetwork):
         return outputs
 
     def test_step(self, data, **kwargs):
-        """in mmcv's runner, there is only train_step and val_step so use
-        [val_step() + phase=='test'] to represent test."""
+        """in mmcv's runner, there is only train_step and val_step so use.
+
+        [val_step() + phase=='test'] to represent test.
+        """
         rank, world_size = get_dist_info()
         if rank == 0:
             for k in data:

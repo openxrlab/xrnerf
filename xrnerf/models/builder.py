@@ -9,6 +9,7 @@ MLPS = MODELS
 RENDERS = MODELS
 EMBEDDERS = MODELS
 NETWORKS = MODELS
+SAMPLERS = MODELS
 
 
 def build_mlp(cfg):
@@ -29,6 +30,10 @@ def build_embedder(cfg):
 def build_network(cfg):
     # print(cfg.keys())
     return NETWORKS.build(cfg)
+
+
+def build_sampler(cfg):
+    return SAMPLERS.build(cfg)
 
 
 # def build_optimizer(grad_vars, args):

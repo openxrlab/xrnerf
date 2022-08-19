@@ -26,7 +26,7 @@ class BaseNerfNetwork(nn.Module, metaclass=ABCMeta):
     #     # self.mlp = builder.build_mlp(mlp)
     #     # self.render = builder.build_render(render)
     def __init__(self, **kwarg):
-        super().__init__()  # 对于集成了nn.Module的类型，如果有可学习参数，必须加上这个
+        super().__init__()
 
     @abstractmethod
     def train_step(self, data, optimizer, **kwargs):

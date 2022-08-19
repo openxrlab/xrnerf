@@ -1,15 +1,16 @@
 # @Author: fr
 # @Date:   2022-05-04 17:05:14
-# @Last Modified by:   fr
-# @Last Modified time: 2022-05-12 20:46:46
+# @Last Modified by:   zcy
+# @Last Modified time: 2022-07-23 11:05:42
 
 import os
 
 import imageio
+
 try:
     import kilonerf_cuda
 except:
-    print('Please install kilonerf_cuda for training KiloNeRF')
+    pass
 import numpy as np
 import torch
 from mmcv.runner import get_dist_info
