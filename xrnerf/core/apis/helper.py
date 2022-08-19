@@ -1,14 +1,15 @@
 import argparse
 import importlib
+import os
 import warnings
 from functools import partial, reduce
 
 import torch
 from mmcv import Config
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel, collate
-from mmcv.runner import (DistSamplerSeedHook, IterBasedRunner, OptimizerHook,
-                         build_optimizer, get_dist_info)
-from torch.utils.data import DataLoader, RandomSampler
+from mmcv.runner import (DistSamplerSeedHook, EMAHook, IterBasedRunner,
+                         OptimizerHook, build_optimizer, get_dist_info)
+from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
 from xrnerf.datasets import DistributedSampler, build_dataset
 
@@ -27,6 +28,11 @@ def parse_args():
     parser.add_argument('--test_only',
                         help='set to influence on testset once',
                         action='store_true')
+    parser.add_argument(
+        '--render_only',
+        help='set to influence on testset once for visualization',
+        action='store_true')
+    parser.add_argument('--load_from', help='reset load_from', default='')
     args = parser.parse_args()
     return args
 
@@ -64,15 +70,25 @@ def update_config(dataname, cfg):
     return cfg
 
 
+def update_loadfrom(load_from, cfg):
+    if len(load_from) > 0:
+        cfg.load_from = os.path.join(cfg.work_dir, load_from)
+    return cfg
+
+
 def build_dataloader(cfg, mode='train'):
 
     num_gpus = cfg.num_gpus
     dataset = build_dataset(cfg.data[mode])
     if num_gpus > 0:  # ddp多卡模式
         rank, world_size = get_dist_info()
-        sampler = DistributedSampler(dataset, world_size, rank, shuffle=True)
+        sampler = DistributedSampler(dataset,
+                                     world_size,
+                                     rank,
+                                     shuffle=(mode == 'train'))
     else:  # 单卡模式
-        sampler = RandomSampler(dataset)
+        sampler = RandomSampler(
+            dataset) if mode == 'train' else SequentialSampler(dataset)
 
     loader_cfg = cfg.data['{}_loader'.format(mode)]
     num_workers = loader_cfg['num_workers']
@@ -93,8 +109,7 @@ def build_dataloader(cfg, mode='train'):
 def get_optimizer(model, cfg):
     if cfg.method == 'animatable_nerf':
         params = model.get_params()
-        lr = cfg.optimizer.lr
-        optimizer = torch.optim.Adam(params=params, lr=lr)
+        optimizer = torch.optim.Adam(params=params, lr=cfg.optimizer.lr)
     else:
         optimizer = build_optimizer(model, cfg.optimizer)
     return optimizer

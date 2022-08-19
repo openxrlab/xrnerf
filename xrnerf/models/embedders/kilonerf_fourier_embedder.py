@@ -2,7 +2,7 @@
 try:
     import kilonerf_cuda
 except:
-    print('Please install kilonerf_cuda for training KiloNeRF')
+    pass
 import torch
 from torch import nn
 

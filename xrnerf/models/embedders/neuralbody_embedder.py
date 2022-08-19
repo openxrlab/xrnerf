@@ -1,12 +1,13 @@
 import torch
-from torch import nn
 import torch.nn.functional as F
+from torch import nn
 
 from ..builder import EMBEDDERS
 
 try:
     import spconv
-    if '__version__' in dir(spconv) and spconv.__version__.split('.')[0] == '2':
+    if '__version__' in dir(spconv) and spconv.__version__.split(
+            '.')[0] == '2':
         import spconv.pytorch as spconv
 except:
     print('Please install spconv')
@@ -169,7 +170,8 @@ def stride_conv(in_channels, out_channels, indice_key=None):
 def prepare_sparseconv_data(datas, voxel_size):
     # calculate the size of bounding box
     world_verts = datas['smpl_verts']
-    canonical_verts = torch.matmul(world_verts - datas['smpl_T'], datas['smpl_R'])
+    canonical_verts = torch.matmul(world_verts - datas['smpl_T'],
+                                   datas['smpl_R'])
     min_xyz = torch.min(canonical_verts, dim=0)[0]
     min_xyz[2] = min_xyz[2] - 0.05
     max_xyz = torch.max(canonical_verts, dim=0)[0]

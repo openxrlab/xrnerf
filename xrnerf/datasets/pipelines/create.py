@@ -1,19 +1,19 @@
-import time
 import os
+import time
 
-import numpy as np
-import imageio
 import cv2
+import imageio
+import numpy as np
 import torch
 from mmcv.runner import get_dist_info
 
-from ..builder import PIPELINES
 try:
     import kilonerf_cuda
 except:
     print('Please install kilonerf_cuda for training KiloNeRF')
 
 from ..builder import PIPELINES
+from ..load_data.get_rays import get_rays_np_hash
 
 
 @PIPELINES.register_module()
@@ -104,6 +104,48 @@ class BatchSample:
                                          0, :], batch_rays[:,
                                                            1, :], batch_rays[:,
                                                                              2, :]
+        return results
+
+    def __repr__(self):
+        return '{}:sample a batch of rays from all rays'.format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class HashBatchSample:
+    """get slice rays from all rays in batching dataset
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, N_rand=1024, **kwargs):
+        self.enable = enable
+        self.N_rand = N_rand
+        self.kwargs = kwargs
+        self.cur_i = 0
+
+    def __call__(self, results):
+        """HashBatchSample
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            N_rand = results['N_rand'] if 'N_rand' in results else self.N_rand
+            if self.cur_i + N_rand >= results['rays_rgb'].shape[0]:
+                # np.random.shuffle(results['rays_rgb'])
+                self.cur_i = 0
+
+            start_i, end_i = self.cur_i, self.cur_i + N_rand
+            batch_rays = results['rays_rgb'][start_i:end_i]
+            results['rays_o'] = batch_rays[:, :3]
+            results['rays_d'] = batch_rays[:, 3:6]
+            results['target_s'] = batch_rays[:, 6:9]
+            results['alpha'] = batch_rays[:, 9:10]
+            results['img_ids'] = batch_rays[:, 10:]
+
+            if 'N_rand' in results:
+                del results['N_rand']
+            self.cur_i += N_rand
         return results
 
     def __repr__(self):
@@ -240,7 +282,11 @@ class NBGetRays:
                 to the next transform in pipeline.
         """
         if self.enable:
-            H, W = results['img'].shape[:2]
+            cfg = results['cfg']
+            if cfg.mode == 'render':
+                H, W = cfg.render_H, cfg.render_W
+            else:
+                H, W = results['img'].shape[:2]
             K, R, T = results['cam_K'], results['cam_R'], results['cam_T']
 
             # calculate the camera origin
@@ -263,7 +309,81 @@ class NBGetRays:
         return results
 
     def __repr__(self):
-        return "{}:get rays from pose and camera's params".format(self.__class__.__name__)
+        return "{}:get rays from pose and camera's params".format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class HashGetRays:
+    """get rays from pose, instant ngp
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """get rays from one pose
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            in_tensor = False
+            pose = results['pose']
+            H = self.kwargs['H']
+            W = self.kwargs['W']
+            K = self.kwargs['K']
+            if isinstance(pose, torch.Tensor):
+                device = results['pose'].device
+                pose = pose.cpu().numpy()
+                in_tensor = True
+            rays_o, rays_d = get_rays_np_hash(H, W, K, pose)
+            if in_tensor:
+                rays_o = torch.tensor(rays_o, dtype=torch.float32).to(device)
+                rays_d = torch.tensor(rays_d, dtype=torch.float32).to(device)
+            results['rays_o'], results['rays_d'] = rays_o, rays_d
+            # print('rays_d',rays_d.max(), rays_d.min(), rays_d.shape)
+            # print('rays_o',rays_o.max(), rays_o.min(), rays_o.shape)
+            # exit(0)
+        return results
+
+    def __repr__(self):
+        return "{}:get rays from pose and camera's params".format(
+            self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class HashSetImgids:
+    """get rays from pose, instant ngp
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """get viewdirs
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            in_tensor = False
+            if isinstance(results['pose'], torch.Tensor):
+                device = results['pose'].device
+                in_tensor = True
+            img_ids = np.ones(list(results['rays_o'].shape[:-1]) +
+                              [1]) * results['idx']
+            if in_tensor:
+                img_ids = torch.tensor(img_ids, dtype=torch.int32).to(device)
+            results['img_ids'] = img_ids
+        return results
+
+    def __repr__(self):
+        return '{}:get idx'.format(self.__class__.__name__)
 
 
 @PIPELINES.register_module()
@@ -458,8 +578,7 @@ class ExampleSample:
 
 @PIPELINES.register_module()
 class LoadImageAndCamera:
-    """load the image and camera parameter
-    """
+    """load the image and camera parameter."""
     def __init__(self, enable=True, **kwargs):
         self.enable = enable
 
@@ -486,8 +605,7 @@ class LoadImageAndCamera:
             # 此时选择一张图，从该图里面随机选择N_rand个射线
             img = imageio.imread(img_path).astype(np.float32) / 255.
 
-            msk_path = os.path.join(data_root, 'mask',
-                                    ims[idx])[:-4] + '.png'
+            msk_path = os.path.join(data_root, 'mask', ims[idx])[:-4] + '.png'
             if not os.path.exists(msk_path):
                 msk_path = os.path.join(data_root, 'mask_cihp',
                                         ims[idx])[:-4] + '.png'
@@ -512,8 +630,14 @@ class LoadImageAndCamera:
             if results['cfg'].white_bkgd:
                 img[msk == 0] = 1
 
-            results.update({'img': img, 'msk': msk, 'cam_K': K, 'cam_R': R, 'cam_T': T,
-                            'img_path': img_path})
+            results.update({
+                'img': img,
+                'msk': msk,
+                'cam_K': K,
+                'cam_R': R,
+                'cam_T': T,
+                'img_path': img_path
+            })
 
         return results
 
@@ -524,8 +648,7 @@ class LoadImageAndCamera:
 
 @PIPELINES.register_module()
 class LoadSmplParam:
-    """load the SMPL parameter
-    """
+    """load the SMPL parameter."""
     def __init__(self, enable=True, **kwargs):
         self.enable = enable
 
@@ -544,8 +667,10 @@ class LoadSmplParam:
 
             # load smpl parameters
             smpl_idx = cfg.img_path_to_smpl_idx(img_path)
-            vert_path = os.path.join(data_root, cfg.smpl_vertices_dir, '{}.npy'.format(smpl_idx))
-            param_path = os.path.join(data_root, cfg.smpl_params_dir, '{}.npy'.format(smpl_idx))
+            vert_path = os.path.join(data_root, cfg.smpl_vertices_dir,
+                                     '{}.npy'.format(smpl_idx))
+            param_path = os.path.join(data_root, cfg.smpl_params_dir,
+                                      '{}.npy'.format(smpl_idx))
 
             smpl_verts = np.load(vert_path).astype(np.float32)
             params = np.load(param_path, allow_pickle=True).item()
@@ -557,12 +682,70 @@ class LoadSmplParam:
             frame_idx = cfg.img_path_to_frame_idx(img_path)
             latent_idx = np.array([idx // num_cams])
 
-            results.update({'smpl_verts': smpl_verts, 'smpl_R': smpl_R,
-                            'smpl_T': smpl_T, 'smpl_pose': smpl_pose,
-                            'latent_idx': latent_idx})
+            results.update({
+                'smpl_verts': smpl_verts,
+                'smpl_R': smpl_R,
+                'smpl_T': smpl_T,
+                'smpl_pose': smpl_pose,
+                'latent_idx': latent_idx
+            })
 
         return results
 
     def __repr__(self):
-        return '{}:load the SMPL parameter'.format(
+        return '{}:load the SMPL parameter'.format(self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class LoadCamAndSmplParam:
+    """load the Camera and SMPL parameters."""
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+
+    def __call__(self, results):
+        """
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            data_root = results['data_root']
+            idx = results['idx']
+            cfg = results['cfg']
+
+            # load camera parameters
+            K = results['K'].astype(np.float32)
+            K[:2] = K[:2] * cfg['ratio']
+            RT = results['spiral_poses'][idx].astype(np.float32)
+            R = RT[:3, :3]
+            T = RT[:3, 3:]
+            results.update({'cam_K': K, 'cam_R': R, 'cam_T': T})
+
+            # load smpl parameters
+            smpl_idx = cfg.frame_idx_to_smpl_idx(cfg.frame_idx)
+            vert_path = os.path.join(data_root, cfg.smpl_vertices_dir,
+                                     '{}.npy'.format(smpl_idx))
+            param_path = os.path.join(data_root, cfg.smpl_params_dir,
+                                      '{}.npy'.format(smpl_idx))
+
+            smpl_verts = np.load(vert_path).astype(np.float32)
+            params = np.load(param_path, allow_pickle=True).item()
+            Rh = params['Rh']
+            smpl_R = cv2.Rodrigues(Rh)[0].astype(np.float32)
+            smpl_T = params['Th'].astype(np.float32)
+            smpl_pose = params['poses'].astype(np.float32)
+
+            latent_idx = np.array([cfg.frame_idx_to_latent_idx(cfg.frame_idx)])
+            results.update({
+                'smpl_verts': smpl_verts,
+                'smpl_R': smpl_R,
+                'smpl_T': smpl_T,
+                'smpl_pose': smpl_pose,
+                'latent_idx': latent_idx
+            })
+
+        return results
+
+    def __repr__(self):
+        return '{}:load the Camera and SMPL parameters'.format(
             self.__class__.__name__)

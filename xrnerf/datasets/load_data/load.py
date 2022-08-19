@@ -8,7 +8,6 @@ from .load_multiscale import load_multiscale_data
 from .load_nsvf_dataset import load_nsvf_dataset
 
 
-
 def load_data(args):
     # Load data
     K = None
@@ -62,7 +61,10 @@ def load_data(args):
             images = images[..., :3] * images[..., -1:] + (1. -
                                                            images[..., -1:])
         else:
-            images = images[..., :3]
+            if ('load_alpha' in args) and args.load_alpha:
+                images = images
+            else:
+                images = images[..., :3]
 
     elif args.dataset_type == 'LINEMOD':
         images, poses, render_poses, hwf, K, i_split, near, far = load_LINEMOD_data(
@@ -77,7 +79,10 @@ def load_data(args):
             images = images[..., :3] * images[..., -1:] + (1. -
                                                            images[..., -1:])
         else:
-            images = images[..., :3]
+            if ('load_alpha' in args) and args.load_alpha:
+                images = images
+            else:
+                images = images[..., :3]
 
     elif args.dataset_type == 'deepvoxels':
 
@@ -115,7 +120,10 @@ def load_data(args):
             images = images[..., :3] * images[..., -1:] + (1. -
                                                            images[..., -1:])
         else:
-            images = images[..., :3]
+            if ('load_alpha' in args) and args.load_alpha:
+                images = images
+            else:
+                images = images[..., :3]
 
         render_subset = 'custom_path'
         if args.render_test:

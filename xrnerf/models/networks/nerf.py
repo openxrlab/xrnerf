@@ -73,9 +73,8 @@ class NerfNetwork(BaseNerfNetwork):
             data[k] = unfold_batching(data[k])
         ret = self.forward(data, is_test=False)
 
-        img_loss = img2mse(
-            ret['rgb'],
-            data['target_s'])  # rgb: fine network's out, coarse_rgb: coarse's
+        # rgb: fine network's out, coarse_rgb: coarse's
+        img_loss = img2mse(ret['rgb'], data['target_s'])
         psnr = mse2psnr(img_loss)
         loss = img_loss
 
@@ -109,6 +108,9 @@ class NerfNetwork(BaseNerfNetwork):
             for i in tqdm(range(poses.shape[0])):
                 start = time.time()
                 data = self.val_pipeline({'pose': poses[i]})
+                for k in data:
+                    print(k, data[k].shape)
+                exit(0)
                 ret = self.batchify_forward(
                     data, is_test=True)  # 测试时 raw_noise_std=False
                 end = time.time()

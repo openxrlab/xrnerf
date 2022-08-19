@@ -71,7 +71,8 @@ class MipNerfEmbedder(BaseEmbedder):
         xb = torch.reshape((x[..., None, :] * scales[:, None]),
                            list(x.shape[:-1]) + [-1])
         four_feat = torch.sin(
-            torch.cat([xb, xb + 0.5 * torch.tensor(math.pi).to(x.device)], dim=-1))
+            torch.cat([xb, xb + 0.5 * torch.tensor(math.pi).to(x.device)],
+                      dim=-1))
         if self.append_identity:
             return torch.cat([x] + [four_feat], dim=-1)
         else:

@@ -53,7 +53,7 @@ test_runner = dict(type='NerfTestRunner')
 # runtime settings
 num_gpus = 1
 distributed = (num_gpus > 1)  # 是否多卡，mmcv对dp多卡支持不好，故而要么单卡要么ddp多卡
-work_dir = f'/mnt/lustre/ganshikang/Projects/xrnerf/multi_results/#DATANAME#'
+work_dir = './work_dirs/mip_nerf/#DATANAME#/'
 
 timestamp = datetime.now().strftime('%d-%b-%H-%M')
 
@@ -116,8 +116,7 @@ model = dict(
 
 basedata_cfg = dict(
     dataset_type=dataset_type,
-    datadir=
-    f'/mnt/lustre/share_data/ganshikang/mipnerf/data/nerf_synthetic_multiscale/#DATANAME#',
+    datadir=f'data/multiscale/#DATANAME#',
     white_bkgd=white_bkgd,
     mode='train',
     N_rand_per_sampler=N_rand_per_sampler,

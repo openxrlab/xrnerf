@@ -39,7 +39,7 @@ train_hooks = [
     dict(type='SetValPipelineHook',
          params=dict(),
          variables=dict(valset='valset')),
-   dict(type='ValidateHook',
+    dict(type='ValidateHook',
          params=dict(save_folder='visualizations/validation')),
     dict(type='SaveSpiralHook',
          params=dict(save_folder='visualizations/spiral')),

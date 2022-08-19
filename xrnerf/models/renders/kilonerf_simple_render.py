@@ -9,20 +9,20 @@ from .nerf_render import NerfRender
 
 @RENDERS.register_module()
 class KiloNerfSimpleRender(NerfRender):
-    def __init__(self, 
-                 white_bkgd=False, 
-                 raw_noise_std=0, 
-                 rgb_padding=0, 
-                 density_bias=0, 
-                 density_activation='relu', 
-                 convert_density_to_alpha=True, 
-                 alpha_distance=0, 
+    def __init__(self,
+                 white_bkgd=False,
+                 raw_noise_std=0,
+                 rgb_padding=0,
+                 density_bias=0,
+                 density_activation='relu',
+                 convert_density_to_alpha=True,
+                 alpha_distance=0,
                  **kwarg):
-        super().__init__(white_bkgd=white_bkgd, 
-                         raw_noise_std=raw_noise_std, 
-                         rgb_padding=rgb_padding, 
-                         density_bias=density_bias, 
-                         density_activation=density_activation, 
+        super().__init__(white_bkgd=white_bkgd,
+                         raw_noise_std=raw_noise_std,
+                         rgb_padding=rgb_padding,
+                         density_bias=density_bias,
+                         density_activation=density_activation,
                          **kwarg)
         self.convert_density_to_alpha = convert_density_to_alpha
         self.alpha_distance = alpha_distance

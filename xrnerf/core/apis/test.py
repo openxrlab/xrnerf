@@ -25,7 +25,6 @@ def test_nerf(cfg):
     dataloaders = [test_loader]
 
     network = build_network(cfg.model)
-    # network.set_val_pipeline(testset.pipeline)
 
     if cfg.distributed:
         print('init_dist...', flush=True)
@@ -47,8 +46,7 @@ def test_nerf(cfg):
     runner.timestamp = cfg.get('timestamp', None)
     register_hooks(cfg.test_hooks, **locals())
 
-    runner.load_checkpoint(
-        cfg.load_from)  # for test phase, we must load checkpoint
+    runner.load_checkpoint(cfg.load_from)
 
     print('start test...', flush=True)
     runner.run(data_loaders=dataloaders, workflow=cfg.workflow, max_epochs=1)

@@ -46,11 +46,15 @@ def train_nerf(cfg):
 
     runner.timestamp = cfg.get('timestamp', None)
 
-
     # register hooks
     print('register hooks...', flush=True)
-    runner.register_training_hooks(cfg.lr_config, cfg.optimizer_config,
-                                   cfg.checkpoint_config, cfg.log_config)
+    custom_hooks = cfg.get('custom_hooks', None)
+    print(custom_hooks)
+    runner.register_training_hooks(cfg.lr_config,
+                                   cfg.optimizer_config,
+                                   cfg.checkpoint_config,
+                                   cfg.log_config,
+                                   custom_hooks_config=custom_hooks)
     register_hooks(cfg.train_hooks, **locals())
 
     # resume_from是载入ckpt和runner的训练信息，load_checkpoint只载入ckpt

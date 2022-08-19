@@ -118,11 +118,9 @@ model = dict(
 
 basedata_cfg = dict(
     dataset_type=dataset_type,
-    datadir=
-    f'/mnt/lustre/share_data/ganshikang/mipnerf/data/nerf_synthetic/#DATANAME#',
+    datadir=f'data/multiscale/#DATANAME#',
     half_res=False,  # load blender synthetic data at 400x400 instead of 800x800
-    testskip=
-    16,  # will load 1/N images from test/val sets, useful for large datasets like deepvoxels
+    testskip=16,
     white_bkgd=white_bkgd,
     is_batching=False,
     mode='train',

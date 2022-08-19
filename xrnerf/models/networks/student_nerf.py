@@ -11,7 +11,7 @@ from torch import nn
 from .. import builder
 from ..builder import NETWORKS, build_network
 from .base import BaseNerfNetwork
-from .utils import unfold_batching, transform_examples
+from .utils import transform_examples, unfold_batching
 
 
 @NETWORKS.register_module()

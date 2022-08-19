@@ -1,10 +1,10 @@
 import time
 
+import cv2
 import numpy as np
 import torch
 from mmcv.runner import get_dist_info
 
-import cv2
 from ..builder import PIPELINES
 
 
@@ -86,11 +86,17 @@ class NBSelectRays:
     Args:
         keys (Sequence[str]): Required keys to be converted.
     """
-    def __init__(self, enable=True, sel_n=1024, sel_all=False, **kwargs):
+    def __init__(self,
+                 enable=True,
+                 sel_n=1024,
+                 sel_all=False,
+                 sel_rgb=True,
+                 **kwargs):
         self.enable = enable
         self.kwargs = kwargs
         self.sel_n = sel_n
         self.sel_all = sel_all
+        self.sel_rgb = sel_rgb
 
     @staticmethod
     def get_bound_2d_mask(bounds, K, pose, H, W):
@@ -127,7 +133,7 @@ class NBSelectRays:
 
     @staticmethod
     def get_near_far(bounds, ray_o, ray_d):
-        """calculate intersections with 3d bounding box"""
+        """calculate intersections with 3d bounding box."""
         norm_d = np.linalg.norm(ray_d, axis=-1, keepdims=True)
         viewdir = ray_d / norm_d
         viewdir[(viewdir < 1e-5) & (viewdir > -1e-10)] = 1e-5
@@ -169,8 +175,10 @@ class NBSelectRays:
             # calculate the ray info
             ray_o_ = results['rays_o'][coord[:, 0], coord[:, 1]]
             ray_d_ = results['rays_d'][coord[:, 0], coord[:, 1]]
-            rgb_ = results['img'][coord[:, 0], coord[:, 1]]
-            near_, far_, mask_at_box = self.get_near_far(bounds, ray_o_, ray_d_)
+            if self.sel_rgb:
+                rgb_ = results['img'][coord[:, 0], coord[:, 1]]
+            near_, far_, mask_at_box = self.get_near_far(
+                bounds, ray_o_, ray_d_)
 
             ray_o_list.append(ray_o_[mask_at_box])
             ray_d_list.append(ray_d_[mask_at_box])
@@ -181,7 +189,8 @@ class NBSelectRays:
 
         results['rays_o'] = np.concatenate(ray_o_list).astype(np.float32)
         results['rays_d'] = np.concatenate(ray_d_list).astype(np.float32)
-        results['target_s'] = np.concatenate(rgb_list).astype(np.float32)
+        if self.sel_rgb:
+            results['target_s'] = np.concatenate(rgb_list).astype(np.float32)
         results['near'] = np.concatenate(near_list).astype(np.float32)[:, None]
         results['far'] = np.concatenate(far_list).astype(np.float32)[:, None]
 
@@ -191,19 +200,20 @@ class NBSelectRays:
         src_shape = results['rays_d'].shape
         results['src_shape'] = torch.tensor(src_shape)
 
-        rgb = results['img'].reshape(-1, 3).astype(np.float32)
         ray_o = results['rays_o'].reshape(-1, 3).astype(np.float32)
         ray_d = results['rays_d'].reshape(-1, 3).astype(np.float32)
         near, far, mask_at_box = self.get_near_far(bounds, ray_o, ray_d)
         near = near.astype(np.float32)
         far = far.astype(np.float32)
-        rgb = rgb[mask_at_box]
         ray_o = ray_o[mask_at_box]
         ray_d = ray_d[mask_at_box]
 
         results['rays_o'] = ray_o.astype(np.float32)
         results['rays_d'] = ray_d.astype(np.float32)
-        results['target_s'] = rgb.astype(np.float32)
+        if self.sel_rgb:
+            rgb = results['img'].reshape(-1, 3).astype(np.float32)
+            rgb = rgb[mask_at_box]
+            results['target_s'] = rgb.astype(np.float32)
         results['near'] = near.astype(np.float32)[:, None]
         results['far'] = far.astype(np.float32)[:, None]
         results['mask_at_box'] = mask_at_box
@@ -224,22 +234,27 @@ class NBSelectRays:
             bounds = np.stack([min_xyz, max_xyz], axis=0)
 
             # generate regions for sampling
-            H, W = results['img'].shape[:2]
+            cfg = results['cfg']
+            if cfg.mode == 'render':
+                H, W = cfg.render_H, cfg.render_W
+            else:
+                H, W = results['img'].shape[:2]
             K, R, T = results['cam_K'], results['cam_R'], results['cam_T']
             pose = np.concatenate([R, T], axis=1)
             bound_mask = self.get_bound_2d_mask(bounds, K, pose, H, W)
-            human_mask = results['msk'] * bound_mask
 
             if self.sel_all:
                 results = self.select_all_rays(results, bounds)
             else:
-                results = self.sample_rays(results, bounds, bound_mask, human_mask)
-
+                human_mask = results['msk'] * bound_mask
+                results = self.sample_rays(results, bounds, bound_mask,
+                                           human_mask)
 
         return results
 
     def __repr__(self):
-        return "{}:random select rays when training".format(self.__class__.__name__)
+        return '{}:random select rays when training'.format(
+            self.__class__.__name__)
 
 
 @PIPELINES.register_module()
@@ -269,3 +284,34 @@ class PerturbZvals:
 
     def __repr__(self):
         return '{}:apply perturb to zvals'.format(self.__class__.__name__)
+
+
+@PIPELINES.register_module()
+class RandomBGColor:
+    """random set background color, used in ngp
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, **kwargs):
+        self.enable = enable
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """BatchSlice
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            alpha = results['alpha']
+            target_s = results['target_s']
+            bg_color = np.random.rand(*list(results['target_s'].shape))
+            # bg_color = np.zeros(list(results['target_s'].shape))
+            target_s = target_s * alpha + bg_color * (1 - alpha)
+            results['target_s'] = target_s.astype(np.float32)
+            results['bg_color'] = bg_color.astype(np.float32)
+        return results
+
+    def __repr__(self):
+        return '{}:sample a batch of rays from all rays'.format(
+            self.__class__.__name__)
