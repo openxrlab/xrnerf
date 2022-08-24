@@ -6,14 +6,14 @@
 
 - [教程 2: 如何设计数据处理流程](#教程-2-如何设计数据处理流程)
   - [数据处理流程的基本概念](#数据处理流程的基本概念)
-  - [Design of Data Pipelines](#design-of-data-pipelines)
+  - [设计数据处理流程](#设计数据处理流程)
 
 <!-- TOC -->
 
 ## 数据处理流程的基本概念
-Data Pipeline is a modular form for data process. We make common data processing operations into python class, which named ```pipeline```.
+数据处理流程是用于数据处理的模块。我们把常见的nerf方法数据处理操作抽象化为一个个python类，即```pipeline```。
 
-The following code block shows how to define a pipeline class to calculate viewdirs from rays' direction. 
+下面的代码块展示了如何定义一个数据处理流程类来从rays' direction计算viewdirs
 
 ```python
 @PIPELINES.register_module()
@@ -37,17 +37,17 @@ class GetViewdirs:
         return results
 ```
 
-To use the `GetViewdirs`, we can simply add `dict(type='GetViewdirs')` to `train_pipeline` in config file.
+我们可以直接在配置文件中，把`dict(type='GetViewdirs')`添加到`train_pipeline`中去来使用`GetViewdirs`。
 
-## Design of Data Pipelines
+## 设计数据处理流程
 
-We logically divide data process pipeline into 4 python files:
-* `creat.py` create or calculate new variables.
-* `augment.py` data augmentation operations.
-* `transforms.py` convert data type or change coordinate system.
-* `compose.py` Combine various data processing operations into a pipeline.
+我们根据处理逻辑把数据处理流程划分为了4个python文件:
+* `creat.py` 创建和计算新变量
+* `augment.py` 数据增强操作
+* `transforms.py` 修改数据格式或者变换坐标系
+* `compose.py` 组合各种流程在一起.
 
-A complete data pipeline configuration is shown below. 
+下面展示了一个完整的数据处理流程配置
 ```python
 train_pipeline = [
     dict(type='Sample'),
@@ -68,20 +68,21 @@ train_pipeline = [
     dict(type='DeleteUseless', keys=['pose', 'iter_n']),
 ]
 ```
-In this case, the input data is a dict, created in [_fetch_train_data()](../../../xrnerf/datasets/scene_dataset.py)
+在上面的例子中，输入数据是一个字典，在[_fetch_train_data()](../../../xrnerf/datasets/scene_dataset.py)中创建
+
 ```python
 data = {'poses': self.poses, 'images': self.images, 'i_data': self.i_train, 'idx': idx}
 ```
-In data pipeline, the data processing flow is as follows:
-* `Sample` select one image or pose via `idx`, create `pose` and `target_s`
-* `DeleteUseless` delete `'images', 'poses', 'i_data', 'idx'` in dict, they are already useless
-* `ToTensor` convert `'pose', 'target_s'` in dict, they are already useless
-* `GetRays` calculate `'rays_d', 'rays_o'` from camera parameter and images shape
-* `SelectRays` select a batchsize rays
-* `GetViewdirs` calculate viewdirs from rays' direction
-* `ToNDC` Coordinate system transformation
-* `GetBounds` get near and far
-* `GetZvals` samples points along rays between near point and far point
-* `PerturbZvals` data augmentation
-* `GetPts` get points' position
+在上面的数据处理流程中，分别做了以下事:
+* `Sample` 选择一张图和对应的pose，创建 `pose` 和 `target_s`
+* `DeleteUseless` 删除字典中的 `'images', 'poses', 'i_data', 'idx'`, 这些变量后面已经不会再被用到了
+* `ToTensor` 把 `'pose', 'target_s'` 变成tensor
+* `GetRays` 从摄像机参数中计算calculate `'rays_d', 'rays_o'`
+* `SelectRays` 选择一个batch的射线
+* `GetViewdirs` 从rays' direction计算viewdirs
+* `ToNDC` 进行坐标系转换
+* `GetBounds` 获取射线上采样区间的最远和最近距离
+* `GetZvals` 在射线上采样区间采点
+* `PerturbZvals` 数据增强
+* `GetPts` 获取点的坐标
 

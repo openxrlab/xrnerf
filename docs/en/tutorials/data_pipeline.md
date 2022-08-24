@@ -75,7 +75,7 @@ data = {'poses': self.poses, 'images': self.images, 'i_data': self.i_train, 'idx
 In data pipeline, the data processing flow is as follows:
 * `Sample` select one image or pose via `idx`, create `pose` and `target_s`
 * `DeleteUseless` delete `'images', 'poses', 'i_data', 'idx'` in dict, they are already useless
-* `ToTensor` convert `'pose', 'target_s'` in dict, they are already useless
+* `ToTensor` convert `'pose', 'target_s'` in dict
 * `GetRays` calculate `'rays_d', 'rays_o'` from camera parameter and images shape
 * `SelectRays` select a batchsize rays
 * `GetViewdirs` calculate viewdirs from rays' direction
