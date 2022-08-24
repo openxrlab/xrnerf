@@ -31,6 +31,6 @@ xrnerf
 ```
 
 #### Dataset Download
-1. Download ```nerf_llff_data``` and ```nerf_llff_data``` from [here](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1), and put it under ```xrnerf/data```
+1. Download ```nerf_synthetic``` and ```nerf_llff_data``` from [here](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1), and put it under ```xrnerf/data```
 2. Credit to NSVF authors for providing [their datasets](https://github.com/facebookresearch/NSVF), read introductions [here](https://github.com/creiser/kilonerf#download-nsvf-datasets)
 3. For mip-nerf training, you can generate the multiscale dataset used in the paper by running the following command, ```python tools/convert_blender_data.py --blenderdir /data/nerf_synthetic --outdir data/multiscale```

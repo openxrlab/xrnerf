@@ -15,6 +15,7 @@ For installation instructions, please see [installation.md](installation.md).
     - [Train](#train)
     - [Test](#test)
   - [Tutorials](#tutorials)
+  - [Other Documents](#other-documents)
 
 <!-- TOC -->
 
@@ -56,7 +57,7 @@ can be customized through config files with no pains.
 
 ### Write a new network
 
-To write a new nerf network pipeline, you need to inherit from `BaseNerfNetwork`,
+To write a new nerf network, you need to inherit from `BaseNerfNetwork`,
 which defines the following abstract methods.
 
 - `train_step()`: forward method of the training mode.
@@ -123,7 +124,7 @@ To implement some new components for embedder/mlp/render, procedure is similar t
 
 ### Iteration Controls
 
-XRnerf use `mmcv.runner.IterBasedRunner` to contral training, and `mmcv.runner.EpochBasedRunner` to for test mode.
+XRnerf use `mmcv.runner.IterBasedRunner` to control training, and `mmcv.runner.EpochBasedRunner` to for test mode.
 
 In training mode, the `max_iters` in config file decide how many iters. 
 In test mode, `max_iters` is forced to change to 1, which represents only 1 epoch to test.
@@ -150,10 +151,14 @@ Arguments are:
 
 ## Tutorials
 Currently, we provide some tutorials for users to 
-* [learn about configs](tutorials/1_config.md)
-* [finetune model](tutorials/2_finetune.md)
-* [add new dataset](tutorials/3_new_dataset.md)
-* [customize data pipelines](tutorials/4_data_pipeline.md)
-* [add new modules](tutorials/5_new_modules.md)
-* [export a model to ONNX](tutorials/6_export_model.md)
-* [customize runtime settings](tutorials/7_customize_runtime.md)
+* [learn about configs](tutorials/config.md)
+* [customize data pipelines](tutorials/data_pipeline.md)
+* [model define](tutorials/model.md)
+
+## Other Documents
+Except for that，The document also includes the following
+* [api](api.md)
+* [dataset_preparation](dataset_preparation.md)
+* [installation](installation.md)
+
+

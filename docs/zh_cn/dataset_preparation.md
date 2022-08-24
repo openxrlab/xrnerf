@@ -1,20 +1,17 @@
-# Data Preparation
+# 数据准备
 
-We provide some tips for XRNerf data preparation in this file.
-
-<!-- TOC -->
-
-- [Data Preparation](#data-preparation)
-  - [Getting Data](#getting-data)
-      - [Dataset Organization](#dataset-organization)
-      - [Dataset Download](#dataset-download)
+本文介绍了如何准备XRNerf所需数据集
 
 <!-- TOC -->
 
-## Getting Data
+- [数据准备](#数据准备)
+      - [数据集存放结构](#数据集存放结构)
+      - [数据集下载](#数据集下载)
 
-#### Dataset Organization
-It is recommended to symlink the dataset root to $PROJECT/data. If your folder structure is different, you may need to change the corresponding paths in config files.
+<!-- TOC -->
+
+#### 数据集存放结构
+我们推荐把数据集放在`项目目录/data`下面，否则可能需要修改config中的内容
 
 ```
 xrnerf
@@ -30,7 +27,9 @@ xrnerf
 │   ├── ...
 ```
 
-#### Dataset Download
-1. Download ```nerf_llff_data``` and ```nerf_llff_data``` from [here](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1), and put it under ```xrnerf/data```
-2. Credit to NSVF authors for providing [their datasets](https://github.com/facebookresearch/NSVF), read introductions [here](https://github.com/creiser/kilonerf#download-nsvf-datasets)
-3. For mip-nerf training, you can generate the multiscale dataset used in the paper by running the following command, ```python tools/convert_blender_data.py --blenderdir /data/nerf_synthetic --outdir data/multiscale```
+#### 数据集下载
+1. 从[这里](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1)下载 ```nerf_synthetic``` 和 ```nerf_llff_data``` , 并放在 ```xrnerf/data``` 里面
+2. 下载[NSVF数据集](https://github.com/facebookresearch/NSVF), 具体请阅读[详细介绍](https://github.com/creiser/kilonerf#download-nsvf-datasets)
+3. 对于mip-nerf方法的训练，需要生成需要的多尺度数据集，可通过命令生成 ```python tools/convert_blender_data.py --blenderdir /data/nerf_synthetic --outdir data/multiscale```
+4. 对于NeuralBody方法的训练， 请从[这里](https://github.com/zju3dv/neuralbody/blob/master/INSTALL.md#zju-mocap-dataset)下载数据集
+5. 对于Animatable方法的训练， 请从[这里](https://github.com/zju3dv/animatable_nerf/blob/master/INSTALL.md#human36m-dataset)下载数据集
