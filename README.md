@@ -10,6 +10,7 @@ For installation instructions, please see [installation.md](installation.md).
   - [Build a Model](#build-a-model)
     - [Basic Concepts](#basic-concepts)
     - [Write a new network](#write-a-new-network)
+  - [Installation](#installation)
   - [Train a Model](#train-a-model)
     - [Iteration Controls](#iteration-controls)
     - [Train](#train)
@@ -120,6 +121,15 @@ To implement some new components for embedder/mlp/render, procedure is similar t
 * To write a new nerf render, you need to inherit from `nn.Module` or `BaseRender`, and define the `forward` method. [NerfRender](../../xrnerf/models/renders/nerf_render.py) is a good example.
 
 
+## Installation
+We provide detailed [installation tutorial](installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](../../docker/Dockerfile).
+
+It is recommended to start by creating a docker image:
+```shell
+docker build -f ./docker/Dockerfile --rm -t xrnerf .
+```
+For more information, please follow our [installation tutorial](installation.md).
+
 ## Train a Model
 
 ### Iteration Controls
@@ -131,7 +141,7 @@ In test mode, `max_iters` is forced to change to 1, which represents only 1 epoc
 
 ### Train
 ```shell
-python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
+python run_nerf.py --config configs/nerf/nerf_blender_base01.py --dataname lego
 ```
 
 Arguments are:
@@ -139,8 +149,10 @@ Arguments are:
 - `--dataname`: select which data under dataset directory.
 
 ### Test
+We have provided model ```iter_200000.pth``` for test, download from [here](https://drive.google.com/file/d/147wRy3TFlRVrZdWqAgHNak7s6jiMZA1-/view?usp=sharing)
+
 ```shell
-python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego --test_only --load_from iter_50000.pth
+python run_nerf.py --config configs/nerf/nerf_blender_base01.py --dataname lego --test_only --load_from iter_200000.pth
 ```
 
 Arguments are:

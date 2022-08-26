@@ -52,7 +52,7 @@ test_runner = dict(type='NerfTestRunner')
 # runtime settings
 num_gpus = 1
 distributed = (num_gpus > 1)  # 是否多卡，mmcv对dp多卡支持不好，故而要么单卡要么ddp多卡
-work_dir = './work_dirs/nerfsv3/nerf_#DATANAME#_base01/'
+work_dir = './work_dirs/nerf/nerf_#DATANAME#_base01/'
 timestamp = datetime.now().strftime('%d-%b-%H-%M')
 
 # shared params by model and data and ...
