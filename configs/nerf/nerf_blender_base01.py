@@ -13,7 +13,7 @@ method = 'nerf'  # [nerf, kilo_nerf, mip_nerf]
 optimizer = dict(type='Adam', lr=5e-4, betas=(0.9, 0.999))
 optimizer_config = dict(grad_clip=None)
 
-max_iters = 20
+max_iters = 200000
 lr_config = dict(policy='step', step=500 * 1000, gamma=0.1, by_epoch=False)
 checkpoint_config = dict(interval=5, by_epoch=False)
 log_level = 'INFO'
@@ -51,7 +51,7 @@ test_runner = dict(type='NerfTestRunner')
 # runtime settings
 num_gpus = 1
 distributed = (num_gpus > 1)  # 是否多卡，mmcv对dp多卡支持不好，故而要么单卡要么ddp多卡
-work_dir = './work_dirs/nerfsv3/nerf_#DATANAME#_base01/'
+work_dir = './work_dirs/nerf/nerf_#DATANAME#_base01/'
 timestamp = datetime.now().strftime('%d-%b-%H-%M')
 
 # shared params by model and data and ...

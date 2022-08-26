@@ -9,7 +9,7 @@ __all__ = ['run_nerf']
 
 def run_nerf(args):
     cfg = Config.fromfile(args.config)
-    cfg = update_config(dataname, cfg)
+    cfg = update_config(args.dataname, cfg)
     cfg = update_loadfrom(args.load_from, cfg)
     if args.test_only or args.render_only:
         cfg['model']['cfg']['phase'] = 'test' if args.test_only else 'render'

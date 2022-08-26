@@ -20,14 +20,14 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="2">test data</th>
-        <td colspan="2">PSNR</td>
-        <td colspan="2">SSIM</td>
+        <th colspan="2">PSNR</th>
+        <th colspan="2">SSIM</th>
 	</tr >
 	<tr>
-	    <td>Nerf</td>
-	    <td>XRNerf</td>
-	    <td>Nerf</td>
-	    <td>XRNerf</td>
+	    <th>Nerf</th>
+	    <th>XRNerf</th>
+	    <th>Nerf</th>
+	    <th>XRNerf</th>
 	</tr >
 	<tr >
 	    <td>blender_chair</td>
@@ -86,17 +86,17 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="2">test data</th>
-        <td colspan="2">PSNR</td>
-        <td colspan="2">SSIM</td>
-        <td colspan="2">elapsed_time(ms)</td>
+        <th colspan="2">PSNR</th>
+        <th colspan="2">SSIM</th>
+        <th colspan="2">elapsed_time(ms)</th>
 	</tr >
 	<tr>
-	    <td>KiloNerf</td>
-	    <td>XRNerf</td>
-	    <td>KiloNerf</td>
-	    <td>XRNerf</td>
-	    <td>KiloNerf</td>
-	    <td>XRNerf</td>        
+	    <th>KiloNerf</th>
+	    <th>XRNerf</th>
+	    <th>KiloNerf</th>
+	    <th>XRNerf</th>
+	    <th>KiloNerf</th>
+	    <th>XRNerf</th>        
 	</tr >
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_chair</td>
@@ -142,23 +142,23 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="3">MultiScale Blender</th>
-        <td align="center" colspan="8">PSNR</td>
+        <th align="center" colspan="8">PSNR</th>
 	</tr >
 	<tr>
-	    <td align="center" colspan="2">800x800</td>
-	    <td align="center" colspan="2">400x400</td>
-	    <td align="center" colspan="2">200x200</td>
-	    <td align="center" colspan="2">100x100</td>     
+	    <th align="center" colspan="2">800x800</th>
+	    <th align="center" colspan="2">400x400</th>
+	    <th align="center" colspan="2">200x200</th>
+	    <th align="center" colspan="2">100x100</th>     
 	</tr >    
 	<tr>
-	    <td>Jax</td>
-	    <td>XRNerf</td>
-	    <td>Jax</td>
-	    <td>XRNerf</td>
-	    <td>Jax</td>
-	    <td>XRNerf</td>        
-	    <td>Jax</td>
-	    <td>XRNerf</td>          
+	    <th>Jax</th>
+	    <th>XRNerf</th>
+	    <th>Jax</th>
+	    <th>XRNerf</th>
+	    <th>Jax</th>
+	    <th>XRNerf</th>        
+	    <th>Jax</th>
+	    <th>XRNerf</th>          
 	</tr >
 	<tr >
 	    <td>blender_ship</td>
@@ -206,11 +206,11 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="2">test data</th>
-        <td colspan="2">PSNR</td>
+        <th colspan="2">PSNR</th>
 	</tr >
 	<tr>
-	    <td>InstantNGP</td>
-	    <td>XRNerf</td>
+	    <th>InstantNGP</th>
+	    <th>XRNerf</th>
 	</tr >
 	<tr >
 	    <td>blender_chair</td>
@@ -259,14 +259,14 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="2">test data</th>
-        <td colspan="2">PSNR</td>
-        <td colspan="2">SSIM</td>
+        <th colspan="2">PSNR</th>
+        <th colspan="2">SSIM</th>
 	</tr >
 	<tr>
-	    <td>Neural Body</td>
-	    <td>XRNerf</td>
-	    <td>Neural Body</td>
-	    <td>XRNerf</td>
+	    <th>Neural Body</th>
+	    <th>XRNerf</th>
+	    <th>Neural Body</th>
+	    <th>XRNerf</th>
 	</tr >
 	<tr >
 	    <td>313</td>
@@ -312,14 +312,14 @@ We compare our results with some popular frameworks and official releases in ter
 <table>
 	<tr>
 	    <th rowspan="2">test data (Novel pose)</th>
-        <td colspan="2">PSNR</td>
-        <td colspan="2">SSIM</td>
+        <th colspan="2">PSNR</th>
+        <th colspan="2">SSIM</th>
 	</tr >
 	<tr>
-	    <td>Animatable NeRF</td>
-	    <td>XRNerf</td>
-	    <td>Animatable NeRF</td>
-	    <td>XRNerf</td>
+	    <th>Animatable NeRF</th>
+	    <th>XRNerf</th>
+	    <th>Animatable NeRF</th>
+	    <th>XRNerf</th>
 	</tr >
 	<tr >
 	    <td>S1</td>
