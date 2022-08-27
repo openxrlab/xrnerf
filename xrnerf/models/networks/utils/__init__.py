@@ -8,6 +8,7 @@ from .metrics import HuberLoss, img2mse, mse2psnr
 from .mip import resample_along_rays, sample_along_rays
 from .transforms import (merge_ret, nb_recover_shape, recover_shape,
                          reorder_points_and_dirs, transform_examples)
+from .gnr import index, LPIPS, SSIM, psnr, init_weights
 
 __all__ = [
     'sample_pdf',
@@ -30,4 +31,9 @@ __all__ = [
     'pose_dirs_to_tpose_dirs',
     'tpose_dirs_to_pose_dirs',
     'NovelPoseTraining',
+    'index',
+    'LPIPS',
+    'SSIM',
+    'psnr',
+    'init_weights'
 ]

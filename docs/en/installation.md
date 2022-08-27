@@ -13,6 +13,10 @@ We provide some tips for XRNerf installation in this file.
       - [d. Install Other Needed Python Packages](#d-install-other-needed-python-packages)
       - [e. Install Extensions](#e-install-extensions)
   - [Another option: Docker Image](#another-option-docker-image)
+      - [a. Build an Image](#a-build-an-image)
+      - [b. Create a Container](#b-create-a-container)
+      - [c. Copy XRNerf into Container](#c-copy-xrnerf-into-container)
+      - [e. Install Other Needed Packages](#e-install-other-needed-packages)
   - [Verification](#verification)
 
 <!-- TOC -->
@@ -65,34 +69,52 @@ conda activate xrnerf
 * install ```pytorch3d``` using ```pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"```
 * install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```
 * install ```kilo-cuda``` following their [Installation](https://github.com/creiser/kilonerf#option-b-build-cuda-extension-yourself)
-  
-#### e. Install Extensions
-* build cuda-extension ```raymarch``` for instant-ngp supported, folling [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+* install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```, or following their [Installation](https://github.com/NVlabs/tiny-cuda-nn#pytorch-extension)
 
+#### e. Install Extensions
+* build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+* build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
 
 ## Another option: Docker Image
 
-We provide a [Dockerfile](../../docker/Dockerfile) to build an image.
+#### a. Build an Image
 
-```shell
-docker build -f ./docker/Dockerfile --rm -t xrnerf .
-```
+  We provide a [Dockerfile](../../docker/Dockerfile) to build an image.
 
-**Important:** Make sure you've installed the [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+  ```shell
+  docker build -f ./docker/Dockerfile --rm -t xrnerf .
+  ```
 
-Create a container with command:
-```shell
-docker run --gpus all -it xrnerf /workspace
-```
-Open a teiminal in your host computer, copy project into docker container
-```shell
-# d287273af72e is container id, using 'docker ps -a' to find id
-docker cp ProjectPath/xrnerf d287273af72e:/workspace
-```
+  **Important:** Make sure you've installed the [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
 
-Build cuda-extension ```raymarch``` for instant-ngp supported, folling [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+#### b. Create a Container
 
-  
+  Create a container with command:
+  ```shell
+  docker run --gpus all -it xrnerf /workspace
+  ```
+
+#### c. Copy XRNerf into Container
+
+  Open a teiminal in your host computer, copy project into docker container
+  ```shell
+  # d287273af72e is container id, using 'docker ps -a' to find id
+  docker cp ProjectPath/xrnerf d287273af72e:/workspace
+  ```
+
+#### e. Install Other Needed Packages 
+
+* Install ```tcnn``` using 
+    ```shell
+    git clone --recurse-submodules https://gitclone.com/github.com/NVlabs/tiny-cuda-nn.git
+    cd tiny-cuda-nn/bindings/torch
+    python setup.py install
+    ```
+  If you have installed ```tcnn``` in dockerfile, skip this.
+* Build cuda-extension ```raymarch``` for instant-ngp supported, folling [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+* Build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
+
+
 ## Verification
 
 To verify whether XRNerf and the required environment are installed correctly, we can run unit-test python codes

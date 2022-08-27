@@ -7,9 +7,11 @@ from .mip_multiscale_dataset import MipMultiScaleDataset
 from .neuralbody_dataset import NeuralBodyDataset
 from .samplers import DistributedSampler
 from .scene_dataset import SceneBaseDataset
+from .genebody_dataset import GeneBodyDataset
 
 __all__ = [
     'SceneBaseDataset', 'DATASETS', 'build_dataset', 'DistributedSampler',
     'MipMultiScaleDataset', 'KiloNerfDataset', 'KiloNerfNodeDataset',
-    'NeuralBodyDataset', 'AniNeRFDataset', 'HashNerfDataset'
+    'NeuralBodyDataset', 'AniNeRFDataset', 'HashNerfDataset', 'GeneBodyDataset'
+
 ]

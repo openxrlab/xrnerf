@@ -128,7 +128,7 @@ It is recommended to start by creating a docker image:
 ```shell
 docker build -f ./docker/Dockerfile --rm -t xrnerf .
 ```
-For more information, please follow our [installation tutorial](installation.md).
+For more information, please follow our [installation tutorial](docs/en/installation.md).
 
 ## Train a Model
 

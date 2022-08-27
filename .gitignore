@@ -13,8 +13,5 @@ push.sh
 *.o
 *.mp4
 /data/
-/test/datasets/data/nerf_llff_data/
-/test/datasets/data/nerf_synthetic/
-/test/datasets/data/multiscale/
 .coverage
 /.pytest_cache/

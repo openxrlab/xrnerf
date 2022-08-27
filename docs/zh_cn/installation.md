@@ -13,6 +13,10 @@
       - [d. 安装其他python包](#d-安装其他python包)
       - [e. 安装cuda扩展](#e-安装cuda扩展)
   - [利用 Docker 镜像安装 XRNerf](#利用-docker-镜像安装-xrnerf)
+      - [a. 创建docker镜像](#a-创建docker镜像)
+      - [b. 运行docker容器](#b-运行docker容器)
+      - [c. 将代码和数据复制进去](#c-将代码和数据复制进去)
+      - [e. 安装其他未在docker中安装的库](#e-安装其他未在docker中安装的库)
   - [安装验证](#安装验证)
 
 <!-- TOC -->
@@ -60,37 +64,53 @@ conda activate xrnerf
 
 #### d. 安装其他python包
 * ```pip install opencv-python>=3 yapf imageio scikit-image```
+* ```pip install lpips trimesh smplx```
 * 根据[官方说明](https://mmcv.readthedocs.io/en/latest/get_started/installation.html)，安装 ```mmcv-full```
 * 安装 ```spconv```, 比如 ```pip install spconv-cu111```. 值得注意的是只有部分cuda版本是支持的, 具体请查看 [官方说明](https://github.com/traveller59/spconv)
 * 通过 ```pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"``` 安装 ```pytorch3d```
 * 通过 ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch``` 安装 ```tcnn``` 
 * 查看[官方说明](https://github.com/creiser/kilonerf#option-b-build-cuda-extension-yourself) 安装 ```kilo-cuda```
+
+* 通过```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch``` 安装 ```tcnn```, 或者查看[官方说明](https://github.com/NVlabs/tiny-cuda-nn#pytorch-extension)
   
 #### e. 安装cuda扩展
 * 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
+* 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
 
 
 ## 利用 Docker 镜像安装 XRNerf
+#### a. 创建docker镜像
+  XRNerf 提供一个 [Dockerfile](../../docker/Dockerfile) 可以直接创建 docker 镜像
 
-XRNerf 提供一个 [Dockerfile](../../docker/Dockerfile) 可以直接创建 docker 镜像
+  ```shell
+  docker build -f ./docker/Dockerfile --rm -t xrnerf .
+  ```
 
-```shell
-docker build -f ./docker/Dockerfile --rm -t xrnerf .
-```
+  **注意** 用户需要确保已经安装了 [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)。
+#### b. 运行docker容器
+  运行以下命令，创建容器:
+  ```shell
+  docker run --gpus all -it xrnerf /workspace
+  ```
+#### c. 将代码和数据复制进去
+  在本机上(非docker镜像机内)开启一个终端，将项目文件(包括数据集)复制进docker镜像机
+  ```shell
+  # d287273af72e 是镜像的id, usin通过 'docker ps -a' 确定id
+  docker cp ProjectPath/xrnerf d287273af72e:/workspace
+  ```
 
-**注意** 用户需要确保已经安装了 [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)。
+#### e. 安装其他未在docker中安装的库
 
-运行以下命令，创建镜像:
-```shell
-docker run --gpus all -it xrnerf /workspace
-```
-在本机上(非docker镜像机内)开启一个终端，将项目文件(包括数据集)复制进docker镜像机
-```shell
-# d287273af72e 是镜像的id, usin通过 'docker ps -a' 确定id
-docker cp ProjectPath/xrnerf d287273af72e:/workspace
-```
+* 通过以下命令，安装 ```tcnn```
+    ```shell
+    git clone --recurse-submodules https://gitclone.com/github.com/NVlabs/tiny-cuda-nn.git
+    cd tiny-cuda-nn/bindings/torch
+    python setup.py install
+    ```
+  如果已在dockerfile中安装过，则跳过此步 (因国内网络环境docker创建时下载```tcnn```可能报错，此时需要手动安装)
+* 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
+* 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
 
-编译安装 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
   
 ## 安装验证
 
