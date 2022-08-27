@@ -1,6 +1,6 @@
 
-ARG PYTORCH="1.11.0"
-ARG CUDA="11.3"
+ARG PYTORCH="1.9.0"
+ARG CUDA="11.1"
 ARG CUDNN="8"
 
 FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn${CUDNN}-devel
@@ -23,25 +23,21 @@ RUN apt-get update && apt-get install -y git ninja-build ffmpeg libsm6 libxext6 
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install mmcv-full
-RUN pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
-
-# Install pkgs
+# Install torch1.10 and mmcv-full
+RUN pip install https://download.pytorch.org/whl/cu111/torch-1.10.0%2Bcu111-cp37-cp37m-linux_x86_64.whl
 RUN pip install opencv-python>=3 yapf imageio scikit-image -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.10.0/index.html
+
 RUN pip install coverage pytest -i https://pypi.tuna.tsinghua.edu.cn/simple
-RUN pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 
 # Install neural-body needed
-RUN pip install spconv-cu113 -i https://pypi.tuna.tsinghua.edu.cn/simple
-RUN pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+RUN pip install spconv-cu111 -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install "git+https://gitclone.com/github.com/facebookresearch/pytorch3d.git@stable"
+RUN pip install lpips trimesh smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-# # Install XRNerf
-# RUN conda clean --all
-# # RUN git clone https://gitlab.bj.sensetime.com/openxrlab/xrnerf.git /xrnerf
-# RUN mkdir xrnerf
-# WORKDIR /xrnerf
-# COPY * xrnerf
-# RUN mkdir -p /xrnerf/data
+# Install tcnn
+# If meet network problem, commented below out, download & install manually
+# RUN git clone --recurse-submodules https://gitclone.com/github.com/NVlabs/tiny-cuda-nn.git
+# RUN cd tiny-cuda-nn/bindings/torch
+# RUN python setup.py install
 
-# # Build Extension
-# RUN cd xrnerf/extensions && rm -rf build && clear && python setup.py build_ext --inplace && python setup.py install
