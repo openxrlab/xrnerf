@@ -169,7 +169,7 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 ```bibtex
 @misc{xrnerf,
-    title={OpenXRLab Neural Rendering Framework and Benchmark},
+    title={OpenXRLab Neural Radiance Field Framework and Benchmark},
     author={XRNerf Contributors},
     howpublished = {\url{https://github.com/openxrlab/xrnerf}},
     year={2022}
