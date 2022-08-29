@@ -3,6 +3,8 @@
 ## Introduction
 English | [简体中文](README_CN.md)
 
+https://user-images.githubusercontent.com/24294293/187131048-5977c929-e136-4328-ad1f-7da8e7a566ff.mp4
+
 This page provides basic tutorials about the usage of XRNerf.
 For installation instructions, please see [installation.md](docs/en/installation.md).
 
