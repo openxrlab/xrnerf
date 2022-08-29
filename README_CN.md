@@ -1,10 +1,15 @@
-# 快速开始
+# XRNerf
 
-本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](installation.md)。
+## 简介
+简体中文 | [English](README.md)
+
+
+本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/en/installation.md)。
 
 <!-- TOC -->
 
-- [快速开始](#快速开始)
+- [XRNerf](#xrnerf)
+  - [简介](#简介)
   - [数据集](#数据集)
   - [创建模型](#创建模型)
     - [基本概念](#基本概念)
@@ -15,6 +20,10 @@
     - [测试](#测试)
   - [详细教程](#详细教程)
   - [其他](#其他)
+  - [引用](#引用)
+  - [参与贡献](#参与贡献)
+  - [致谢](#致谢)
+  - [OpenXRLab中的其他项目](#openxrlab中的其他项目)
 
 <!-- TOC -->
 
@@ -35,7 +44,7 @@ xrnerf
 │   ├── ...
 ```
 
-请参阅 [数据集准备](dataset_preparation.md) 获取数据集准备的相关信息。
+请参阅 [数据集准备](docs/en/dataset_preparation.md) 获取数据集准备的相关信息。
 
 ## 创建模型
 
@@ -47,7 +56,7 @@ xrnerf
 - render: 获取mlp的输出数据，沿着射线上的点进行积分等操作，输出图像上一个像素点的rgb值
 - network: 将以上三个部分组织起来，同时也是与mmcv的runner进行交互的部分，控制了训练时的loss计算和验证时的指标计算
 
-对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](../../configs/nerf/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
+对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](configs/nerf/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
 
 ### 自定义一个新模型
 
@@ -56,7 +65,7 @@ xrnerf
 - `train_step()`: training 模式下的推理和计算loss的函数.
 - `val_step()`: testing 模式下的推理函数.
 
-[NerfNetwork](../../xrnerf/models/networks/nerf.py) 是一个很好的例子
+[NerfNetwork](xrnerf/models/networks/nerf.py) 是一个很好的例子
 
 具体而言，如果想要实现一个具有新feature的nerf方法，有以下几步需要做
 
@@ -88,7 +97,7 @@ xrnerf
     from .my_networks import MyNerfNetwork
     ```
 
-3. 修改配置文件[config file](../../configs/nerf/nerf_blender_base01.py) 
+3. 修改配置文件[config file](configs/nerf/nerf_blender_base01.py) 
    原来
 
     ```python
@@ -106,9 +115,9 @@ xrnerf
     ```
 
 同样的，要实现embedder/mlp/render的新功能，步骤与上述类似
-* 要定义一个新的embedder, 需要继承`nn.Module` 或者 `BaseEmbedder`, 并定义 `forward` 方法. [BaseEmbedder](../../xrnerf/models/embedders/base.py) 是个很好的例子
-* 要定义一个新的mlp, 需要继承 `nn.Module` 或者 `BaseMLP`, 并定义 `forward` 方法. [NerfMLP](../../xrnerf/models/mlps/nerf_mlp.py) 可供参考
-* 要定义一个新的render, 需要继承 `nn.Module` 或者 `BaseRender`, 并定义 `forward` 方法. [NerfRender](../../xrnerf/models/renders/nerf_render.py) 可供参考
+* 要定义一个新的embedder, 需要继承`nn.Module` 或者 `BaseEmbedder`, 并定义 `forward` 方法. [BaseEmbedder](xrnerf/models/embedders/base.py) 是个很好的例子
+* 要定义一个新的mlp, 需要继承 `nn.Module` 或者 `BaseMLP`, 并定义 `forward` 方法. [NerfMLP](xrnerf/models/mlps/nerf_mlp.py) 可供参考
+* 要定义一个新的render, 需要继承 `nn.Module` 或者 `BaseRender`, 并定义 `forward` 方法. [NerfRender](xrnerf/models/renders/nerf_render.py) 可供参考
 
 
 ## 训练
@@ -143,13 +152,45 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 ## 详细教程
 目前, XRNerf 提供以下几种更详细的教程
-* [如何编写配置文件](tutorials/config.md)
-* [数据处理流程](tutorials/data_pipeline.md)
-* [模型定义](tutorials/model.md)
+* [如何编写配置文件](docs/en/tutorials/config.md)
+* [数据处理流程](docs/en/tutorials/data_pipeline.md)
+* [模型定义](docs/en/tutorials/model.md)
 
 ## 其他
 除此以外，文档还包括以下内容
-* [api介绍](api.md)
-* [数据集准备](dataset_preparation.md)
-* [安装](installation.md)
+* [api介绍](docs/en/api.md)
+* [数据集准备](docs/en/dataset_preparation.md)
+* [安装](docs/en/installation.md)
+* [benchmark](docs/en/benchmark.md)
+* [常见问题](docs/en/faq.md)
+
+
+## 引用
+
+```bibtex
+@misc{xrnerf,
+    title={OpenXRLab Neural Rendering Framework and Benchmark},
+    author={XRNerf Contributors},
+    howpublished = {\url{https://github.com/openxrlab/xrnerf}},
+    year={2022}
+}
+```
+
+## 参与贡献
+
+我们非常欢迎用户对于 XRNerf 做出的任何贡献，可以参考 [贡献指南](docs/en/CONTRIBUTING.md) 文件了解更多细节
+
+## 致谢
+XRNerf 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
+我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
+
+## OpenXRLab中的其他项目
+
+- [XRPrimer](https://github.com/openxrlab/xrprimer): OpenXRLab foundational library for XR-related algorithms.
+- [XRSLAM](https://github.com/openxrlab/xrslam): OpenXRLab Visual-inertial SLAM Toolbox and Benchmark.
+- [XRSfM](https://github.com/openxrlab/xrsfm): OpenXRLab Structure-from-Motion Toolbox and Benchmark.
+- [XRLocalization](https://github.com/openxrlab/xrlocalization): OpenXRLab Visual Localization Toolbox and Server.
+- [XRMoCap](https://github.com/openxrlab/xrmocap): OpenXRLab Multi-view Motion Capture Toolbox and Benchmark.
+- [XRMoGen](https://github.com/openxrlab/xrmogen): OpenXRLab Human Motion Generation Toolbox and Benchmark.
+- [XRNeRF](https://github.com/openxrlab/xrnerf): OpenXRLab Neural Radiance Field (NeRF) Toolbox and Benchmark.
 

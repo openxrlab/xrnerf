@@ -96,7 +96,7 @@ To be specific, if we want to implement some new components, there are several t
     from .my_networks import MyNerfNetwork
     ```
 
-3. modify the [config file](../../configs/nerfsv4/nerf_blender_base01.py) from
+3. modify the [config file](../../configs/nerf/nerf_blender_base01.py) from
 
     ```python
     model = dict(
