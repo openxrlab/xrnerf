@@ -199,7 +199,7 @@ If you find this project useful in your research, please consider cite:
 
 ## Contributing
 
-We appreciate all contributions to improve XRMoCap. Please refer to [CONTRIBUTING.md](docs/en/CONTRIBUTING.md) for the contributing guideline.
+We appreciate all contributions to improve XRNerf. Please refer to [CONTRIBUTING.md](docs/en/CONTRIBUTING.md) for the contributing guideline.
 
 ## Acknowledgement
 
