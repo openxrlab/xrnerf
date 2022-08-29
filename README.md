@@ -17,6 +17,10 @@ For installation instructions, please see [installation.md](installation.md).
     - [Test](#test)
   - [Tutorials](#tutorials)
   - [Other Documents](#other-documents)
+  - [Citation](#citation)
+  - [Contributing](#contributing)
+  - [Acknowledgement](#acknowledgement)
+  - [Projects in OpenXRLab](#projects-in-openxrlab)
 
 <!-- TOC -->
 
@@ -163,14 +167,49 @@ Arguments are:
 
 ## Tutorials
 Currently, we provide some tutorials for users to 
-* [learn about configs](tutorials/config.md)
-* [customize data pipelines](tutorials/data_pipeline.md)
-* [model define](tutorials/model.md)
+* [learn about configs](docs/en/tutorials/config.md)
+* [customize data pipelines](docs/en/tutorials/data_pipeline.md)
+* [model define](docs/en/tutorials/model.md)
 
 ## Other Documents
 Except for that，The document also includes the following
-* [api](api.md)
-* [dataset_preparation](dataset_preparation.md)
-* [installation](installation.md)
+* [api](docs/en/api.md)
+* [dataset_preparation](docs/en/dataset_preparation.md)
+* [installation](docs/en/installation.md)
+* [benchmark](docs/en/benchmark.md)
+* [FAQ](docs/en/faq.md)
 
+
+## Citation
+
+If you find this project useful in your research, please consider cite:
+
+```bibtex
+@misc{xrnerf,
+    title={OpenXRLab Neural Rendering Framework and Benchmark},
+    author={XRNerf Contributors},
+    howpublished = {\url{https://github.com/openxrlab/xrnerf}},
+    year={2022}
+}
+```
+
+## Contributing
+
+We appreciate all contributions to improve XRMoCap. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
+
+## Acknowledgement
+
+XRNerf is an open source project that is contributed by researchers and engineers from both the academia and the industry.
+We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
+We wish that the framework and benchmark could serve the growing research community by providing a flexible framework to reimplement existing methods and develop their own new models.
+
+## Projects in OpenXRLab
+
+- [XRPrimer](https://github.com/openxrlab/xrprimer): OpenXRLab foundational library for XR-related algorithms.
+- [XRSLAM](https://github.com/openxrlab/xrslam): OpenXRLab Visual-inertial SLAM Toolbox and Benchmark.
+- [XRSfM](https://github.com/openxrlab/xrsfm): OpenXRLab Structure-from-Motion Toolbox and Benchmark.
+- [XRLocalization](https://github.com/openxrlab/xrlocalization): OpenXRLab Visual Localization Toolbox and Server.
+- [XRMoCap](https://github.com/openxrlab/xrmocap): OpenXRLab Multi-view Motion Capture Toolbox and Benchmark.
+- [XRMoGen](https://github.com/openxrlab/xrmogen): OpenXRLab Human Motion Generation Toolbox and Benchmark.
+- [XRNeRF](https://github.com/openxrlab/xrnerf): OpenXRLab Neural Radiance Field (NeRF) Toolbox and Benchmark.
 
