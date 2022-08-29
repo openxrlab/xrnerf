@@ -1,1 +1,0 @@
- cd  && ls && /home/zhengchengyao/Document/apps/anaconda3/envs/hashnerf/bin/python run_nerf.py --config configs/instant_ngp/nerf_blender_local01.py --dataname lego --test_only --load_from iter_6000.pth
