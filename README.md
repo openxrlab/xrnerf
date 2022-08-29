@@ -1,11 +1,15 @@
-# Getting Started
+# XRNerf
+
+## Introduction
+English | [简体中文](README_CN.md)
 
 This page provides basic tutorials about the usage of XRNerf.
 For installation instructions, please see [installation.md](installation.md).
 
 <!-- TOC -->
 
-- [Getting Started](#getting-started)
+- [XRNerf](#xrnerf)
+  - [Introduction](#introduction)
   - [Datasets](#datasets)
   - [Build a Model](#build-a-model)
     - [Basic Concepts](#basic-concepts)
@@ -195,7 +199,7 @@ If you find this project useful in your research, please consider cite:
 
 ## Contributing
 
-We appreciate all contributions to improve XRMoCap. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
+We appreciate all contributions to improve XRMoCap. Please refer to [CONTRIBUTING.md](docs/en/CONTRIBUTING.md) for the contributing guideline.
 
 ## Acknowledgement
 
