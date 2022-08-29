@@ -192,7 +192,7 @@ If you find this project useful in your research, please consider cite:
 
 ```bibtex
 @misc{xrnerf,
-    title={OpenXRLab Neural Radiance Field Framework and Benchmark},
+    title={OpenXRLab Neural Radiance Field Toolbox and Benchmark},
     author={XRNerf Contributors},
     howpublished = {\url{https://github.com/openxrlab/xrnerf}},
     year={2022}
