@@ -1,10 +1,10 @@
-# Getting Started
+# 快速开始
 
 本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](installation.md)。
 
 <!-- TOC -->
 
-- [Getting Started](#getting-started)
+- [快速开始](#快速开始)
   - [数据集](#数据集)
   - [创建模型](#创建模型)
     - [基本概念](#基本概念)
@@ -47,7 +47,7 @@ xrnerf
 - render: 获取mlp的输出数据，沿着射线上的点进行积分等操作，输出图像上一个像素点的rgb值
 - network: 将以上三个部分组织起来，同时也是与mmcv的runner进行交互的部分，控制了训练时的loss计算和验证时的指标计算
 
-对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](../../../configs/nerfs/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
+对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](../../configs/nerf/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
 
 ### 自定义一个新模型
 

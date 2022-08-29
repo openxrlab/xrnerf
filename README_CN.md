@@ -4,7 +4,7 @@
 简体中文 | [English](README.md)
 
 
-本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](installation.md)。
+本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/en/installation.md)。
 
 <!-- TOC -->
 
@@ -44,7 +44,7 @@ xrnerf
 │   ├── ...
 ```
 
-请参阅 [数据集准备](dataset_preparation.md) 获取数据集准备的相关信息。
+请参阅 [数据集准备](docs/en/dataset_preparation.md) 获取数据集准备的相关信息。
 
 ## 创建模型
 
@@ -56,7 +56,7 @@ xrnerf
 - render: 获取mlp的输出数据，沿着射线上的点进行积分等操作，输出图像上一个像素点的rgb值
 - network: 将以上三个部分组织起来，同时也是与mmcv的runner进行交互的部分，控制了训练时的loss计算和验证时的指标计算
 
-对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](../../../configs/nerfs/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
+对于上述所有模型而言，输入都是一个字典类型的`data`。模型使用字典`data`中的内容来创建新的键值对，并加入`data`。以[origin nerf](configs/nerf/nerf_blender_base01.py)为例，最开始的`data`应该包含`pts`(尺寸为 n_rays, n_pts, 3) and `viewdirs`(尺寸为 n_rays, n_pts, 3).
 
 ### 自定义一个新模型
 
@@ -65,7 +65,7 @@ xrnerf
 - `train_step()`: training 模式下的推理和计算loss的函数.
 - `val_step()`: testing 模式下的推理函数.
 
-[NerfNetwork](../../xrnerf/models/networks/nerf.py) 是一个很好的例子
+[NerfNetwork](xrnerf/models/networks/nerf.py) 是一个很好的例子
 
 具体而言，如果想要实现一个具有新feature的nerf方法，有以下几步需要做
 
@@ -97,7 +97,7 @@ xrnerf
     from .my_networks import MyNerfNetwork
     ```
 
-3. 修改配置文件[config file](../../configs/nerf/nerf_blender_base01.py) 
+3. 修改配置文件[config file](configs/nerf/nerf_blender_base01.py) 
    原来
 
     ```python
@@ -115,9 +115,9 @@ xrnerf
     ```
 
 同样的，要实现embedder/mlp/render的新功能，步骤与上述类似
-* 要定义一个新的embedder, 需要继承`nn.Module` 或者 `BaseEmbedder`, 并定义 `forward` 方法. [BaseEmbedder](../../xrnerf/models/embedders/base.py) 是个很好的例子
-* 要定义一个新的mlp, 需要继承 `nn.Module` 或者 `BaseMLP`, 并定义 `forward` 方法. [NerfMLP](../../xrnerf/models/mlps/nerf_mlp.py) 可供参考
-* 要定义一个新的render, 需要继承 `nn.Module` 或者 `BaseRender`, 并定义 `forward` 方法. [NerfRender](../../xrnerf/models/renders/nerf_render.py) 可供参考
+* 要定义一个新的embedder, 需要继承`nn.Module` 或者 `BaseEmbedder`, 并定义 `forward` 方法. [BaseEmbedder](xrnerf/models/embedders/base.py) 是个很好的例子
+* 要定义一个新的mlp, 需要继承 `nn.Module` 或者 `BaseMLP`, 并定义 `forward` 方法. [NerfMLP](xrnerf/models/mlps/nerf_mlp.py) 可供参考
+* 要定义一个新的render, 需要继承 `nn.Module` 或者 `BaseRender`, 并定义 `forward` 方法. [NerfRender](xrnerf/models/renders/nerf_render.py) 可供参考
 
 
 ## 训练

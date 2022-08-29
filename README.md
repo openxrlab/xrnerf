@@ -4,7 +4,7 @@
 English | [简体中文](README_CN.md)
 
 This page provides basic tutorials about the usage of XRNerf.
-For installation instructions, please see [installation.md](installation.md).
+For installation instructions, please see [installation.md](docs/en/installation.md).
 
 <!-- TOC -->
 
@@ -47,7 +47,7 @@ xrnerf
 │   ├── ...
 ```
 
-For more information on data preparation, please see [dataset_preparation.md](dataset_preparation.md)
+For more information on data preparation, please see [dataset_preparation.md](docs/en/dataset_preparation.md)
 
 ## Build a Model
 
@@ -72,7 +72,7 @@ which defines the following abstract methods.
 - `train_step()`: forward method of the training mode.
 - `val_step()`: forward method of the testing mode.
 
-[NerfNetwork](../../xrnerf/models/networks/nerf.py) is a good example which show how to do that.
+[NerfNetwork](xrnerf/models/networks/nerf.py) is a good example which show how to do that.
 
 To be specific, if we want to implement some new components, there are several things to do.
 
@@ -104,7 +104,7 @@ To be specific, if we want to implement some new components, there are several t
     from .my_networks import MyNerfNetwork
     ```
 
-3. modify the [config file](../../configs/nerfsv4/nerf_blender_base01.py) from
+3. modify the [config file](configs/nerf/nerf_blender_base01.py) from
 
     ```python
     model = dict(
@@ -122,15 +122,15 @@ To be specific, if we want to implement some new components, there are several t
 
 To implement some new components for embedder/mlp/render, procedure is similar to above.
 
-* To write a new nerf embedder, you need to inherit from `nn.Module` or `BaseEmbedder`, and define the `forward` method. [BaseEmbedder](../../xrnerf/models/embedders/base.py) is a good example.
+* To write a new nerf embedder, you need to inherit from `nn.Module` or `BaseEmbedder`, and define the `forward` method. [BaseEmbedder](xrnerf/models/embedders/base.py) is a good example.
 
-* To write a new nerf mlp, you need to inherit from `nn.Module` or `BaseMLP`, and define the `forward` method. [NerfMLP](../../xrnerf/models/mlps/nerf_mlp.py) is a good example.
+* To write a new nerf mlp, you need to inherit from `nn.Module` or `BaseMLP`, and define the `forward` method. [NerfMLP](xrnerf/models/mlps/nerf_mlp.py) is a good example.
 
-* To write a new nerf render, you need to inherit from `nn.Module` or `BaseRender`, and define the `forward` method. [NerfRender](../../xrnerf/models/renders/nerf_render.py) is a good example.
+* To write a new nerf render, you need to inherit from `nn.Module` or `BaseRender`, and define the `forward` method. [NerfRender](xrnerf/models/renders/nerf_render.py) is a good example.
 
 
 ## Installation
-We provide detailed [installation tutorial](installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](../../docker/Dockerfile).
+We provide detailed [installation tutorial](docs/en/installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
 
 It is recommended to start by creating a docker image:
 ```shell
