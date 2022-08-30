@@ -23,8 +23,8 @@ jobs:
           pip install pre-commit
           pre-commit install
       - name: Linting
-        run: pre-commit run --files xrnerf/
+        run: pre-commit run --files xrnerf/*
       - name: Check docstring coverage
         run: |
           pip install interrogate
-          interrogate -vinmMI --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" -f 60 xrnerf/
+          interrogate -vinmMI --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" -f 60 xrnerf/datasets
