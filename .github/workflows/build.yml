@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
  
 jobs:
-  build_ubuntu:
+  build_test:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -32,12 +32,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
-      - name: Install pre-commit hook
+      - name: Install Env
         run: |
-          pip install coverage
-          pip install lpips trimesh smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
-          pip install torch numpy 
-          pip install mmcv
+          pip install coverage pytest
+          # pip install lpips trimesh smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
+          # pip install torch numpy mmcv
+          # pip install opencv-python>=3 yapf imageio scikit-image -i https://pypi.tuna.tsinghua.edu.cn/simple
       - name: Run unittests and generate coverage report # 运行测试并展示覆盖率报告
         run: |
           coverage run --source xrnerf/models -m pytest -s test/models 
