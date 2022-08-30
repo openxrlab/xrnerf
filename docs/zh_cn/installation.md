@@ -80,6 +80,8 @@ conda activate xrnerf
 * 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
 * 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
 
+#### d. 下载smpl_t_pose支持GNR
+* 为了支持gnr算法，需要从[GNR](https://github.com/generalizable-neural-performer/gnr)下载```smpl_t_pose```文件夹,并修改```configs/gnr/gnr_genebody.py```中的```basedata_cfg.t_pose_path```为对应的存放位置
 
 ## 利用 Docker 镜像安装 XRNerf
 #### a. 创建docker镜像
