@@ -12,7 +12,8 @@ from xrnerf.models.builder import build_network
 
 # sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def get_train_dataset():
 
     K = np.array([[555.5555156, 0., 200.], [0., 555.5555156, 200.],

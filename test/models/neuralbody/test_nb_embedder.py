@@ -16,7 +16,8 @@ from xrnerf.models.builder import build_embedder
 #         shutil.rmtree(output_dir)
 #     os.makedirs(output_dir, exist_ok=False)
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_embedder():
 
     smpl_verts = torch.rand((6890, 3)).cuda()

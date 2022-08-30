@@ -8,10 +8,11 @@ import torch
 from mmcv import Config, ConfigDict
 
 from xrnerf.datasets.pipelines import Compose
-# sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
 from xrnerf.models.builder import build_network
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_nerf_network():
 
     ########################## get data ##########################
