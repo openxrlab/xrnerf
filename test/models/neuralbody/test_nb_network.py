@@ -11,7 +11,8 @@ from mmcv import Config, ConfigDict
 
 from xrnerf.models.builder import build_network
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_network():
     white_bkgd = False  # set to render synthetic data on a white bkgd (always use for dvoxels)
     is_perturb = True  # set to 0. for no jitter, 1. for jitter

@@ -1,17 +1,16 @@
 import os
 import shutil
 import sys
-
 sys.path.extend(['.', '..'])
-
 import numpy as np
 import pytest
 import torch
 from mmcv import Config, ConfigDict
-
 from xrnerf.models.builder import build_network
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_network():
     phase = 'train_pose'
     num_train_pose = 250

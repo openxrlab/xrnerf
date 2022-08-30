@@ -7,7 +7,8 @@ import torch
 
 from xrnerf.models.builder import build_render
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_nerf_render():
 
     n_rays = 128

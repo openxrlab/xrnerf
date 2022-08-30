@@ -1,16 +1,15 @@
 import os
 import shutil
 import sys
-
 sys.path.extend(['.', '..'])
-
 import numpy as np
 import pytest
 import torch
-
 from xrnerf.models.builder import build_mlp
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_mlp():
 
     n_rays = 128
