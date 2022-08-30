@@ -1,12 +1,16 @@
 import os
 import shutil
 import sys
-sys.path.extend(['.', '..'])
-import numpy as np
 import pytest
-import torch
-from mmcv import Config, ConfigDict
-from xrnerf.models.builder import build_network
+
+try:
+    import torch
+    sys.path.extend(['.', '..'])
+    import numpy as np
+    from mmcv import Config, ConfigDict
+    from xrnerf.models.builder import build_network
+except:
+    print("please install env")
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), 

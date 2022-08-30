@@ -35,11 +35,11 @@ jobs:
       - name: Install Env
         run: |
           pip install coverage pytest
+          pip install torch==1.10.0
           # pip install lpips trimesh smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
           # pip install torch numpy mmcv -i https://pypi.tuna.tsinghua.edu.cn/simple
           # pip install opencv-python>=3 yapf imageio scikit-image -i https://pypi.tuna.tsinghua.edu.cn/simple
-      - name: Run unittests and generate coverage report # 运行测试并展示覆盖率报告
-        run: |
+
           coverage run --source xrnerf/models -m pytest -s test/models 
           coverage xml
           coverage report -m
