@@ -52,7 +52,6 @@ xrnerf
 
 For more information on data preparation, please see [dataset_preparation.md](docs/en/dataset_preparation.md)
 
-
 ## Installation
 We provide detailed [installation tutorial](docs/en/installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
 
