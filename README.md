@@ -208,12 +208,12 @@ Supported human-nerf methods:
 Currently, we provide some tutorials for users to 
 * [learn about configs](docs/en/tutorials/config.md)
 * [customize data pipelines](docs/en/tutorials/data_pipeline.md)
-* [model define](docs/en/tutorials/model.md)
+* [model definition](docs/en/tutorials/model.md)
 
 ## Other Documents
 Except for that，The document also includes the following
 * [api](docs/en/api.md)
-* [dataset_preparation](docs/en/dataset_preparation.md)
+* [dataset](docs/en/dataset_preparation.md)
 * [installation](docs/en/installation.md)
 * [benchmark](docs/en/benchmark.md)
 * [FAQ](docs/en/faq.md)
