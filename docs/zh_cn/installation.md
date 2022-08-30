@@ -35,6 +35,9 @@
 - [opencv-python 3+](https://github.com/dmlc/decord): 可通过 `pip install opencv-python>=3` 安装
 - [imageio](https://github.com/dmlc/decord): 可通过 `pip install imageio` 安装
 - [scikit-image](https://github.com/dmlc/decord): 可通过 `pip install scikit-image` 安装
+- [lpips](https://github.com/richzhang/PerceptualSimilarity): 可通过 `pip install lpips` 安装
+- [trimesh](https://github.com/mikedh/trimesh): 可通过 `pip install trimesh` 安装
+- [smplx](https://github.com/vchoutas/smplx): 可通过 `pip install smplx` 安装
 - [spconv](https://github.com/dmlc/decord): 从支持的版本中选择跟你本地cuda版本一致的安装, 比如 `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): 可通过 `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"` 安装
 

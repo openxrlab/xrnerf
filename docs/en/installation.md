@@ -35,6 +35,9 @@ We provide some tips for XRNerf installation in this file.
 - [opencv-python 3+](https://github.com/dmlc/decord): Install by `pip install opencv-python>=3`
 - [imageio](https://github.com/dmlc/decord): Install by `pip install imageio`
 - [scikit-image](https://github.com/dmlc/decord): Install by `pip install scikit-image`
+- [lpips](https://github.com/richzhang/PerceptualSimilarity): Install by `pip install lpips`
+- [trimesh](https://github.com/mikedh/trimesh): Install by `pip install trimesh`
+- [smplx](https://github.com/vchoutas/smplx): Install by `pip install smplx`
 - [spconv](https://github.com/dmlc/decord): Install proper vision that matches your cuda-vision, for example `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): Install by `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"`
 
@@ -64,6 +67,7 @@ conda activate xrnerf
 
 #### d. Install Other Needed Python Packages
 * ```pip install opencv-python>=3 yapf imageio scikit-image```
+* ```pip install lpips trimesh smplx```
 * install ```mmcv-full``` following their [Installation](https://mmcv.readthedocs.io/en/latest/get_started/installation.html)
 * install ```spconv``` using pip install, for example ```pip install spconv-cu111```. notice that only specified cuda-vision are supported, following their [Installation](https://github.com/traveller59/spconv)
 * install ```pytorch3d``` using ```pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"```

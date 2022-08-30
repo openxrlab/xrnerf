@@ -189,23 +189,6 @@ class GNRMLP(nn.Module):
             val = val.view(unqiue_pts.shape[0], self.num_views + 1, -1)
             attention = torch.matmul(val, key.permute(0, 2, 1)).squeeze(-1)
             
-            with open('./exp_check_before.txt', 'a') as f:
-                att_check = torch.isnan(attention).sum().item()
-                att_inf = torch.isinf(attention).sum().item()
-                key_check = torch.isnan(key).sum().item()
-                key_inf = torch.isinf(key).sum().item()
-                val_check = torch.isnan(val).sum().item()
-                val_inf = torch.isinf(val).sum().item()
-                
-                occ_check = torch.isnan(occ_out.squeeze(-1)).sum().item()
-                occ_inf = torch.isinf(occ_out.squeeze(-1)).sum().item()
-                
-                #exp_att_nan = torch.isnan(exp_att).sum().item()
-                #exp_att_sum_nan = torch.isnan(exp_att_sum).sum().item()
-                #sum_0 = torch.sum(exp_att_sum == 0)
-                if att_check + att_inf + occ_check + occ_inf> 0:
-                    f.write(f'exp_check_nan_num: , {att_check}, att_inf_num: {att_inf}, key_nan: {key_check}, key_inf {key_inf}, val_nan {val_check}, val_inf {val_inf}, occ_nan: {occ_check}, occ_inf: {occ_inf}')
-            
             if self.use_occ_net:
                 attention = self.weighted_softmax(attention, occ_out.squeeze(-1))
             elif smpl_vis is not None:
@@ -223,8 +206,6 @@ class GNRMLP(nn.Module):
 
     def weighted_softmax(self, attention, weight):
         exp_att = torch.exp(attention - torch.max(attention, 1, keepdim=True)[0])
-        #exp_att_src = exp_att[:, 1:].clone() * weight
-        #exp_att = torch.cat([exp_att[:, :1], exp_att_src], dim=1)
         exp_att = torch.cat([exp_att[:, :1], exp_att[:, 1:].clone() * weight], dim=1)
         exp_att_sum = torch.sum(exp_att, dim=-1, keepdim=True)
         attention = exp_att / (exp_att_sum + 1e-8)
