@@ -19,9 +19,10 @@ ADD docker/sources.list /etc/apt/
 # RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
 # RUN dpkg -i cuda-keyring_1.0-1_all.deb
 
-RUN apt-get update && apt-get install -y git ninja-build ffmpeg libsm6 libxext6 vim -f \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git ninja-build ffmpeg libsm6 libxext6 vim -f
+RUN apt-get install build-essential -y
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
 # Install torch1.10 and mmcv-full
 RUN pip install https://download.pytorch.org/whl/cu111/torch-1.10.0%2Bcu111-cp37-cp37m-linux_x86_64.whl
@@ -33,7 +34,7 @@ RUN pip install coverage pytest -i https://pypi.tuna.tsinghua.edu.cn/simple
 # Install neural-body needed
 RUN pip install spconv-cu111 -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install "git+https://gitclone.com/github.com/facebookresearch/pytorch3d.git@stable"
-RUN pip install lpips trimesh smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install lpips trimesh matplotlib smplx -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # Install tcnn
 # If meet network problem, commented below out, download & install manually

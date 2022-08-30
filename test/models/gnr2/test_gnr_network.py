@@ -135,6 +135,8 @@ def test_gnr_network():
     model_cfg = ConfigDict(model_cfg)
     model = build_network(model_cfg)
     model.cuda()
+    for k in data:
+        data[k] = data[k].cuda()
 
     ret = model.train_step(data, None)
     assert isinstance(ret['loss'], torch.Tensor)
