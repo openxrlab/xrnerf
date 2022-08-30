@@ -183,7 +183,7 @@ Supported scene-nerf methods:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [o] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
 - [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
 - [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
 - [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
