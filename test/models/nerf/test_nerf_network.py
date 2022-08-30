@@ -1,14 +1,15 @@
 import os
 import shutil
 import sys
-
-import numpy as np
 import pytest
-import torch
-from mmcv import Config, ConfigDict
-
-from xrnerf.datasets import build_dataset
-from xrnerf.models.builder import build_network
+try:
+    import numpy as np
+    import torch
+    from mmcv import Config, ConfigDict
+    from xrnerf.datasets import build_dataset
+    from xrnerf.models.builder import build_network
+except:
+    pass
 
 # sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
 

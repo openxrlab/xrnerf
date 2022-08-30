@@ -1,11 +1,12 @@
 import os
 import shutil
-
-import numpy as np
 import pytest
-import torch
-
-from xrnerf.models.builder import build_embedder
+try:
+    import torch
+    import numpy as np
+    from xrnerf.models.builder import build_embedder
+except:
+    pass
 
 # @pytest.fixture(scope='module', autouse=True)
 # def fixture():

@@ -1,15 +1,14 @@
 import os
 import shutil
 import sys
-
-sys.path.extend(['.', '..'])
-
-import numpy as np
 import pytest
-import torch
-
-from xrnerf.models.builder import build_embedder
-
+try:
+    sys.path.extend(['.', '..'])
+    import numpy as np
+    import torch
+    from xrnerf.models.builder import build_embedder
+except:
+    pass
 # @pytest.fixture(scope='module', autouse=True)
 # def fixture():
 #     if os.path.exists(output_dir):

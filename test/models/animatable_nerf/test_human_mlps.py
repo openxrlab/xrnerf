@@ -1,14 +1,14 @@
 import os
 import shutil
 import sys
-
-sys.path.extend(['.', '..'])
-
-import numpy as np
 import pytest
-import torch
-
-from xrnerf.models.builder import build_mlp
+try:
+    sys.path.extend(['.', '..'])
+    import numpy as np
+    import torch
+    from xrnerf.models.builder import build_mlp
+except:
+    pass
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), 
