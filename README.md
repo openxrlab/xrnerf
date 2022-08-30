@@ -13,14 +13,15 @@ For installation instructions, please see [installation.md](docs/en/installation
 - [XRNerf](#xrnerf)
   - [Introduction](#introduction)
   - [Datasets](#datasets)
+  - [Installation](#installation)
   - [Build a Model](#build-a-model)
     - [Basic Concepts](#basic-concepts)
     - [Write a new network](#write-a-new-network)
-  - [Installation](#installation)
   - [Train a Model](#train-a-model)
     - [Iteration Controls](#iteration-controls)
     - [Train](#train)
     - [Test](#test)
+  - [Benchmark](#benchmark)
   - [Tutorials](#tutorials)
   - [Other Documents](#other-documents)
   - [Citation](#citation)
@@ -50,6 +51,17 @@ xrnerf
 ```
 
 For more information on data preparation, please see [dataset_preparation.md](docs/en/dataset_preparation.md)
+
+
+## Installation
+We provide detailed [installation tutorial](docs/en/installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
+
+It is recommended to start by creating a docker image:
+```shell
+docker build -f ./docker/Dockerfile --rm -t xrnerf .
+```
+For more information, please follow our [installation tutorial](docs/en/installation.md).
+
 
 ## Build a Model
 
@@ -131,15 +143,6 @@ To implement some new components for embedder/mlp/render, procedure is similar t
 * To write a new nerf render, you need to inherit from `nn.Module` or `BaseRender`, and define the `forward` method. [NerfRender](xrnerf/models/renders/nerf_render.py) is a good example.
 
 
-## Installation
-We provide detailed [installation tutorial](docs/en/installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
-
-It is recommended to start by creating a docker image:
-```shell
-docker build -f ./docker/Dockerfile --rm -t xrnerf .
-```
-For more information, please follow our [installation tutorial](docs/en/installation.md).
-
 ## Train a Model
 
 ### Iteration Controls
@@ -170,6 +173,37 @@ Arguments are:
 - `--dataname`: select which data under dataset directory.
 - `--test_only`: influence on whole testset once.
 - `--load_from`: load which checkpoint to test, this will overwrite the original `load_from` in config file to for convenience.
+
+
+## Benchmark
+
+More details can be found in [benchmark.md](docs/en/benchmark.md).
+
+Supported scene-nerf methods:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
+- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
+- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+
+
+Supported human-nerf methods:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [HumanNeRF](https://grail.cs.washington.edu/projects/humannerf/) (CVPR'2022)
+- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
+- [x] [GNR](https://generalizable-neural-performer.github.io/)
+
+
+</details>
+
+</details>
+
 
 ## Tutorials
 Currently, we provide some tutorials for users to 

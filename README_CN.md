@@ -11,6 +11,7 @@
 - [XRNerf](#xrnerf)
   - [简介](#简介)
   - [数据集](#数据集)
+  - [安装](#安装)
   - [创建模型](#创建模型)
     - [基本概念](#基本概念)
     - [自定义一个新模型](#自定义一个新模型)
@@ -18,6 +19,7 @@
     - [迭代次数控制](#迭代次数控制)
     - [训练命令](#训练命令)
     - [测试](#测试)
+  - [基准](#基准)
   - [详细教程](#详细教程)
   - [其他](#其他)
   - [引用](#引用)
@@ -45,6 +47,9 @@ xrnerf
 ```
 
 请参阅 [数据集准备](docs/en/dataset_preparation.md) 获取数据集准备的相关信息。
+
+## 安装
+安装方法详见[教程](docs/en/installation.md), 我们还提供了[docker镜像文件](docker/Dockerfile)作为另一种环境安装方式。
 
 ## 创建模型
 
@@ -149,6 +154,29 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 - `--test_only`: 切换为测试模式
 - `--load_from`: 重载覆盖掉原来配置文件里的 `load_from`， 在某些情况下为了方便而使用
 
+
+## 基准
+
+更多细节可查看 [benchmark.md](docs/en/benchmark.md).
+
+支持的场景类神经渲染方法如下：
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
+- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
+- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+
+
+支持的人体类神经渲染方法如下：
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [HumanNeRF](https://grail.cs.washington.edu/projects/humannerf/) (CVPR'2022)
+- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
+- [x] [GNR](https://generalizable-neural-performer.github.io/)
 
 ## 详细教程
 目前, XRNerf 提供以下几种更详细的教程
