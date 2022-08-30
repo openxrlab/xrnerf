@@ -352,3 +352,58 @@ We compare our results with some popular frameworks and official releases in ter
 </table>
 
 
+#### GNR
+
+<table>
+	<tr>
+	    <th rowspan="2">test data</th>
+        <th colspan="2">PSNR</th>
+        <th colspan="2">SSIM</th>
+	</tr >
+	<tr>
+	    <th>GNR</th>
+	    <th>XRNerf</th>
+	    <th>GNR</th>
+	    <th>XRNerf</th>
+	</tr >
+	<tr >
+	    <td>amanda</td>
+        <td>23.62</td> <td>25.35</td> <td>0.93</td> <td>0.95</td>
+	</tr>
+	<tr >
+	    <td>barry</td>
+        <td>29.28</td> <td>30.71</td> <td>0.94</td> <td>0.95</td>
+	</tr>    
+	<tr >
+	    <td>fuzhizhi</td>
+        <td>21.96</td> <td>21.42</td> <td>0.90</td> <td>0.89</td>
+	</tr>    
+	<tr >
+	    <td>jinyutong</td>
+        <td>23.90</td> <td>24.08</td> <td>0.90</td> <td>0.91</td>
+	</tr>
+	<tr >
+	    <td>joseph</td>
+        <td>26.30</td> <td>24.46</td> <td>0.94</td> <td>0.92</td>
+	</tr>
+	<tr >
+	    <td>maria</td>
+        <td>21.51</td> <td>23.69</td> <td>0.90</td> <td>0.90</td>
+	</tr>
+	<tr >
+	    <td>mahaoran</td>
+        <td>28.41</td> <td>30.93</td> <td>0.93</td> <td>0.94</td>
+	</tr>
+	<tr >
+	    <td>natacha</td>
+        <td>28.71</td> <td>27.98</td> <td>0.91</td> <td>0.91</td>
+	</tr>
+	<tr >
+	    <td>soufianou</td>
+        <td>27.64</td> <td>28.83</td> <td>0.93</td> <td>0.93</td>
+	</tr>
+	<tr >
+	    <td>zhuna</td>
+        <td>25.40</td> <td>24.32</td> <td>0.93</td> <td>0.92</td>
+	</tr>
+</table>
