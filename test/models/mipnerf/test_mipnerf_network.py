@@ -23,7 +23,7 @@ def test_nerf_network():
     mip_pipeline = [
         dict(type='MipMultiScaleSample',
              keys=['target_s'] + ray_keys,
-             N_rand=1024),
+             N_rand=256),
         dict(type='GetZvals',
              enable=True,
              lindisp=False,
