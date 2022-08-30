@@ -57,7 +57,8 @@ def get_train_dataset():
 
     return dataset
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_nerf_network():
 
     model_cfg = dict(
