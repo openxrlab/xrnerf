@@ -79,7 +79,7 @@ conda activate xrnerf
 * build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
 * build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
 
-#### d. Download smpl_t_pose to surport gnr
+#### d. Download smpl_t_pose to surport GNR
 * In order to support the ```GNR``` algorithm, you need to download the ```smpl_t_pose``` folder from [GNR](https://github.com/generalizable-neural-performer/gnr), and modify ```basedata_cfg.t_pose_path``` in ```configs/gnr/gnr_genebody.py``` to the corresponding storage location
 
 ## Another option: Docker Image
@@ -118,7 +118,7 @@ conda activate xrnerf
     python setup.py install
     ```
   If you have installed ```tcnn``` in dockerfile, skip this.
-* Build cuda-extension ```raymarch``` for instant-ngp supported, folling [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+* Build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
 * Build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
 
 
