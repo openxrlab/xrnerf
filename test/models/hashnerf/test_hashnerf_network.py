@@ -4,8 +4,8 @@ import sys
 import pytest
 
 try:
-    import numpy as np
     import torch
+    import numpy as np
     from mmcv import Config, ConfigDict
     # sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
     from xrnerf.models.builder import build_network

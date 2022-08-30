@@ -1,12 +1,14 @@
-from distutils.command.build import build
 import sys
-import numpy as np
 import pytest
-import torch
-from mmcv import ConfigDict
-
-sys.path.extend(['.', '..'])
-from xrnerf.models.builder import build_embedder
+try:
+    import torch
+    import numpy as np
+    from mmcv import ConfigDict
+    sys.path.extend(['.', '..'])
+    from distutils.command.build import build
+    from xrnerf.models.builder import build_embedder
+except:
+    pass
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), 

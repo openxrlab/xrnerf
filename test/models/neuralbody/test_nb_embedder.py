@@ -3,9 +3,9 @@ import shutil
 import sys
 import pytest
 try:
+    import torch
     sys.path.extend(['.', '..'])
     import numpy as np
-    import torch
     from xrnerf.models.builder import build_embedder
 except:
     pass

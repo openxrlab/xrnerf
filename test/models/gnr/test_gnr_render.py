@@ -1,15 +1,16 @@
 import os
 import shutil
 import sys
-from matplotlib.transforms import Bbox
-import numpy as np
 import pytest
-import torch
-# import tornado
-sys.path.extend(['.', '..'])
-from xrnerf.models.builder import build_render, build_mlp
-from mmcv import ConfigDict
-
+try:
+    import torch
+    import numpy as np
+    sys.path.extend(['.', '..'])
+    from matplotlib.transforms import Bbox
+    from xrnerf.models.builder import build_render, build_mlp
+    from mmcv import ConfigDict
+except:
+    pass
 
 @pytest.mark.skipif(not torch.cuda.is_available(), 
     reason='No GPU device has been found.')

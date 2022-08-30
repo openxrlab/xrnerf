@@ -2,8 +2,8 @@ import os
 import shutil
 import pytest
 try:
-    import numpy as np
     import torch
+    import numpy as np
     from xrnerf.models.builder import build_render
 except:
     pass

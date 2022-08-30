@@ -3,8 +3,8 @@ import shutil
 import sys
 import pytest
 try:
-    sys.path.extend(['.', '..'])
     import torch
+    sys.path.extend(['.', '..'])
     import numpy as np
     from xrnerf.models.builder import build_render
 except:

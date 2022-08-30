@@ -1,14 +1,15 @@
 import os
 import shutil
 import sys
-from mmcv import ConfigDict
-import numpy as np
 import pytest
-import torch
-
-sys.path.extend(['.', '..'])
-from xrnerf.models.builder import build_mlp
-
+try:
+    import torch
+    from mmcv import ConfigDict
+    import numpy as np
+    sys.path.extend(['.', '..'])
+    from xrnerf.models.builder import build_mlp
+except:
+    pass
 
 @pytest.mark.skipif(not torch.cuda.is_available(), 
     reason='No GPU device has been found.')
