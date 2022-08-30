@@ -22,7 +22,7 @@ def test_gnr_render():
     masks = torch.rand((num_views, 1, 512, 512))
     calibs = torch.rand(num_views+1, 4, 4)
     bbox = [45, 467, 100, 412]
-    mesh_param = {'center':torch.rand((3)), 'spatia_freq':229.}
+    mesh_param = {'center':torch.rand((3)), 'spatial_freq':229.}
     smpl = {'rot':torch.rand((1, 3, 3)), 'verts':torch.rand((10475, 3)), 'faces':torch.rand((20908, 3)), 't_verts':torch.rand((10475, 3)), 't_faces':torch.rand((20908, 3)), 'depth':torch.torch.rand((num_views, 1, 512, 512))}
     persps = torch.rand((num_views+1, 11))
     data = {'feats': feats, 'images': images, 'masks':masks, 'calibs':calibs, 'bbox':bbox, 'mesh_param': mesh_param, 'smpl':smpl, 'persps':persps}
