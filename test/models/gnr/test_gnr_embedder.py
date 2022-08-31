@@ -18,11 +18,11 @@ def test_gnr_embedder():
     n_rays = 128
     N_samples_per_ray = 64
     n_pts = n_rays * N_samples_per_ray
-    pts = torch.rand((n_pts, 3))
-    att_dirs = torch.rand((n_rays, 3))
+    pts = torch.rand((n_pts, 3)).cuda()
+    att_dirs = torch.rand((n_rays, 3)).cuda()
     num_views = 4
     load_size = 512
-    image_data = torch.rand((num_views, 3, load_size, load_size))
+    image_data = torch.rand((num_views, 3, load_size, load_size)).cuda()
 
     image_filter_cfg=dict(
         type='HGFilter',
@@ -56,8 +56,8 @@ def test_gnr_embedder():
 
     )
     image_filter_cfg = ConfigDict(image_filter_cfg)
-    image_filter = build_embedder(image_filter_cfg)
-    sr_filter = build_embedder(sr_filter_cfg)
+    image_filter = build_embedder(image_filter_cfg).cuda()
+    sr_filter = build_embedder(sr_filter_cfg).cuda()
 
     pose_embeder = build_embedder(pose_embeder_cfg)
     att_embeder = build_embedder(att_embeder_cfg)

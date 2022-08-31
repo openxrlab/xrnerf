@@ -17,14 +17,14 @@ except:
 def test_gnr_render():
 
     num_views = 4
-    feats = torch.rand((num_views, 256, 128, 128))
-    images = torch.rand((num_views+1, 3, 512, 512))
-    masks = torch.rand((num_views, 1, 512, 512))
-    calibs = torch.rand(num_views+1, 4, 4)
+    feats = torch.rand((num_views, 256, 128, 128)).cuda()
+    images = torch.rand((num_views+1, 3, 512, 512)).cuda()
+    masks = torch.rand((num_views, 1, 512, 512)).cuda()
+    calibs = torch.rand(num_views+1, 4, 4).cuda()
     bbox = [45, 467, 100, 412]
-    mesh_param = {'center':torch.rand((3)), 'spatial_freq':229.}
-    smpl = {'rot':torch.rand((1, 3, 3)), 'verts':torch.rand((10475, 3)), 'faces':torch.rand((20908, 3)), 't_verts':torch.rand((10475, 3)), 't_faces':torch.rand((20908, 3)), 'depth':torch.torch.rand((num_views, 1, 512, 512))}
-    persps = torch.rand((num_views+1, 11))
+    mesh_param = {'center':torch.rand((3)).cuda(), 'spatial_freq':229.}
+    smpl = {'rot':torch.rand((1, 3, 3)).cuda(), 'verts':torch.rand((10475, 3)).cuda(), 'faces':torch.rand((20908, 3)).int().cuda(), 't_verts':torch.rand((10475, 3)).cuda(), 't_faces':torch.rand((20908, 3)).int().cuda(), 'depth':torch.rand((num_views, 1, 512, 512)).cuda()}
+    persps = torch.rand((num_views+1, 11)).cuda()
     data = {'feats': feats, 'images': images, 'masks':masks, 'calibs':calibs, 'bbox':bbox, 'mesh_param': mesh_param, 'smpl':smpl, 'persps':persps}
 
     input_ch_feat = 256

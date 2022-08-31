@@ -16,22 +16,22 @@ except:
 def test_gnr_network():
 
     num_views = 4
-    img = torch.rand((1, num_views+1, 3, 512, 512))
-    mask = torch.rand((1, num_views, 1, 512, 512))
-    persps = torch.rand((1, num_views+1, 11))
-    calib = torch.rand((1, num_views+1, 4, 4))
-    bbox = torch.tensor([[45, 467, 100, 412]]).float()
-    render_gt = torch.tensor([])
-    smpl_depth = torch.rand((1, num_views, 512, 512))
-    spatial_freq = torch.tensor([229.]).float()
-    center = torch.rand((1, 3))
-    smpl_rot = torch.rand((1, 3, 3))
-    smpl_verts = torch.rand((1, 10475, 3)).float()
-    smpl_faces = torch.rand((1, 20908, 3)).float()
-    smpl_betas = torch.rand((1, 10))
-    smpl_t_verts = torch.rand((1, 10475, 3))
-    smpl_t_faces = torch.rand((1, 20908, 3))
-    idx = torch.tensor([0]).float()
+    img = torch.rand((1, num_views+1, 3, 512, 512)).cuda()
+    mask = torch.rand((1, num_views, 1, 512, 512)).cuda()
+    persps = torch.rand((1, num_views+1, 11)).cuda()
+    calib = torch.rand((1, num_views+1, 4, 4)).cuda()
+    bbox = torch.tensor([[45, 467, 100, 412]]).float().cuda()
+    render_gt = torch.tensor([]).cuda()
+    smpl_depth = torch.rand((1, num_views, 512, 512)).cuda()
+    spatial_freq = torch.tensor([229.]).float().cuda()
+    center = torch.rand((1, 3)).cuda()
+    smpl_rot = torch.rand((1, 3, 3)).cuda()
+    smpl_verts = torch.rand((1, 10475, 3)).float().cuda()
+    smpl_faces = torch.rand((1, 20908, 3)).int().cuda()
+    smpl_betas = torch.rand((1, 10)).cuda()
+    smpl_t_verts = torch.rand((1, 10475, 3)).float().cuda()
+    smpl_t_faces = torch.rand((1, 20908, 3)).int().cuda()
+    idx = torch.tensor([0]).float().cuda()
 
     data = {'img': img, 'mask':mask, 'persps':persps, 'calib':calib, 'bbox':bbox, 'render_gt': render_gt, 'smpl_depth':smpl_depth, \
             'spatial_freq':spatial_freq, 'center':center, 'smpl_rot':smpl_rot, 'smpl_verts':smpl_verts, \
@@ -133,10 +133,7 @@ def test_gnr_network():
         )
     )
     model_cfg = ConfigDict(model_cfg)
-    model = build_network(model_cfg)
-    model.cuda()
-    for k in data:
-        data[k] = data[k].cuda()
+    model = build_network(model_cfg).cuda()
 
     ret = model.train_step(data, None)
     assert isinstance(ret['loss'], torch.Tensor)

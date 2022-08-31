@@ -21,9 +21,9 @@ def test_gnr_mlp():
     input_ch_feat = 256
     dim_x = input_ch_pos_enc + input_ch_smpl + input_ch_feat +3
     num_views = 4
-    x = torch.rand(chunk, num_views, dim_x)
-    viewdirs = torch.rand((chunk, num_views + 1, 3))
-    smpl_vis = torch.rand((chunk, num_views))
+    x = torch.rand(chunk, num_views, dim_x).cuda()
+    viewdirs = torch.rand((chunk, num_views + 1, 3)).cuda()
+    smpl_vis = torch.rand((chunk, num_views)).cuda()
 
     data = {'x': x, 'attdirs': viewdirs, 'alpha_only':False, 'smpl_vis':smpl_vis}
 
@@ -50,7 +50,7 @@ def test_gnr_mlp():
         )
     )
     mlp_cfg = ConfigDict(mlp_cfg)
-    mlp = build_mlp(mlp_cfg)
+    mlp = build_mlp(mlp_cfg).cuda()
 
     data = mlp(**data)
 
