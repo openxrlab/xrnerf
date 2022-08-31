@@ -114,7 +114,7 @@ conda activate xrnerf
 
 * Install ```tcnn``` using 
     ```shell
-    git clone --recurse-submodules https://gitclone.com/github.com/NVlabs/tiny-cuda-nn.git
+    git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
     cd tiny-cuda-nn/bindings/torch
     python setup.py install
     ```
