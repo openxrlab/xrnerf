@@ -99,7 +99,7 @@ conda activate xrnerf
 
   Create a container with command:
   ```shell
-  docker run --gpus all -it xrnerf /workspace
+  docker run --gpus all -it xrnerf /bin/bash
   ```
 
 #### c. Copy XRNerf into Container
