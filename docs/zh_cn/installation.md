@@ -85,11 +85,13 @@ conda activate xrnerf
 * 为了支持gnr算法，需要从[GNR](https://github.com/generalizable-neural-performer/gnr)下载```smpl_t_pose```文件夹,并修改```configs/gnr/gnr_genebody.py```中的```basedata_cfg.t_pose_path```为对应的存放位置
 
 ## 利用 Docker 镜像安装 XRNerf
+我们根据国内的网络环境优化了dockerfile，请使用[DockerfileCN](../../docker/DockerfileCN)
+
 #### a. 创建docker镜像
-  XRNerf 提供一个 [Dockerfile](../../docker/Dockerfile) 可以直接创建 docker 镜像
+  XRNerf 提供一个 [DockerfileCN](../../docker/DockerfileCN) 可以直接创建 docker 镜像
 
   ```shell
-  docker build -f ./docker/Dockerfile --rm -t xrnerf .
+  docker build -f ./docker/DockerfileCN --rm -t xrnerf .
   ```
 
   **注意** 用户需要确保已经安装了 [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)。
