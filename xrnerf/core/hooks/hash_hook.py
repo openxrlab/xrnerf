@@ -29,6 +29,7 @@ class PassDatasetHook(Hook):
 
 @HOOKS.register_module()
 class PassSamplerIterHook(Hook):
+    """PassSamplerIterHook"""
     def before_train_iter(self, runner):
         runner.model.module.sampler.set_iter(runner.iter)
 
@@ -48,6 +49,7 @@ class ModifyBatchsizeHook(Hook):
 
 @HOOKS.register_module()
 class HashSaveSpiralHook(Hook):
+    """NGP save"""
     def __init__(self, save_folder='validation', cfg=None):
         self.save_folder = save_folder
         self.prefix = cfg.load_from.split('/')[-1].split('.')[-2].replace(
@@ -55,9 +57,11 @@ class HashSaveSpiralHook(Hook):
         self.prefix = 'latest' if len(self.prefix) == 0 else self.prefix
 
     def before_val_epoch(self, runner):
+        """init list"""
         self.spiral_data = []
 
     def after_val_iter(self, runner):
+        """append image"""
         rank, _ = get_dist_info()
         if rank == 0:
             idx = runner.outputs['idx']
@@ -67,6 +71,7 @@ class HashSaveSpiralHook(Hook):
             print(idx, spiral_rgb.shape, flush=True)
 
     def after_val_epoch(self, runner):
+        """write images"""
         rank, _ = get_dist_info()
         if rank == 0:
             spiral_dir = os.path.join(runner.work_dir, self.save_folder)
@@ -93,6 +98,7 @@ class HashSaveSpiralHook(Hook):
             runner._epoch += 1
 
     def apply_mask(self, spiral_data):
+        """apply_mask"""
         for i in range(len(spiral_data)):
             alpha = spiral_data[i][2]
             rgb = spiral_data[i][1]

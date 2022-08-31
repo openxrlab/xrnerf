@@ -71,6 +71,7 @@ class ConvBlock(nn.Module):
 
         return out3
 
+@EMBEDDERS.register_module()
 class PositionalEncoding:
     """
     GNR uses positional encoding in NeRF for coordinate embedding
@@ -113,7 +114,7 @@ class PositionalEncoding:
     def embed(self, inputs):
         return torch.cat([fn(inputs) for fn in self.embed_fns], -1)
 
-
+@EMBEDDERS.register_module()
 class SphericalHarmonics:
     """
     GNR uses Sepherical Harmonics for view direction embedding

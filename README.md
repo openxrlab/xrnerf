@@ -194,7 +194,7 @@ Supported human-nerf methods:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [HumanNeRF](https://grail.cs.washington.edu/projects/humannerf/) (CVPR'2022)
+- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
 - [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
 - [x] [GNR](https://generalizable-neural-performer.github.io/)
 

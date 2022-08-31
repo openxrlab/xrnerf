@@ -1,16 +1,17 @@
 import os
 import shutil
 import sys
-
-sys.path.extend(['.', '..'])
-
-import numpy as np
 import pytest
-import torch
+try:
+    import torch
+    sys.path.extend(['.', '..'])
+    import numpy as np
+    from xrnerf.models.builder import build_render
+except:
+    pass
 
-from xrnerf.models.builder import build_render
-
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_render():
 
     n_rays = 128

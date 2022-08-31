@@ -1,17 +1,19 @@
 import os
 import shutil
 import sys
-
-import numpy as np
 import pytest
-import torch
-from mmcv import Config, ConfigDict
+try:
+    import torch
+    import numpy as np
+    from mmcv import Config, ConfigDict
+    from xrnerf.datasets.pipelines import Compose
+    from xrnerf.models.builder import build_network
+except:
+    print("please install env")
 
-from xrnerf.datasets.pipelines import Compose
-# sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
-from xrnerf.models.builder import build_network
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_nerf_network():
 
     ########################## get data ##########################
@@ -21,7 +23,7 @@ def test_nerf_network():
     mip_pipeline = [
         dict(type='MipMultiScaleSample',
              keys=['target_s'] + ray_keys,
-             N_rand=1024),
+             N_rand=256),
         dict(type='GetZvals',
              enable=True,
              lindisp=False,

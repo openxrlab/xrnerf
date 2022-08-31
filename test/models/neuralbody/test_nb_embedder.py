@@ -1,22 +1,22 @@
 import os
 import shutil
 import sys
-
-sys.path.extend(['.', '..'])
-
-import numpy as np
 import pytest
-import torch
-
-from xrnerf.models.builder import build_embedder
-
+try:
+    import torch
+    sys.path.extend(['.', '..'])
+    import numpy as np
+    from xrnerf.models.builder import build_embedder
+except:
+    pass
 # @pytest.fixture(scope='module', autouse=True)
 # def fixture():
 #     if os.path.exists(output_dir):
 #         shutil.rmtree(output_dir)
 #     os.makedirs(output_dir, exist_ok=False)
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_base_embedder():
 
     smpl_verts = torch.rand((6890, 3)).cuda()

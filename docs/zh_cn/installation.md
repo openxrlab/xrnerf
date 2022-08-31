@@ -12,6 +12,7 @@
       - [c. 安装 PyTorch 和 torchvision](#c-安装-pytorch-和-torchvision)
       - [d. 安装其他python包](#d-安装其他python包)
       - [e. 安装cuda扩展](#e-安装cuda扩展)
+      - [d. 下载smpl_t_pose支持GNR](#d-下载smpl_t_pose支持gnr)
   - [利用 Docker 镜像安装 XRNerf](#利用-docker-镜像安装-xrnerf)
       - [a. 创建docker镜像](#a-创建docker镜像)
       - [b. 运行docker容器](#b-运行docker容器)
@@ -25,8 +26,8 @@
 
 - Linux
 - Python 3.7+
-- PyTorch 1.10+
-- CUDA 11.0+
+- **PyTorch 1.10+ (低版本可能无法支持)** 
+- **CUDA 11.0+ (低版本可能无法支持)** 
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)
@@ -35,6 +36,9 @@
 - [opencv-python 3+](https://github.com/dmlc/decord): 可通过 `pip install opencv-python>=3` 安装
 - [imageio](https://github.com/dmlc/decord): 可通过 `pip install imageio` 安装
 - [scikit-image](https://github.com/dmlc/decord): 可通过 `pip install scikit-image` 安装
+- [lpips](https://github.com/richzhang/PerceptualSimilarity): 可通过 `pip install lpips` 安装
+- [trimesh](https://github.com/mikedh/trimesh): 可通过 `pip install trimesh` 安装
+- [smplx](https://github.com/vchoutas/smplx): 可通过 `pip install smplx` 安装
 - [spconv](https://github.com/dmlc/decord): 从支持的版本中选择跟你本地cuda版本一致的安装, 比如 `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): 可通过 `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"` 安装
 
@@ -77,13 +81,17 @@ conda activate xrnerf
 * 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
 * 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
 
+#### d. 下载smpl_t_pose支持GNR
+* 为了支持gnr算法，需要从[GNR](https://github.com/generalizable-neural-performer/gnr)下载```smpl_t_pose```文件夹,并修改```configs/gnr/gnr_genebody.py```中的```basedata_cfg.t_pose_path```为对应的存放位置
 
 ## 利用 Docker 镜像安装 XRNerf
+我们根据国内的网络环境优化了dockerfile，请使用[DockerfileCN](../../docker/DockerfileCN)
+
 #### a. 创建docker镜像
-  XRNerf 提供一个 [Dockerfile](../../docker/Dockerfile) 可以直接创建 docker 镜像
+  XRNerf 提供一个 [DockerfileCN](../../docker/DockerfileCN) 可以直接创建 docker 镜像
 
   ```shell
-  docker build -f ./docker/Dockerfile --rm -t xrnerf .
+  docker build -f ./docker/DockerfileCN --rm -t xrnerf .
   ```
 
   **注意** 用户需要确保已经安装了 [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)。

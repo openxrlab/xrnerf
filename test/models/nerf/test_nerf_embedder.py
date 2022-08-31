@@ -1,11 +1,12 @@
 import os
 import shutil
-
-import numpy as np
 import pytest
-import torch
-
-from xrnerf.models.builder import build_embedder
+try:
+    import torch
+    import numpy as np
+    from xrnerf.models.builder import build_embedder
+except:
+    pass
 
 # @pytest.fixture(scope='module', autouse=True)
 # def fixture():
@@ -13,7 +14,8 @@ from xrnerf.models.builder import build_embedder
 #         shutil.rmtree(output_dir)
 #     os.makedirs(output_dir, exist_ok=False)
 
-
+@pytest.mark.skipif(not torch.cuda.is_available(), 
+    reason='No GPU device has been found.')
 def test_nerf_embedder():
 
     n_rays = 128
