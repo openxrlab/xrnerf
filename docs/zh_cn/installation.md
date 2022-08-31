@@ -98,7 +98,7 @@ conda activate xrnerf
 #### b. 运行docker容器
   运行以下命令，创建容器:
   ```shell
-  docker run --gpus all -it xrnerf /workspace
+  docker run --gpus all -it xrnerf /bin/bash
   ```
 #### c. 将代码和数据复制进去
   在本机上(非docker镜像机内)开启一个终端，将项目文件(包括数据集)复制进docker镜像机
