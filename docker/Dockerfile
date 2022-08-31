@@ -49,7 +49,7 @@ RUN cd pytorch3d && pip install -e . && \
     pip cache purge
 
 # Install tcnn
-RUN git clone --recurse-submodules https://github.com/NVlabs/tiny-cuda-nn.git
+RUN git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
 RUN cd tiny-cuda-nn/bindings/torch
 RUN python setup.py install
 

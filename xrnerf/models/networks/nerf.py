@@ -108,9 +108,6 @@ class NerfNetwork(BaseNerfNetwork):
             for i in tqdm(range(poses.shape[0])):
                 start = time.time()
                 data = self.val_pipeline({'pose': poses[i]})
-                for k in data:
-                    print(k, data[k].shape)
-                exit(0)
                 ret = self.batchify_forward(
                     data, is_test=True)  # 测试时 raw_noise_std=False
                 end = time.time()
