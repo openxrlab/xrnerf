@@ -12,6 +12,7 @@
       - [c. 安装 PyTorch 和 torchvision](#c-安装-pytorch-和-torchvision)
       - [d. 安装其他python包](#d-安装其他python包)
       - [e. 安装cuda扩展](#e-安装cuda扩展)
+      - [d. 下载smpl_t_pose支持GNR](#d-下载smpl_t_pose支持gnr)
   - [利用 Docker 镜像安装 XRNerf](#利用-docker-镜像安装-xrnerf)
       - [a. 创建docker镜像](#a-创建docker镜像)
       - [b. 运行docker容器](#b-运行docker容器)
@@ -25,8 +26,8 @@
 
 - Linux
 - Python 3.7+
-- PyTorch 1.10+
-- CUDA 11.0+
+- **PyTorch 1.10+ (低版本可能无法支持)** 
+- **CUDA 11.0+ (低版本可能无法支持)** 
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)

@@ -12,6 +12,7 @@ We provide some tips for XRNerf installation in this file.
       - [c. Install PyTorch and torchvision](#c-install-pytorch-and-torchvision)
       - [d. Install Other Needed Python Packages](#d-install-other-needed-python-packages)
       - [e. Install Extensions](#e-install-extensions)
+      - [d. Download smpl_t_pose to surport GNR](#d-download-smpl_t_pose-to-surport-gnr)
   - [Another option: Docker Image](#another-option-docker-image)
       - [a. Build an Image](#a-build-an-image)
       - [b. Create a Container](#b-create-a-container)
@@ -25,8 +26,8 @@ We provide some tips for XRNerf installation in this file.
 
 - Linux
 - Python 3.7+
-- PyTorch 1.10+
-- CUDA 11.0+
+- **PyTorch 1.10+ (necessary)** 
+- **CUDA 11.0+ (necessary)** 
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)
