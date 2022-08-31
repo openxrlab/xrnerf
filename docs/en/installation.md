@@ -12,6 +12,7 @@ We provide some tips for XRNerf installation in this file.
       - [c. Install PyTorch and torchvision](#c-install-pytorch-and-torchvision)
       - [d. Install Other Needed Python Packages](#d-install-other-needed-python-packages)
       - [e. Install Extensions](#e-install-extensions)
+      - [d. Download smpl_t_pose to surport GNR](#d-download-smpl_t_pose-to-surport-gnr)
   - [Another option: Docker Image](#another-option-docker-image)
       - [a. Build an Image](#a-build-an-image)
       - [b. Create a Container](#b-create-a-container)
@@ -25,8 +26,8 @@ We provide some tips for XRNerf installation in this file.
 
 - Linux
 - Python 3.7+
-- PyTorch 1.10+
-- CUDA 11.0+
+- **PyTorch 1.10+ (necessary)** 
+- **CUDA 11.0+ (necessary)** 
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)
@@ -79,7 +80,7 @@ conda activate xrnerf
 * build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
 * build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
 
-#### d. Download smpl_t_pose to surport gnr
+#### d. Download smpl_t_pose to surport GNR
 * In order to support the ```GNR``` algorithm, you need to download the ```smpl_t_pose``` folder from [GNR](https://github.com/generalizable-neural-performer/gnr), and modify ```basedata_cfg.t_pose_path``` in ```configs/gnr/gnr_genebody.py``` to the corresponding storage location
 
 ## Another option: Docker Image
@@ -118,7 +119,7 @@ conda activate xrnerf
     python setup.py install
     ```
   If you have installed ```tcnn``` in dockerfile, skip this.
-* Build cuda-extension ```raymarch``` for instant-ngp supported, folling [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
+* Build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
 * Build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
 
 
