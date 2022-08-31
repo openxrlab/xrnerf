@@ -20,18 +20,18 @@ def test_gnr_network():
     mask = torch.rand((1, num_views, 1, 512, 512))
     persps = torch.rand((1, num_views+1, 11))
     calib = torch.rand((1, num_views+1, 4, 4))
-    bbox = torch.tensor([[45, 467, 100, 412]])
+    bbox = torch.tensor([[45, 467, 100, 412]]).float()
     render_gt = torch.tensor([])
     smpl_depth = torch.rand((1, num_views, 512, 512))
-    spatial_freq = torch.tensor([229])
+    spatial_freq = torch.tensor([229.]).float()
     center = torch.rand((1, 3))
     smpl_rot = torch.rand((1, 3, 3))
-    smpl_verts = torch.rand((1, 10475, 3))
-    smpl_faces = torch.rand((1, 20908, 3))
+    smpl_verts = torch.rand((1, 10475, 3)).float()
+    smpl_faces = torch.rand((1, 20908, 3)).float()
     smpl_betas = torch.rand((1, 10))
     smpl_t_verts = torch.rand((1, 10475, 3))
     smpl_t_faces = torch.rand((1, 20908, 3))
-    idx = torch.tensor([0])
+    idx = torch.tensor([0]).float()
 
     data = {'img': img, 'mask':mask, 'persps':persps, 'calib':calib, 'bbox':bbox, 'render_gt': render_gt, 'smpl_depth':smpl_depth, \
             'spatial_freq':spatial_freq, 'center':center, 'smpl_rot':smpl_rot, 'smpl_verts':smpl_verts, \
