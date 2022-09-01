@@ -3,7 +3,7 @@
 ## Introduction
 English | [简体中文](README_CN.md)
 
-XRNerf is an open-source PyTorch-based codebase for Neural Radiance Field (NeRF). It is a part of the [OpenXRLab](https://github.com/orgs/openxrlab/repositories) project.
+XRNerf is an open-source PyTorch-based codebase for Neural Radiance Field (NeRF). It is a part of the [OpenXRLab](https://github.com/orgs/openxrlab/repositories) project. 
 
 https://user-images.githubusercontent.com/24294293/187131048-5977c929-e136-4328-ad1f-7da8e7a566ff.mp4
 
