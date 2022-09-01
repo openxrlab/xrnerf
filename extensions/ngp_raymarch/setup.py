@@ -6,10 +6,6 @@ nvcc_flags = [
     '--expt-relaxed-constexpr',
 ]
 
-# nvcc_link_flags = [
-#     'lib/libcalc_rgb.o',
-# ]
-
 setup(
     name='raymarch',  # package name, import this to use python API
     include_dirs=[
