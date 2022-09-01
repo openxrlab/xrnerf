@@ -10,6 +10,7 @@
 
 - [XRNerf](#xrnerf)
   - [简介](#简介)
+  - [基准](#基准)
   - [数据集](#数据集)
   - [安装](#安装)
   - [创建模型](#创建模型)
@@ -19,7 +20,6 @@
     - [迭代次数控制](#迭代次数控制)
     - [训练命令](#训练命令)
     - [测试](#测试)
-  - [基准](#基准)
   - [详细教程](#详细教程)
   - [其他](#其他)
   - [引用](#引用)
@@ -28,6 +28,30 @@
   - [OpenXRLab中的其他项目](#openxrlab中的其他项目)
 
 <!-- TOC -->
+
+
+## 基准
+
+更多细节可查看 [benchmark.md](docs/en/benchmark.md).
+
+支持的场景类神经渲染方法如下：
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
+- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
+- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+
+
+支持的人体类神经渲染方法如下：
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
+- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
+- [x] [GNR](https://generalizable-neural-performer.github.io/)
 
 ## 数据集
 我们推荐把数据集放在`项目目录/data`下面，否则可能需要修改config中的内容
@@ -155,28 +179,6 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 - `--load_from`: 重载覆盖掉原来配置文件里的 `load_from`， 在某些情况下为了方便而使用
 
 
-## 基准
-
-更多细节可查看 [benchmark.md](docs/en/benchmark.md).
-
-支持的场景类神经渲染方法如下：
-<details open>
-<summary>(click to collapse)</summary>
-
-- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
-- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
-- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
-- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
-
-
-支持的人体类神经渲染方法如下：
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
-- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
-- [x] [GNR](https://generalizable-neural-performer.github.io/)
 
 ## 详细教程
 目前, XRNerf 提供以下几种更详细的教程
