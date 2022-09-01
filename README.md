@@ -3,6 +3,8 @@
 ## Introduction
 English | [简体中文](README_CN.md)
 
+XRNerf is an open-source PyTorch-based codebase for Neural Radiance Field (NeRF). It is a part of the OpenXRLab project.
+
 https://user-images.githubusercontent.com/24294293/187131048-5977c929-e136-4328-ad1f-7da8e7a566ff.mp4
 
 This page provides basic tutorials about the usage of XRNerf.
@@ -12,6 +14,7 @@ For installation instructions, please see [installation.md](docs/en/installation
 
 - [XRNerf](#xrnerf)
   - [Introduction](#introduction)
+  - [Benchmark](#benchmark)
   - [Datasets](#datasets)
   - [Installation](#installation)
   - [Build a Model](#build-a-model)
@@ -21,7 +24,6 @@ For installation instructions, please see [installation.md](docs/en/installation
     - [Iteration Controls](#iteration-controls)
     - [Train](#train)
     - [Test](#test)
-  - [Benchmark](#benchmark)
   - [Tutorials](#tutorials)
   - [Other Documents](#other-documents)
   - [Citation](#citation)
@@ -31,6 +33,34 @@ For installation instructions, please see [installation.md](docs/en/installation
   - [Projects in OpenXRLab](#projects-in-openxrlab)
 
 <!-- TOC -->
+
+## Benchmark
+More details can be found in [benchmark.md](docs/en/benchmark.md).
+
+Supported scene-nerf methods:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
+- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
+- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+
+Supported human-nerf methods:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
+- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
+- [x] [GNR](https://generalizable-neural-performer.github.io/)
+
+
+</details>
+
+</details>
+
 
 ## Datasets
 
@@ -173,36 +203,6 @@ Arguments are:
 - `--dataname`: select which data under dataset directory.
 - `--test_only`: influence on whole testset once.
 - `--load_from`: load which checkpoint to test, this will overwrite the original `load_from` in config file to for convenience.
-
-
-## Benchmark
-
-More details can be found in [benchmark.md](docs/en/benchmark.md).
-
-Supported scene-nerf methods:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
-- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
-- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
-- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
-
-
-Supported human-nerf methods:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
-- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
-- [x] [GNR](https://generalizable-neural-performer.github.io/)
-
-
-</details>
-
-</details>
 
 
 ## Tutorials

@@ -42,7 +42,14 @@ We provide some tips for XRNerf installation in this file.
 - [spconv](https://github.com/dmlc/decord): Install proper vision that matches your cuda-vision, for example `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): Install by `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"`
 
+About hardware requirements: 
+Instant-NGP need GPU-ARCH>=75, which means that at least a RTX 20X0 is required to have a full support.
 
+| RTX 30X0 | A100 | RTX 20X0 | TITAN V / V100 | GTX 10X0 / TITAN Xp | GTX 9X0 | K80 |
+|:--------:|:----:|:--------:|:--------------:|:-------------------:|:-------:|:---:|
+|       86 |   80 |       75 |             70 |                  61 |      52 |  37 |
+
+If you don't need instant-ngp, [spconv](https://github.com/traveller59/spconv#spconv-spatially-sparse-convolution-library) depends the minimum cuda version. So at least cuda 10.2 is needed.
 
 ## Prepare environment
 
