@@ -18,7 +18,7 @@ optimizer = dict(type='Adam',
                  weight_decay=1e-6)
 optimizer_config = dict(grad_clip=None)
 
-max_iters = 2000
+max_iters = 50000
 lr_config = dict(policy='step', step=10000, gamma=0.2, by_epoch=False)
 checkpoint_config = dict(interval=10000, by_epoch=False)
 custom_hooks = [dict(type='EMAHook', momentum=0.05)]
