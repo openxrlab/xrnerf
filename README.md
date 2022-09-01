@@ -25,6 +25,7 @@ For installation instructions, please see [installation.md](docs/en/installation
   - [Tutorials](#tutorials)
   - [Other Documents](#other-documents)
   - [Citation](#citation)
+  - [License](#license)
   - [Contributing](#contributing)
   - [Acknowledgement](#acknowledgement)
   - [Projects in OpenXRLab](#projects-in-openxrlab)
@@ -231,6 +232,11 @@ If you find this project useful in your research, please consider cite:
     year={2022}
 }
 ```
+
+## License
+
+This project is released under the [Apache 2.0 license](LICENSE). Some supported methods may carry [additional licenses](docs/en/additional_licenses.md).
+
 
 ## Contributing
 
