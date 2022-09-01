@@ -42,7 +42,14 @@
 - [spconv](https://github.com/dmlc/decord): 从支持的版本中选择跟你本地cuda版本一致的安装, 比如 `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): 可通过 `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"` 安装
 
+关于硬件依赖: 
+Instant-NGP需要GPU架构>=75, 也就是说至少需要RTX 20X0及以上的显卡，才能获得xrnerf的完整支持。
 
+| RTX 30X0 | A100 | RTX 20X0 | TITAN V / V100 | GTX 10X0 / TITAN Xp | GTX 9X0 | K80 |
+|:--------:|:----:|:--------:|:--------------:|:-------------------:|:-------:|:---:|
+|       86 |   80 |       75 |             70 |                  61 |      52 |  37 |
+
+如果不需要运行Instant-NGP, [spconv](https://github.com/traveller59/spconv#spconv-spatially-sparse-convolution-library) 决定了最低的cuda版本依赖. 根据他们的表格可见，cuda10.2 是最低要求。
 
 ## 准备环境
 
