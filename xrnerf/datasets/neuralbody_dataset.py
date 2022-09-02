@@ -43,6 +43,7 @@ class NeuralBodyDataset(BaseDataset):
         annots = np.load(ann_file, allow_pickle=True).item()
         self.cams = annots['cams']
 
+        # generate camera poses for rendering
         self.spiral_poses = gen_spiral_path(self.cams['R'], self.cams['T'],
                                             cfg.get('num_render_views', 50))
 
