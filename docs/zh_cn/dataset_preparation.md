@@ -33,3 +33,4 @@ xrnerf
 3. 对于mip-nerf方法的训练，需要生成需要的多尺度数据集，可通过命令生成 ```python tools/convert_blender_data.py --blenderdir /data/nerf_synthetic --outdir data/multiscale```
 4. 对于NeuralBody方法的训练， 请从[这里](https://github.com/zju3dv/neuralbody/blob/master/INSTALL.md#zju-mocap-dataset)下载数据集
 5. 对于Animatable方法的训练， 请从[这里](https://github.com/zju3dv/animatable_nerf/blob/master/INSTALL.md#human36m-dataset)下载数据集
+6. 对于GNR方法的训练， 请从[这里](https://generalizable-neural-performer.github.io/genebody.html)下载数据集
