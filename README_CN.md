@@ -4,7 +4,7 @@
 简体中文 | [English](README.md)
 
 
-本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/en/installation.md)。
+本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/zh_cn/installation.md)。
 
 <!-- TOC -->
 
@@ -21,7 +21,6 @@
     - [训练命令](#训练命令)
     - [测试](#测试)
   - [详细教程](#详细教程)
-  - [其他](#其他)
   - [引用](#引用)
   - [参与贡献](#参与贡献)
   - [致谢](#致谢)
@@ -70,10 +69,10 @@ xrnerf
 │   ├── ...
 ```
 
-请参阅 [数据集准备](docs/en/dataset_preparation.md) 获取数据集准备的相关信息。
+请参阅 [数据集准备](docs/zh_cn/dataset_preparation.md) 获取数据集准备的相关信息。
 
 ## 安装
-安装方法详见[教程](docs/en/installation.md), 我们还提供了[docker镜像文件](docker/Dockerfile)作为另一种环境安装方式。
+安装方法详见[教程](docs/zh_cn/installation.md), 我们还提供了[docker镜像文件](docker/DockerfileCN)作为另一种环境安装方式。
 
 ## 创建模型
 
@@ -182,15 +181,14 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 ## 详细教程
 目前, XRNerf 提供以下几种更详细的教程
-* [如何编写配置文件](docs/en/tutorials/config.md)
-* [数据处理流程](docs/en/tutorials/data_pipeline.md)
-* [模型定义](docs/en/tutorials/model.md)
+* [如何编写配置文件](docs/zh_cn/tutorials/config.md)
+* [数据处理流程](docs/zh_cn/tutorials/data_pipeline.md)
+* [模型定义](docs/zh_cn/tutorials/model.md)
 
-## 其他
 除此以外，文档还包括以下内容
-* [api介绍](docs/en/api.md)
-* [数据集准备](docs/en/dataset_preparation.md)
-* [安装](docs/en/installation.md)
+* [api介绍](docs/zh_cn/api.md)
+* [数据集准备](docs/zh_cn/dataset_preparation.md)
+* [安装](docs/zh_cn/installation.md)
 * [benchmark](docs/en/benchmark.md)
 * [常见问题](docs/en/faq.md)
 

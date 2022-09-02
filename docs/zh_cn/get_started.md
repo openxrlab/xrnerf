@@ -14,7 +14,6 @@
     - [训练命令](#训练命令)
     - [测试](#测试)
   - [详细教程](#详细教程)
-  - [其他](#其他)
 
 <!-- TOC -->
 
@@ -147,7 +146,6 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 * [数据处理流程](tutorials/data_pipeline.md)
 * [模型定义](tutorials/model.md)
 
-## 其他
 除此以外，文档还包括以下内容
 * [api介绍](api.md)
 * [数据集准备](dataset_preparation.md)

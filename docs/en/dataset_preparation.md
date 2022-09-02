@@ -36,3 +36,4 @@ xrnerf
 3. For mip-nerf training, you can generate the multiscale dataset used in the paper by running the following command, ```python tools/convert_blender_data.py --blenderdir /data/nerf_synthetic --outdir data/multiscale```
 4. For the training of NeuralBody, please download the dataset from [here](https://github.com/zju3dv/neuralbody/blob/master/INSTALL.md#zju-mocap-dataset).
 5. For the training of Animatable NeRF, please download the dataset from [here](https://github.com/zju3dv/animatable_nerf/blob/master/INSTALL.md#human36m-dataset).
+6. For the training of GNR, please download the dataset from [here](https://generalizable-neural-performer.github.io/genebody.html).
