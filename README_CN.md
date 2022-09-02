@@ -1,5 +1,13 @@
 # XRNerf
 
+<div align="left">
+
+[![actions](https://github.com/openxrlab/xrnerf/workflows/build/badge.svg)](https://github.com/openxrlab/xrnerf/actions)
+[![codecov](https://codecov.io/gh/openxrlab/xrnerf/branch/main/graph/badge.svg)](https://codecov.io/gh/openxrlab/xrnerf)
+[![LICENSE](https://img.shields.io/github/license/openxrlab/xrnerf.svg)](https://github.com/openxrlab/xrnerf/blob/main/LICENSE)
+
+</div>
+
 ## 简介
 简体中文 | [English](README.md)
 
