@@ -1,0 +1,3 @@
+Looking in indexes: https://pypi.org/simple, https://pypi.ngc.nvidia.com
+Requirement already satisfied: opencv-python in /home/zhengchengyao/Document/apps/anaconda3/envs/hashnerf/lib/python3.7/site-packages (4.2.0.34)
+Requirement already satisfied: numpy>=1.14.5 in /home/zhengchengyao/Document/apps/anaconda3/envs/hashnerf/lib/python3.7/site-packages (from opencv-python) (1.18.5)

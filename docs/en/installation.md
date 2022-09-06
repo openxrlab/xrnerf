@@ -74,12 +74,11 @@ conda activate xrnerf
 4. check [here](https://pypi.org/project/torchvision/) and install specified vision of torchvision, for example ```pip install torchvision==0.12.0```
 
 #### d. Install Other Needed Python Packages
-* ```pip install opencv-python>=3 yapf imageio scikit-image```
+* ```pip install 'opencv-python>=3' yapf imageio scikit-image```
 * ```pip install lpips trimesh smplx```
 * install ```mmcv-full``` following their [Installation](https://mmcv.readthedocs.io/en/latest/get_started/installation.html)
 * install ```spconv``` using pip install, for example ```pip install spconv-cu111```. notice that only specified cuda-vision are supported, following their [Installation](https://github.com/traveller59/spconv)
 * install ```pytorch3d``` using ```pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"```
-* install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```
 * install ```kilo-cuda``` following their [Installation](https://github.com/creiser/kilonerf#option-b-build-cuda-extension-yourself)
 * install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```, or following their [Installation](https://github.com/NVlabs/tiny-cuda-nn#pytorch-extension)
 
