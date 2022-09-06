@@ -63,4 +63,4 @@ RUN cd tiny-cuda-nn/bindings/torch && python setup.py install
 # RUN cd xrnerf/extensions/ngp_raymarch && python setup.py build_ext --inplace && python setup.py install
 
 # 运行ut验证安装
-RUN cd xrnerf && coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m
+# RUN cd xrnerf && coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m

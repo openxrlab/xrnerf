@@ -52,7 +52,7 @@ RUN cd pytorch3d && pip install -e . && \
 RUN git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
 # below may meet error, because 'docker build' runs without gpus by default
 # https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime
-RUN cd tiny-cuda-nn/bindings/torch && RUN python setup.py install
+RUN cd tiny-cuda-nn/bindings/torch && python setup.py install
 
 # Install xrnerf extension
 RUN git clone https://github.com/openxrlab/xrnerf.git
