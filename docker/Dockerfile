@@ -50,6 +50,14 @@ RUN cd pytorch3d && pip install -e . && \
 
 # Install tcnn
 RUN git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
-RUN cd tiny-cuda-nn/bindings/torch
-RUN python setup.py install
+# below may meet error, because 'docker build' runs without gpus by default
+# https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime
+RUN cd tiny-cuda-nn/bindings/torch && RUN python setup.py install
 
+# Install xrnerf extension
+RUN git clone https://github.com/openxrlab/xrnerf.git
+RUN cd xrnerf/extensions/mesh_grid && python setup.py install
+RUN cd xrnerf/extensions/ngp_raymarch && python setup.py build_ext --inplace && python setup.py install
+
+# Verification
+RUN cd xrnerf && coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m

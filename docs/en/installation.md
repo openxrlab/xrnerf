@@ -16,8 +16,6 @@ We provide some tips for XRNerf installation in this file.
   - [Another option: Docker Image](#another-option-docker-image)
       - [a. Build an Image](#a-build-an-image)
       - [b. Create a Container](#b-create-a-container)
-      - [c. Copy XRNerf into Container](#c-copy-xrnerf-into-container)
-      - [e. Install Other Needed Packages](#e-install-other-needed-packages)
   - [Verification](#verification)
 
 <!-- TOC -->
@@ -74,14 +72,12 @@ conda activate xrnerf
 4. check [here](https://pypi.org/project/torchvision/) and install specified vision of torchvision, for example ```pip install torchvision==0.12.0```
 
 #### d. Install Other Needed Python Packages
-* ```pip install opencv-python>=3 yapf imageio scikit-image```
-* ```pip install lpips trimesh smplx```
+* ```pip install 'opencv-python>=3' yapf imageio scikit-image lpips trimesh smplx```
 * install ```mmcv-full``` following their [Installation](https://mmcv.readthedocs.io/en/latest/get_started/installation.html)
 * install ```spconv``` using pip install, for example ```pip install spconv-cu111```. notice that only specified cuda-vision are supported, following their [Installation](https://github.com/traveller59/spconv)
 * install ```pytorch3d``` using ```pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"```
-* install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```
-* install ```kilo-cuda``` following their [Installation](https://github.com/creiser/kilonerf#option-b-build-cuda-extension-yourself)
-* install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```, or following their [Installation](https://github.com/NVlabs/tiny-cuda-nn#pytorch-extension)
+* install ```kilo-cuda``` following their [Installation](https://github.com/creiser/kilonerf#option-b-build-cuda-extension-yourself)(optional, only needed for kilo-nerf)
+* install ```tcnn``` using ```pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch```, or following their [Installation](https://github.com/NVlabs/tiny-cuda-nn#pytorch-extension)(optional, only needed for instant-ngp)
 
 #### e. Install Extensions
 * build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
@@ -91,6 +87,14 @@ conda activate xrnerf
 * In order to support the ```GNR``` algorithm, you need to download the ```smpl_t_pose``` folder from [GNR](https://github.com/generalizable-neural-performer/gnr), and modify ```basedata_cfg.t_pose_path``` in ```configs/gnr/gnr_genebody.py``` to the corresponding storage location
 
 ## Another option: Docker Image
+
+You need to set docker daemon, to enable docker-build's gpu support (for cuda extension install). 
+```shell
+sudo apt-get install nvidia-container-runtime -f -y
+sudo cp -f docker/daemon.json /etc/docker
+sudo systemctl restart docker
+```
+See [here](https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime) for detail.
 
 #### a. Build an Image
 
@@ -109,26 +113,11 @@ conda activate xrnerf
   docker run --gpus all -it xrnerf /bin/bash
   ```
 
-#### c. Copy XRNerf into Container
-
   Open a teiminal in your host computer, copy project into docker container
   ```shell
   # d287273af72e is container id, using 'docker ps -a' to find id
   docker cp ProjectPath/xrnerf d287273af72e:/workspace
   ```
-
-#### e. Install Other Needed Packages 
-
-* Install ```tcnn``` using 
-    ```shell
-    git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
-    cd tiny-cuda-nn/bindings/torch
-    python setup.py install
-    ```
-  If you have installed ```tcnn``` in dockerfile, skip this.
-* Build cuda-extension ```raymarch``` for instant-ngp supported, following [ngp_raymarch](../../extensions/ngp_raymarch/README.md)
-* Build cuda-extension ```mesh_grid``` for gnr supported, following [mesh_grid](../../extensions/mesh_grid/README.md)
-
 
 ## Verification
 
