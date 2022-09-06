@@ -59,6 +59,8 @@
 - [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
 - [x] [GNR](https://generalizable-neural-performer.github.io/)
 
+如果期望在xrnerf中看到新的nerf方法，可以张贴在[愿望清单](https://github.com/openxrlab/xrnerf/discussions/11)，我们会根据社区投票意见来安排下一步的计划。
+
 ## 数据集
 我们推荐把数据集放在`项目目录/data`下面，否则可能需要修改config中的内容
 
