@@ -1,0 +1,11 @@
+opencv-python>=3
+yapf
+imageio
+scikit-image
+lpips
+trimesh
+smplx
+coverage
+pytest
+git+https://github.com/facebookresearch/pytorch3d.git@stable
+git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
