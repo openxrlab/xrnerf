@@ -16,7 +16,6 @@
   - [利用 Docker 镜像安装 XRNerf](#利用-docker-镜像安装-xrnerf)
       - [a. 创建docker镜像](#a-创建docker镜像)
       - [b. 运行docker容器](#b-运行docker容器)
-      - [c. 安装其他未在docker中安装的库](#c-安装其他未在docker中安装的库)
   - [安装验证](#安装验证)
 
 <!-- TOC -->
@@ -128,12 +127,7 @@ sudo systemctl restart docker
   # d287273af72e 是镜像的id, usin通过 'docker ps -a' 确定id
   docker cp ProjectPath/xrnerf d287273af72e:/workspace
   ```
-#### c. 安装其他未在docker中安装的库
-在gitclone收录xrnerf后，国内可docker下载xrnerf，并在docker build时编译安装，届时此部分不再需要手动操作
-* 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
-* 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
 
-  
 ## 安装验证
 
 为了验证 XRNerf 和所需的依赖包是否已经安装成功，可以运行单元测试模块

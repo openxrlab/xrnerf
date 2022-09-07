@@ -65,6 +65,7 @@ Supported human-nerf methods:
 - [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
 - [x] [GNR](https://generalizable-neural-performer.github.io/)
 
+Wanna see more methods supported? Post method you want see in XRNeRF on our [wishlist](https://github.com/openxrlab/xrnerf/discussions/11).
 
 </details>
 
