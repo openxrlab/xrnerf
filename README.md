@@ -12,16 +12,16 @@
 
 English | [简体中文](README_CN.md)
 
-XRNerf is an open-source PyTorch-based codebase for Neural Radiance Field (NeRF). It is a part of the [OpenXRLab](https://github.com/orgs/openxrlab/repositories) project.
+XRNeRF is an open-source PyTorch-based codebase for Neural Radiance Field (NeRF). It is a part of the [OpenXRLab](https://github.com/orgs/openxrlab/repositories) project.
 
 https://user-images.githubusercontent.com/24294293/187131048-5977c929-e136-4328-ad1f-7da8e7a566ff.mp4
 
-This page provides basic tutorials about the usage of XRNerf.
+This page provides basic tutorials about the usage of XRNeRF.
 For installation instructions, please see [installation.md](docs/en/installation.md).
 
 <!-- TOC -->
 
-- [XRNerf](#xrnerf)
+- [XRNeRF](#xrnerf)
   - [Introduction](#introduction)
   - [Benchmark](#benchmark)
   - [Datasets](#datasets)
@@ -47,7 +47,7 @@ For installation instructions, please see [installation.md](docs/en/installation
 
 More details can be found in [benchmark.md](docs/en/benchmark.md).
 
-Supported scene-nerf methods:
+Supported scene-NeRF methods:
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -57,7 +57,7 @@ Supported scene-nerf methods:
 - [X] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
 - [X] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
 
-Supported human-nerf methods:
+Supported human-NeRF methods:
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -95,7 +95,7 @@ For more information on data preparation, please see [dataset_preparation.md](do
 
 ## Installation
 
-We provide detailed [installation tutorial](docs/en/installation.md) for xrnerf, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
+We provide detailed [installation tutorial](docs/en/installation.md) for XRNeRF, users can install from scratch or use provided [dockerfile](docker/Dockerfile).
 
 It is recommended to start by creating a docker image:
 
@@ -109,7 +109,7 @@ For more information, please follow our [installation tutorial](docs/en/installa
 
 ### Basic Concepts
 
-In XRNerf, model components are basically categorized as 4 types.
+In XRNeRF, model components are basically categorized as 4 types.
 
 - network: the whole nerf model pipeline, usually contains a embedder, mlp and render.
 - embedder: convert point-position and viewdirection data into embedded data, embedder can be function only or with trainable paramters.
@@ -183,7 +183,7 @@ To implement some new components for embedder/mlp/render, procedure is similar t
 
 ### Iteration Controls
 
-XRnerf use `mmcv.runner.IterBasedRunner` to control training, and `mmcv.runner.EpochBasedRunner` to for test mode.
+XRNeRF use `mmcv.runner.IterBasedRunner` to control training, and `mmcv.runner.EpochBasedRunner` to for test mode.
 
 In training mode, the `max_iters` in config file decide how many iters.
 In test mode, `max_iters` is forced to change to 1, which represents only 1 epoch to test.
@@ -239,7 +239,7 @@ If you find this project useful in your research, please consider cite:
 ```bibtex
 @misc{xrnerf,
     title={OpenXRLab Neural Radiance Field Toolbox and Benchmark},
-    author={XRNerf Contributors},
+    author={XRNeRF Contributors},
     howpublished = {\url{https://github.com/openxrlab/xrnerf}},
     year={2022}
 }
@@ -251,11 +251,11 @@ This project is released under the [Apache 2.0 license](LICENSE). Some supported
 
 ## Contributing
 
-We appreciate all contributions to improve XRNerf. Please refer to [CONTRIBUTING.md](docs/en/CONTRIBUTING.md) for the contributing guideline.
+We appreciate all contributions to improve XRNeRF. Please refer to [CONTRIBUTING.md](docs/en/CONTRIBUTING.md) for the contributing guideline.
 
 ## Acknowledgement
 
-XRNerf is an open source project that is contributed by researchers and engineers from both the academia and the industry.
+XRNeRF is an open source project that is contributed by researchers and engineers from both the academia and the industry.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
 We wish that the framework and benchmark could serve the growing research community by providing a flexible framework to reimplement existing methods and develop their own new models.
 
