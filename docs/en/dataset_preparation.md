@@ -1,6 +1,6 @@
 # Data Preparation
 
-We provide some tips for XRNerf data preparation in this file.
+We provide some tips for XRNeRF data preparation in this file.
 
 <!-- TOC -->
 

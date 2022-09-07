@@ -18,7 +18,7 @@ In this tutorial, we will introduce the design of nerf model, and how data is pr
 
 ### Overview
 
-In XRNerf, models are basically categorized as 4 types.
+In XRNeRF, models are basically categorized as 4 types.
 
 - embedder: convert point-position and viewdirection data into embedded data, embedder can be function only or with trainable paramters.
 - mlp: use the output of embedder as input, and output raw data (the rgb and density value at sampled position) for render, usually contains FC layers.

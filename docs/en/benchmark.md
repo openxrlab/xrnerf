@@ -24,10 +24,10 @@ We compare our results with some popular frameworks and official releases in ter
         <th colspan="2">SSIM</th>
 	</tr >
 	<tr>
-	    <th>Nerf</th>
-	    <th>XRNerf</th>
-	    <th>Nerf</th>
-	    <th>XRNerf</th>
+	    <th>NeRF</th>
+	    <th>XRNeRF</th>
+	    <th>NeRF</th>
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>blender_chair</td>
@@ -91,12 +91,12 @@ We compare our results with some popular frameworks and official releases in ter
         <th colspan="2">elapsed_time(ms)</th>
 	</tr >
 	<tr>
+	    <th>KiloNeRF</th>
+	    <th>XRNeRF</th>
 	    <th>KiloNerf</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>KiloNerf</th>
-	    <th>XRNerf</th>
-	    <th>KiloNerf</th>
-	    <th>XRNerf</th>        
+	    <th>XRNeRF</th>        
 	</tr >
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_chair</td>
@@ -152,13 +152,13 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >    
 	<tr>
 	    <th>Jax</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>Jax</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>Jax</th>
-	    <th>XRNerf</th>        
+	    <th>XRNeRF</th>        
 	    <th>Jax</th>
-	    <th>XRNerf</th>          
+	    <th>XRNeRF</th>          
 	</tr >
 	<tr >
 	    <td>blender_ship</td>
@@ -210,7 +210,7 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >
 	<tr>
 	    <th>InstantNGP</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>blender_chair</td>
@@ -264,9 +264,9 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >
 	<tr>
 	    <th>Neural Body</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>Neural Body</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>313</td>
@@ -317,9 +317,9 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >
 	<tr>
 	    <th>Animatable NeRF</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>Animatable NeRF</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>S1</td>
@@ -362,9 +362,9 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >
 	<tr>
 	    <th>GNR</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	    <th>GNR</th>
-	    <th>XRNerf</th>
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>amanda</td>

@@ -1,6 +1,6 @@
 # 快速开始
 
-本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](installation.md)。
+本文档提供 XRNeRF 相关用法的基本教程。对于安装说明，请参阅 [安装指南](installation.md)。
 
 <!-- TOC -->
 
@@ -40,7 +40,7 @@ xrnerf
 
 ### 基本概念
 
-在XRNerf中，模型被分为4个部分
+在XRNeRF中，模型被分为4个部分
 - embedder: 输入点的位置和视角，输出embedded特征数据，embedder可能是纯函数型的，或者带有可学习参数的
 - mlp: 使用embedder的输出作为输入，输出原始的点数据（采样点的rgb值和密度值）送给render, 一般由多层感知机组成
 - render: 获取mlp的输出数据，沿着射线上的点进行积分等操作，输出图像上一个像素点的rgb值
@@ -141,7 +141,7 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 
 ## 详细教程
-目前, XRNerf 提供以下几种更详细的教程
+目前, XRNeRF 提供以下几种更详细的教程
 * [如何编写配置文件](tutorials/config.md)
 * [数据处理流程](tutorials/data_pipeline.md)
 * [模型定义](tutorials/model.md)

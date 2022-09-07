@@ -1,6 +1,6 @@
 # 安装
 
-本文档提供了安装 XRNerf 的相关步骤。
+本文档提供了安装 XRNeRF 的相关步骤。
 
 <!-- TOC -->
 
@@ -13,7 +13,7 @@
       - [d. 安装其他python包](#d-安装其他python包)
       - [e. 安装cuda扩展](#e-安装cuda扩展)
       - [d. 下载smpl_t_pose支持GNR](#d-下载smpl_t_pose支持gnr)
-  - [利用 Docker 镜像安装 XRNerf](#利用-docker-镜像安装-xrnerf)
+  - [利用 Docker 镜像安装 XRNeRF](#利用-docker-镜像安装-xrnerf)
       - [a. 创建docker镜像](#a-创建docker镜像)
       - [b. 运行docker容器](#b-运行docker容器)
   - [安装验证](#安装验证)
@@ -95,7 +95,7 @@ conda activate xrnerf
 #### d. 下载smpl_t_pose支持GNR
 * 为了支持gnr算法，需要从[GNR](https://github.com/generalizable-neural-performer/gnr)下载```smpl_t_pose```文件夹,并修改```configs/gnr/gnr_genebody.py```中的```basedata_cfg.t_pose_path```为对应的存放位置
 
-## 利用 Docker 镜像安装 XRNerf
+## 利用 Docker 镜像安装 XRNeRF
 我们根据国内的网络环境优化了dockerfile，请使用[DockerfileCN](../../docker/DockerfileCN)
 
 
@@ -109,7 +109,7 @@ sudo systemctl restart docker
 [这里](https://stackoverflow.com/questions/59691207/docker-build-with-nvidia-runtime)有更详细的解释.
 
 #### a. 创建docker镜像
-  XRNerf 提供一个 [DockerfileCN](../../docker/DockerfileCN) 可以直接创建 docker 镜像
+  XRNeRF 提供一个 [DockerfileCN](../../docker/DockerfileCN) 可以直接创建 docker 镜像
 
   ```shell
   docker build -f ./docker/DockerfileCN --rm -t xrnerf .
@@ -130,7 +130,7 @@ sudo systemctl restart docker
 
 ## 安装验证
 
-为了验证 XRNerf 和所需的依赖包是否已经安装成功，可以运行单元测试模块
+为了验证 XRNeRF 和所需的依赖包是否已经安装成功，可以运行单元测试模块
 
 ```shell
 coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m
