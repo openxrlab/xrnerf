@@ -57,8 +57,8 @@ RUN cd tiny-cuda-nn/dependencies && git clone https://gitclone.com/github.com/fm
 RUN cd tiny-cuda-nn/dependencies && git clone https://gitclone.com/github.com/NVIDIA/cutlass.git
 RUN cd tiny-cuda-nn/bindings/torch && python setup.py install 
 
-# gitclone收录日，家祭无忘告乃翁 
-# 0907 update:已收录，以下取消注释 
+# gitclone收录日，家祭无忘告乃翁
+# 0907 update:已收录，以下取消注释
 RUN git clone https://gitclone.com/github.com/openxrlab/xrnerf.git
 RUN cd xrnerf/extensions/mesh_grid && python setup.py install
 RUN cd xrnerf/extensions/ngp_raymarch && python setup.py build_ext --inplace && python setup.py install
