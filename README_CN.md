@@ -1,21 +1,23 @@
-# XRNerf
+# XRNeRF
 
 <div align="left">
 
 [![actions](https://github.com/openxrlab/xrnerf/workflows/build/badge.svg)](https://github.com/openxrlab/xrnerf/actions) [![LICENSE](https://img.shields.io/github/license/openxrlab/xrnerf.svg)](https://github.com/openxrlab/xrnerf/blob/main/LICENSE)
 
 <!-- [![codecov](https://codecov.io/gh/openxrlab/xrnerf/branch/main/graph/badge.svg)](https://codecov.io/gh/openxrlab/xrnerf) -->
+
 </div>
 
 ## 简介
+
 简体中文 | [English](README.md)
 
 
-本文档提供 XRNerf 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/zh_cn/installation.md)。
+本文档提供 XRNeRF 相关用法的基本教程。对于安装说明，请参阅 [安装指南](docs/zh_cn/installation.md)。
 
 <!-- TOC -->
 
-- [XRNerf](#xrnerf)
+- [XRNeRF](#xrnerf)
   - [简介](#简介)
   - [基准](#基准)
   - [数据集](#数据集)
@@ -44,10 +46,10 @@
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
-- [x] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
-- [x] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
-- [x] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+- [X] [NeRF](https://www.matthewtancik.com/nerf) (ECCV'2020)
+- [X] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
+- [X] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
+- [X] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
 
 
 支持的人体类神经渲染方法如下：
@@ -55,11 +57,11 @@
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
-- [x] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
-- [x] [GNR](https://generalizable-neural-performer.github.io/)
+- [X] [NeuralBody](https://zju3dv.github.io/neuralbody) (CVPR'2021)
+- [X] [AniNeRF](https://zju3dv.github.io/animatable_nerf/) (ICCV'2021)
+- [X] [GNR](https://generalizable-neural-performer.github.io/)
 
-如果期望在xrnerf中看到新的nerf方法，可以张贴在[愿望清单](https://github.com/openxrlab/xrnerf/discussions/11)，我们会根据社区投票意见来安排下一步的计划。
+如果期望在XRNeRF中看到新的NeRF方法，可以张贴在[愿望清单](https://github.com/openxrlab/xrnerf/discussions/11)，我们会根据社区投票意见来安排下一步的计划。
 
 ## 数据集
 我们推荐把数据集放在`项目目录/data`下面，否则可能需要修改config中的内容
@@ -87,7 +89,7 @@ xrnerf
 
 ### 基本概念
 
-在XRNerf中，模型被分为4个部分
+在XRNeRF中，模型被分为4个部分
 - embedder: 输入点的位置和视角，输出embedded特征数据，embedder可能是纯函数型的，或者带有可学习参数的
 - mlp: 使用embedder的输出作为输入，输出原始的点数据（采样点的rgb值和密度值）送给render, 一般由多层感知机组成
 - render: 获取mlp的输出数据，沿着射线上的点进行积分等操作，输出图像上一个像素点的rgb值
@@ -168,7 +170,7 @@ XRnerf 使用 `mmcv.runner.IterBasedRunner` 来控制训练, 并用 `mmcv.runner
 
 ### 训练命令
 ```shell
-python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
+python run_nerf.py --config configs/nerf/nerf_blender_base01.py --dataname lego
 ```
 
 参数为:
@@ -177,7 +179,7 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 ### 测试
 ```shell
-python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego --test_only --load_from iter_50000.pth
+python run_nerf.py --config configs/nerf/nerf_blender_base01.py --dataname lego --test_only --load_from iter_200000.pth
 ```
 
 参数为:
@@ -189,7 +191,7 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 
 ## 详细教程
-目前, XRNerf 提供以下几种更详细的教程
+目前, XRNeRF 提供以下几种更详细的教程
 * [如何编写配置文件](docs/zh_cn/tutorials/config.md)
 * [数据处理流程](docs/zh_cn/tutorials/data_pipeline.md)
 * [模型定义](docs/zh_cn/tutorials/model.md)
@@ -207,7 +209,7 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 ```bibtex
 @misc{xrnerf,
     title={OpenXRLab Neural Radiance Field Toolbox and Benchmark},
-    author={XRNerf Contributors},
+    author={XRNeRF Contributors},
     howpublished = {\url{https://github.com/openxrlab/xrnerf}},
     year={2022}
 }
@@ -215,10 +217,10 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 
 ## 参与贡献
 
-我们非常欢迎用户对于 XRNerf 做出的任何贡献，可以参考 [贡献指南](docs/en/CONTRIBUTING.md) 文件了解更多细节
+我们非常欢迎用户对于 XRNeRF 做出的任何贡献，可以参考 [贡献指南](docs/en/CONTRIBUTING.md) 文件了解更多细节
 
 ## 致谢
-XRNerf 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
+XRNeRF 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
 我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
 
 ## OpenXRLab中的其他项目
@@ -230,4 +232,3 @@ XRNerf 是一款由不同学校和公司共同贡献的开源项目。我们感�
 - [XRMoCap](https://github.com/openxrlab/xrmocap): OpenXRLab Multi-view Motion Capture Toolbox and Benchmark.
 - [XRMoGen](https://github.com/openxrlab/xrmogen): OpenXRLab Human Motion Generation Toolbox and Benchmark.
 - [XRNeRF](https://github.com/openxrlab/xrnerf): OpenXRLab Neural Radiance Field (NeRF) Toolbox and Benchmark.
-

@@ -1,4 +1,4 @@
-# Contributing to XRNerf
+# Contributing to XRNeRF
 
 All kinds of contributions are welcome, including but not limited to the following.
 

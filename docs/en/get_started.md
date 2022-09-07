@@ -1,6 +1,6 @@
 # Getting Started
 
-This page provides basic tutorials about the usage of XRNerf.
+This page provides basic tutorials about the usage of XRNeRF.
 For installation instructions, please see [installation.md](installation.md).
 
 <!-- TOC -->
@@ -45,7 +45,7 @@ For more information on data preparation, please see [dataset_preparation.md](da
 
 ### Basic Concepts
 
-In XRNerf, model components are basically categorized as 4 types.
+In XRNeRF, model components are basically categorized as 4 types.
 
 - network: the whole nerf model pipeline, usually contains a embedder, mlp and render.
 - embedder: convert point-position and viewdirection data into embedded data, embedder can be function only or with trainable paramters.

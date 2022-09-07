@@ -1,6 +1,6 @@
 # Installation
 
-We provide some tips for XRNerf installation in this file.
+We provide some tips for XRNeRF installation in this file.
 
 <!-- TOC -->
 
@@ -121,7 +121,7 @@ See [here](https://stackoverflow.com/questions/59691207/docker-build-with-nvidia
 
 ## Verification
 
-To verify whether XRNerf and the required environment are installed correctly, we can run unit-test python codes
+To verify whether XRNeRF and the required environment are installed correctly, we can run unit-test python codes
 
 ```shell
 coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m
