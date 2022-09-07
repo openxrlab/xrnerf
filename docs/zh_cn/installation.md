@@ -72,6 +72,7 @@ conda activate xrnerf
 4. 在[这里](https://pypi.org/project/torchvision/)查看版本匹配信息， 并安装正确版本的torchvision, 比如 ```pip install torchvision==0.12.0```
 
 #### d. 安装其他python包
+* 您可以使用 ```pip install requirements.txt``` 来安装大部分需要的 pkgs。 如果此步骤成功，您应该跳转到 ```kilo-cuda``` 和 ```spconv``` 步骤手动安装它们。 或者您可以跳过此步骤并按照以下安装步骤进行操作
 * ```pip install 'opencv-python>=3' yapf imageio scikit-image lpips trimesh smplx```
 * 根据[官方说明](https://mmcv.readthedocs.io/en/latest/get_started/installation.html)，安装 ```mmcv-full```
 * 安装 ```spconv```, 比如 ```pip install spconv-cu111```. 值得注意的是只有部分cuda版本是支持的, 具体请查看 [官方说明](https://github.com/traveller59/spconv)
