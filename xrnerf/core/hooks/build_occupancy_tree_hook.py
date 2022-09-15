@@ -1,8 +1,3 @@
-# @Author: fr
-# @Date:   2022-05-04 17:05:14
-# @Last Modified by:   zcy
-# @Last Modified time: 2022-07-23 11:05:42
-
 import os
 
 import imageio
