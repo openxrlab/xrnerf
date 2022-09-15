@@ -1,8 +1,3 @@
-# @Author: zcy
-# @Date:   2022-04-20 17:05:14
-# @Last Modified by:   zcy
-# @Last Modified time: 2022-06-15 17:02:42
-
 import json
 import os
 

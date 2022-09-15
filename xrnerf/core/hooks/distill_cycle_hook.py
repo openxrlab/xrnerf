@@ -1,8 +1,3 @@
-# @Author: fr
-# @Date:   2022-05-24 13:05:14
-# @Last Modified by:   fr
-# @Last Modified time: 2022-05-30 17:01:40
-
 from functools import partial
 
 import torch

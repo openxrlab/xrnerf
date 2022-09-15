@@ -1,8 +1,3 @@
-# @Author: zcy
-# @Date:   2022-06-15 15:57:48
-# @Last Modified by:   zcy
-# @Last Modified time: 2022-06-15 16:32:36
-
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 
