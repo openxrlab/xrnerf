@@ -37,7 +37,6 @@ class BungeeDataset(SceneBaseDataset):
                 'images': self.images,
                 'n_images': self.n_images,
                 'i_data': self.i_train,
-                'scale_split': self.scale_split,
                 'idx': idx
             }
         data['iter_n'] = self.iter_n

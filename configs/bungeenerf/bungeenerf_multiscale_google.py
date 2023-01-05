@@ -114,7 +114,7 @@ basedata_cfg = dict(
     factor=3,
     N_rand_per_sampler=N_rand_per_sampler,
     mode='train',
-    cur_stage=3,
+    cur_stage=stage,
     holdout=16,
     is_batching=True,  # True for blender, False for llff
 )
@@ -148,7 +148,7 @@ train_pipeline = [
          N_samples=N_samples),  # N_samples: number of coarse samples per ray
     dict(type='PerturbZvals', enable=is_perturb),
     dict(type='DeleteUseless', enable=True,
-         keys=['pose', 'iter_n', 'n_images', 'cur_stage', 'scale_split', 'scene_scaling_factor', 'scene_origin', 'hwf']),  # 删除pose 其实求完ray就不再需要了
+         keys=['pose', 'iter_n']),  # 删除pose 其实求完ray就不再需要了
 ]
 
 test_pipeline = [
