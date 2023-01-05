@@ -51,7 +51,7 @@ test_runner = dict(type='BungeeNerfTestRunner')
 # runtime settings
 num_gpus = 1
 distributed = (num_gpus > 1)  # 是否多卡，mmcv对dp多卡支持不好，故而要么单卡要么ddp多卡
-stage = 3 # current stage for training
+stage = 0 # current stage for training
 work_dir = './work_dirs/bungeenerf/#DATANAME#/stage_%d/' % stage
 timestamp = datetime.now().strftime('%d-%b-%H-%M')
 
