@@ -83,7 +83,7 @@ class BungeeNerfNetwork(BaseNerfNetwork):
             coarse_img_loss = img2mse(ret['coarse_rgb']*(data['scale_code']<=stage), data['target_s']*(data['scale_code']<=stage))
             loss = loss + coarse_img_loss
 
-        log_vars = {'loss': loss.item(), 'psnr': psnr.item(), 'stage': stage}
+        log_vars = {'loss': loss.item(), 'psnr': psnr.item()}
         outputs = {
             'loss': loss,
             'log_vars': log_vars,
