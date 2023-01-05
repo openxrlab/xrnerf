@@ -37,12 +37,12 @@ class Sample:
             img_i = results['i_data'][idx]
             results['pose'] = results['poses'][img_i, :3, :4]
             results['target_s'] = results['images'][img_i]
+        
         return results
 
     def __repr__(self):
         return '{}:slice a batch of rays from all rays'.format(
             self.__class__.__name__)
-
 
 @PIPELINES.register_module()
 class MipMultiScaleSample:
@@ -89,6 +89,7 @@ class BatchSample:
         self.N_rand = N_rand  # slice how many rays one time
         self.kwargs = kwargs
 
+
     def __call__(self, results):
         """BatchSlice
         Args:
@@ -104,6 +105,43 @@ class BatchSample:
                                          0, :], batch_rays[:,
                                                            1, :], batch_rays[:,
                                                                              2, :]
+        return results
+
+    def __repr__(self):
+        return '{}:sample a batch of rays from all rays'.format(
+            self.__class__.__name__)
+        
+@PIPELINES.register_module()
+class BungeeBatchSample:
+    """get slice rays from all rays in batching dataset
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, N_rand=1024, **kwargs):
+        self.enable = enable
+        self.N_rand = N_rand  # slice how many rays one time
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """BatchSlice
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            start_i = self.N_rand * results['idx']
+            batch_rays = results['rays_rgb'][start_i:start_i +
+                                             self.N_rand]  # [B, 2+1, 3*?]
+            results['rays_o'], results['rays_d'], results[
+                'target_s'] = batch_rays[:,
+                                         0, :], batch_rays[:,
+                                                           1, :], batch_rays[:,
+                                                                             2, :]
+            results['radii'] = results['radii'][start_i:start_i +
+                                             self.N_rand]        
+            results['scale_code'] = results['scale_code'][start_i:start_i +
+                                             self.N_rand]                                                     
+                                                           
         return results
 
     def __repr__(self):
@@ -185,6 +223,7 @@ class GetRays:
             dirs = torch.stack([(i - K[0][2]) / K[0][0],
                                 -(j - K[1][2]) / K[1][1], -torch.ones_like(i)],
                                -1).to(device)
+            
             # Rotate ray directions from camera frame to the world frame
             rays_d = torch.sum(
                 dirs[..., np.newaxis, :] * c2w[:3, :3],
@@ -496,6 +535,43 @@ class GetZvals:
             self.__class__.__name__)
 
 
+
+@PIPELINES.register_module()
+class BungeeGetZvals:
+    """get intervals between samples
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self,
+                 enable=True,
+                 N_samples=64,
+                 **kwargs):
+        self.enable = enable
+        self.N_samples = N_samples
+
+    def __call__(self, results):
+        """get intervals between samples
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            device = results['rays_o'].device
+            N_rays = results['rays_o'].shape[0]
+            t_vals = torch.linspace(0., 1., steps=self.N_samples).to(device)
+            z_vals_lindisp = 1./(1./results['near'] * (1.-t_vals) + 1./results['far'] * (t_vals))
+            z_vals_lindisp_half = z_vals_lindisp[:,:int(self.N_samples*2/3)]
+            linear_start = z_vals_lindisp_half[:,-1:]
+            t_vals_linear = torch.linspace(0., 1., steps=self.N_samples-int(self.N_samples*2/3)+1).to(device)
+            z_vals_linear_half = linear_start * (1-t_vals_linear) + results['far'] * t_vals_linear
+            z_vals = torch.cat((z_vals_lindisp_half, z_vals_linear_half[:,1:]), -1)
+            z_vals, _ = torch.sort(z_vals, -1)
+            z_vals = z_vals.expand([N_rays, self.N_samples])
+            results['z_vals'] = z_vals
+        return results
+
+
+
 @PIPELINES.register_module()
 class GetPts:
     """get pts
@@ -545,6 +621,32 @@ class DeleteUseless:
 
     def __repr__(self):
         return '{}:delete useless params'.format(self.__class__.__name__)
+
+@PIPELINES.register_module()
+class DeleteUseless2:
+    """delete useless params
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, keys=[], **kwargs):
+        self.enable = enable
+        self.keys = keys
+
+    def __call__(self, results):
+        """get viewdirs
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            for k in self.keys:
+                if k in results:
+                    del results[k]
+        return results
+
+    def __repr__(self):
+        return '{}:delete useless params'.format(self.__class__.__name__)
+
 
 
 @PIPELINES.register_module()
@@ -749,3 +851,63 @@ class LoadCamAndSmplParam:
     def __repr__(self):
         return '{}:load the Camera and SMPL parameters'.format(
             self.__class__.__name__)
+
+
+
+@PIPELINES.register_module()
+class BungeeGetBounds:
+    """get near and far
+    Args:
+        keys (Sequence[str]): Required keys to be converted.
+    """
+    def __init__(self, enable=True, ray_nearfar='sphere', **kwargs):
+        self.enable = enable
+        # kwargs来自于dataset读取完毕后，记录的datainfo信息
+        self.ray_nearfar = ray_nearfar
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """get bound(near and far)
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if self.enable:
+            scene_origin = self.kwargs['scene_origin']
+            scene_scaling_factor = self.kwargs['scene_scaling_factor']
+            device = results['rays_o'].device
+            if self.ray_nearfar == 'sphere':
+                globe_center = torch.tensor(np.array(scene_origin) * scene_scaling_factor).float().to(device)
+                # 6371011 is earth radius, 250 is the assumed height limitation of buildings in the scene
+                earth_radius = 6371011 * scene_scaling_factor
+                earth_radius_plus_bldg = (6371011+250) * scene_scaling_factor
+                # intersect with building upper limit sphere
+                delta = (2*torch.sum((results['rays_o']-globe_center) * results['viewdirs'], dim=-1))**2 - 4*torch.norm(results['viewdirs'], dim=-1)**2 * (torch.norm((results['rays_o']-globe_center), dim=-1)**2 - (earth_radius_plus_bldg)**2)
+                d_near = (-2*torch.sum((results['rays_o']-globe_center) * results['viewdirs'], dim=-1) - delta**0.5) / (2*torch.norm(results['viewdirs'], dim=-1)**2)
+                rays_start = results['rays_o'] + (d_near[...,None]*results['viewdirs'])
+                # intersect with earth
+                delta = (2*torch.sum((results['rays_o']-globe_center) * results['viewdirs'], dim=-1))**2 - 4*torch.norm(results['viewdirs'], dim=-1)**2 * (torch.norm((results['rays_o']-globe_center), dim=-1)**2 - (earth_radius)**2)
+                d_far = (-2*torch.sum((results['rays_o']-globe_center) * results['viewdirs'], dim=-1) - delta**0.5) / (2*torch.norm(results['viewdirs'], dim=-1)**2)
+                rays_end = results['rays_o'] + (d_far[...,None]*results['viewdirs'])
+                # compute near and far for each ray
+                new_near = torch.norm(results['rays_o'] - rays_start, dim=-1, keepdim=True)
+                near = new_near * 0.9
+                new_far = torch.norm(results['rays_o'] - rays_end, dim=-1, keepdim=True)
+                far = new_far * 1.1
+            elif self.ray_nearfar == 'flat':
+                normal = torch.tensor([0, 0, 1]).to(results['rays_o']) * scene_scaling_factor
+                p0_far = torch.tensor([0, 0, 0]).to(results['rays_o']) * scene_scaling_factor
+                p0_near = torch.tensor([0, 0, 250]).to(results['rays_o']) * scene_scaling_factor
+
+                near = (p0_near - results['rays_o'] * normal).sum(-1) / (results['viewdirs'] * normal).sum(-1)
+                far = (p0_far - results['rays_o'] * normal).sum(-1) / (results['viewdirs'] * normal).sum(-1)
+                near = near.clamp(min=1e-6)
+                near, far = near.unsqueeze(-1), far.unsqueeze(-1)
+            results['far'] = far
+            results['near'] = near
+        return results
+
+    def __repr__(self):
+        return '{}:get bounds(near and far)'.format(self.__class__.__name__)
+
+

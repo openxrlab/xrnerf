@@ -8,10 +8,11 @@ from .neuralbody_dataset import NeuralBodyDataset
 from .samplers import DistributedSampler
 from .scene_dataset import SceneBaseDataset
 from .genebody_dataset import GeneBodyDataset
+from .bungee_dataset import BungeeDataset
 
 __all__ = [
     'SceneBaseDataset', 'DATASETS', 'build_dataset', 'DistributedSampler',
     'MipMultiScaleDataset', 'KiloNerfDataset', 'KiloNerfNodeDataset',
-    'NeuralBodyDataset', 'AniNeRFDataset', 'HashNerfDataset', 'GeneBodyDataset'
-
+    'NeuralBodyDataset', 'AniNeRFDataset', 'HashNerfDataset', 'GeneBodyDataset',
+    'BungeeDataset'
 ]

@@ -62,6 +62,7 @@ def to_tensor(data):
     if isinstance(data, torch.Tensor):
         return data
     if isinstance(data, np.ndarray):
+        # Need to be restored
         return torch.from_numpy(data)
     if isinstance(data, Sequence) and not mmcv.is_str(data):
         return torch.tensor(data)

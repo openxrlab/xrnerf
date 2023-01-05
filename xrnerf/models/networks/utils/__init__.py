@@ -35,5 +35,5 @@ __all__ = [
     'LPIPS',
     'SSIM',
     'psnr',
-    'init_weights'
+    'init_weights',
 ]
