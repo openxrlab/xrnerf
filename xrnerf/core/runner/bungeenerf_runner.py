@@ -27,6 +27,7 @@ class BungeeNerfTrainRunner(IterBasedRunner):
                 if outputs['log_vars']['loss']==0.:
                     continue
                 self.log_buffer.update(outputs['log_vars'], outputs['num_samples'])
+                self.log_buffer.output['stage'] = stage
             self.outputs = outputs
             self.call_hook('after_train_iter')
         del self.data_batch

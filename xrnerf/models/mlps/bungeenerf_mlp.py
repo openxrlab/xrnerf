@@ -58,7 +58,6 @@ class BungeeNerfMLP(BaseMLP):
 
     def __init__(self,
                  cur_stage=0,
-                 netdepth=8,
                  netwidth=256,
                  netchunk=1024 * 32,
                  embedder=None,
@@ -67,10 +66,10 @@ class BungeeNerfMLP(BaseMLP):
         self.chunk = netchunk
         self.embedder = builder.build_embedder(embedder)
         self.num_resblocks = cur_stage
-        self.init_mlp(netdepth, netwidth)
+        self.init_mlp(netwidth)
 
-    def init_mlp(self, netdepth, netwidth):
-        D, W = netdepth, netwidth
+    def init_mlp(self, netwidth):
+        W = netwidth
         self.input_ch, self.input_ch_dirs = self.embedder.get_embed_ch()
         self.baseblock = BungeeNerfBaseBlock(netwidth=W, input_ch=self.input_ch, input_ch_views=self.input_ch_dirs)
         self.resblocks = nn.ModuleList([

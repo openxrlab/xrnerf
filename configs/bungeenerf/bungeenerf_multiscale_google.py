@@ -17,7 +17,7 @@ max_iters = 200000
 lr_config = dict(policy='step', step=500 * 1000, gamma=0.1, by_epoch=False)
 checkpoint_config = dict(interval=500, by_epoch=False)
 log_level = 'INFO'
-log_config = dict(interval=100,
+log_config = dict(interval=5,
                   by_epoch=False,
                   hooks=[dict(type='TextLoggerHook')])
 workflow = [('train', 500), ('val', 1)]
@@ -84,7 +84,6 @@ model = dict(
 
     mlp=dict(  # coarse model
         type='BungeeNerfMLP',
-        netdepth=8,  # layers in network
         cur_stage=stage, # resblock nums
         netwidth=256,  # channels per layer
         netchunk=1024 * 64,  # number of pts sent through network in parallel;
@@ -109,7 +108,7 @@ model = dict(
 
 basedata_cfg = dict(
     dataset_type=dataset_type,
-    datadir='data/google/multiscale_google_56Leonard',
+    datadir='data/multiscale_google/multiscale_google_56Leonard',
     white_bkgd=white_bkgd,
     factor=3,
     N_rand_per_sampler=N_rand_per_sampler,
