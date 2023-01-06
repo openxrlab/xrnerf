@@ -78,7 +78,6 @@ model = dict(
         N_importance=65,  # number of additional fine samples per ray
         is_perturb=is_perturb,
         chunk=1024 * 32,  # mainly work for val
-        stage=0,
         bs_data=
         'rays_o',  # the data's shape indicates the real batch-size, this's also the num of rays
     ),
@@ -86,6 +85,7 @@ model = dict(
     mlp=dict(  # coarse model
         type='BungeeNerfMLP',
         netdepth=8,  # layers in network
+        cur_stage=stage, # resblock nums
         netwidth=256,  # channels per layer
         netchunk=1024 * 64,  # number of pts sent through network in parallel;
         embedder=dict(
