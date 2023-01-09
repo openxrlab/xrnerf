@@ -108,7 +108,7 @@ model = dict(
 
 basedata_cfg = dict(
     dataset_type=dataset_type,
-    datadir='data/multiscale_google/multiscale_google_56Leonard',
+    datadir='data/multiscale_google/#DATANAME#',
     white_bkgd=white_bkgd,
     factor=3,
     N_rand_per_sampler=N_rand_per_sampler,
