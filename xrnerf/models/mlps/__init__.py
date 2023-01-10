@@ -6,6 +6,7 @@ from .kilonerf_multinet import KiloNerfMultiNetwork
 from .nb_mlp import NB_NeRFMLP
 from .nerf_mlp import NerfMLP
 from .gnr_mlp import GNRMLP
+from .bungeenerf_mlp import BungeeNerfMLP
 
 __all__ = [
     'NerfMLP',
@@ -15,5 +16,6 @@ __all__ = [
     'DeformField',
     'NB_NeRFMLP',
     'HashNerfMLP',
-    'GNRMLP'
+    'GNRMLP',
+    'BungeeNerfMLP'
 ]
