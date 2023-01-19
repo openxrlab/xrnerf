@@ -51,7 +51,7 @@ test_runner = dict(type='BungeeNerfTestRunner')
 # runtime settings
 num_gpus = 1
 distributed = (num_gpus > 1)  # 是否多卡，mmcv对dp多卡支持不好，故而要么单卡要么ddp多卡
-stage = 0 # current stage for training
+stage = 0  # current stage for training
 work_dir = './work_dirs/bungeenerf/#DATANAME#/stage_%d/' % stage
 timestamp = datetime.now().strftime('%d-%b-%H-%M')
 
@@ -81,10 +81,9 @@ model = dict(
         bs_data=
         'rays_o',  # the data's shape indicates the real batch-size, this's also the num of rays
     ),
-
     mlp=dict(  # coarse model
         type='BungeeNerfMLP',
-        cur_stage=stage, # resblock nums
+        cur_stage=stage,  # resblock nums
         netwidth=256,  # channels per layer
         netchunk=1024 * 64,  # number of pts sent through network in parallel;
         embedder=dict(
@@ -96,7 +95,6 @@ model = dict(
             4,  # this is 'multires_views' in origin codes, log2 of max freq for positional encoding (2D direction)
         ),
     ),
-
     render=dict(  # render model
         type='BungeeNerfRender',
         white_bkgd=
@@ -143,7 +141,9 @@ train_pipeline = [
         enable=use_viewdirs,
     ),
     dict(type='BungeeGetBounds', enable=True),
-    dict(type='BungeeGetZvals', enable=True, lindisp=lindisp,
+    dict(type='BungeeGetZvals',
+         enable=True,
+         lindisp=lindisp,
          N_samples=N_samples),  # N_samples: number of coarse samples per ray
     dict(type='PerturbZvals', enable=is_perturb),
     dict(type='DeleteUseless', enable=True,
@@ -161,15 +161,16 @@ test_pipeline = [
         include_radius=True,
         enable=True,
     ),
-    dict(type='FlattenRays',
-         include_radius=True,
+    dict(type='FlattenRays', include_radius=True,
          enable=True),  # 原来是(H, W, ..) 变成(H*W, ...) 记录下原来的尺寸
     dict(
         type='GetViewdirs',
         enable=use_viewdirs,
     ),
     dict(type='BungeeGetBounds', enable=True),
-    dict(type='BungeeGetZvals', enable=True, lindisp=lindisp,
+    dict(type='BungeeGetZvals',
+         enable=True,
+         lindisp=lindisp,
          N_samples=N_samples),  # 同上train_pipeline
     dict(type='PerturbZvals', enable=False),  # 测试集不扰动
     dict(type='DeleteUseless', enable=True,

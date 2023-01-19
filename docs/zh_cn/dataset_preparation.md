@@ -24,6 +24,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 
@@ -34,3 +35,4 @@ xrnerf
 4. 对于NeuralBody方法的训练， 请从[这里](https://github.com/zju3dv/neuralbody/blob/master/INSTALL.md#zju-mocap-dataset)下载数据集
 5. 对于Animatable方法的训练， 请从[这里](https://github.com/zju3dv/animatable_nerf/blob/master/INSTALL.md#human36m-dataset)下载数据集
 6. 对于GNR方法的训练， 请从[这里](https://generalizable-neural-performer.github.io/genebody.html)下载数据集
+7. 对于BungeeNeRF方法的训练， 请从[这里](https://drive.google.com/drive/folders/1ybq-BuRH0EEpcp5OZT9xEMi-Px1pdx4D?usp=sharing)下载数据集

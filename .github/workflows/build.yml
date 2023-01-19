@@ -1,6 +1,6 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
- 
+
 name: build
 
 on:
@@ -12,17 +12,17 @@ on:
       - 'README.md'
       - 'README_CN.md'
       - 'docs/**'
- 
+
   pull_request: # 触发条件之一为该commit属于某个PR，忽略条件同上。
     paths-ignore:
       - 'README.md'
       - 'README_CN.md'
       - 'docs/**'
- 
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
- 
+
 jobs:
   build_test:
     runs-on: ubuntu-18.04
@@ -40,7 +40,7 @@ jobs:
           # pip install torch numpy mmcv -i https://pypi.tuna.tsinghua.edu.cn/simple
           # pip install opencv-python>=3 yapf imageio scikit-image -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-          coverage run --source xrnerf/models -m pytest -s test/models 
+          coverage run --source xrnerf/models -m pytest -s test/models
           coverage xml
           coverage report -m
       - name: Upload coverage to Codecov # 上传覆盖率报告

@@ -13,7 +13,7 @@ In this tutorial, we will introduce some methods about the design of data pipeli
 ## Concept of Data Pipelines
 Data Pipeline is a modular form for data process. We make common data processing operations into python class, which named ```pipeline```.
 
-The following code block shows how to define a pipeline class to calculate viewdirs from rays' direction. 
+The following code block shows how to define a pipeline class to calculate viewdirs from rays' direction.
 
 ```python
 @PIPELINES.register_module()
@@ -47,14 +47,14 @@ We logically divide data process pipeline into 4 python files:
 * `transforms.py` convert data type or change coordinate system.
 * `compose.py` Combine various data processing operations into a pipeline.
 
-A complete data pipeline configuration is shown below. 
+A complete data pipeline configuration is shown below.
 ```python
 train_pipeline = [
     dict(type='Sample'),
     dict(type='DeleteUseless', keys=['images', 'poses', 'i_data', 'idx']),
     dict(type='ToTensor', keys=['pose', 'target_s']),
     dict(type='GetRays'),
-    dict(type='SelectRays', 
+    dict(type='SelectRays',
         sel_n=N_rand_per_sampler,
         precrop_iters=500,
         precrop_frac=0.5),  # in the first 500 iter, select rays inside center of image
@@ -84,4 +84,3 @@ In data pipeline, the data processing flow is as follows:
 * `GetZvals` samples points along rays between near point and far point
 * `PerturbZvals` data augmentation
 * `GetPts` get points' position
-

@@ -27,6 +27,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 
@@ -37,3 +38,4 @@ xrnerf
 4. For the training of NeuralBody, please download the dataset from [here](https://github.com/zju3dv/neuralbody/blob/master/INSTALL.md#zju-mocap-dataset).
 5. For the training of Animatable NeRF, please download the dataset from [here](https://github.com/zju3dv/animatable_nerf/blob/master/INSTALL.md#human36m-dataset).
 6. For the training of GNR, please download the dataset from [here](https://generalizable-neural-performer.github.io/genebody.html).
+7. For the training of BungeeNeRF, please download the dataset from [here](https://drive.google.com/drive/folders/1ybq-BuRH0EEpcp5OZT9xEMi-Px1pdx4D?usp=sharing).

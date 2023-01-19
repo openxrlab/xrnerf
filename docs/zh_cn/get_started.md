@@ -31,6 +31,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 
@@ -70,7 +71,7 @@ xrnerf
 
         def __init__(self, cfg, mlp=None, mlp_fine=None, render=None):
             super().__init__(cfg, mlp, mlp_fine, render)
-        
+
         def forward(self, data):
             ....
 
@@ -87,7 +88,7 @@ xrnerf
     from .my_networks import MyNerfNetwork
     ```
 
-3. 修改配置文件[config file](../../configs/nerf/nerf_blender_base01.py) 
+3. 修改配置文件[config file](../../configs/nerf/nerf_blender_base01.py)
    原来
 
     ```python
@@ -116,7 +117,7 @@ xrnerf
 
 XRnerf 使用 `mmcv.runner.IterBasedRunner` 来控制训练, 并用 `mmcv.runner.EpochBasedRunner` 来测试.
 
-训练时, 配置文件的 `max_iters` 表示最多训练多少次. 
+训练时, 配置文件的 `max_iters` 表示最多训练多少次.
 测试时, `max_iters` 被强制改为1, 表示进行一次完整的epoch.
 
 ### 训练命令
@@ -150,4 +151,3 @@ python run_nerf.py --config configs/nerf/nerf_blender_local01.py --dataname lego
 * [api介绍](api.md)
 * [数据集准备](dataset_preparation.md)
 * [安装](installation.md)
-

@@ -36,11 +36,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>blender_drums</td>
         <td>25.600</td> <td>25.685</td> <td>0.925</td> <td>0.946</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_ficus</td>
         <td>30.13</td> <td>29.300</td> <td>0.964</td> <td>0.972</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_hotdog</td>
         <td>36.18</td> <td>	35.905</td> <td>0.974</td> <td>0.985</td>
@@ -96,7 +96,7 @@ We compare our results with some popular frameworks and official releases in ter
 	    <th>KiloNerf</th>
 	    <th>XRNeRF</th>
 	    <th>KiloNerf</th>
-	    <th>XRNeRF</th>        
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_chair</td>
@@ -105,11 +105,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_drums</td>
         <td>25.327</td> <td>25.308</td> <td>0.931</td> <td>0.949</td> <td>413.03</td> <td>353.62</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_ficus</td>
         <td>30.1</td> <td>30.176</td> <td>0.967</td> <td>0.975</td> <td>351.04</td> <td>337.22</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>nsvf_Synthetic_NeRF_hotdog</td>
         <td>32.316</td> <td>33.408</td> <td>0.974</td> <td>0.986</td> <td>484.22</td> <td>491.49</td>
@@ -148,17 +148,17 @@ We compare our results with some popular frameworks and official releases in ter
 	    <th align="center" colspan="2">800x800</th>
 	    <th align="center" colspan="2">400x400</th>
 	    <th align="center" colspan="2">200x200</th>
-	    <th align="center" colspan="2">100x100</th>     
-	</tr >    
+	    <th align="center" colspan="2">100x100</th>
+	</tr >
 	<tr>
 	    <th>Jax</th>
 	    <th>XRNeRF</th>
 	    <th>Jax</th>
 	    <th>XRNeRF</th>
 	    <th>Jax</th>
-	    <th>XRNeRF</th>        
+	    <th>XRNeRF</th>
 	    <th>Jax</th>
-	    <th>XRNeRF</th>          
+	    <th>XRNeRF</th>
 	</tr >
 	<tr >
 	    <td>blender_ship</td>
@@ -167,11 +167,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>blender_mic</td>
         <td>33.739</td> <td>32.478</td> <td>36.353</td> <td>35.008</td> <td>38.837</td> <td>37.958</td> <td>39.011</td> <td>38.064</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_materials</td>
         <td>30.128</td> <td>29.278</td> <td>31.424</td> <td>30.505</td> <td>33.163</td> <td>32.192</td> <td>34.174</td> <td>33.122</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_lego</td>
         <td>33.971</td> <td>32.803</td> <td>35.248</td> <td>34.123</td> <td>35.796</td> <td>34.848</td> <td>35.223</td> <td>34.382</td>
@@ -187,7 +187,7 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>blender_drums</td>
         <td>25.297</td> <td>24.790</td> <td>26.463</td> <td>26.020</td> <td>27.808</td> <td>27.510</td> <td>28.791</td> <td>28.369</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_chair</td>
         <td>33.351</td> <td>32.429</td> <td>36.517</td> <td>35.618</td> <td>38.056</td> <td>37.342</td> <td>37.950</td> <td>37.257</td>
@@ -214,28 +214,28 @@ We compare our results with some popular frameworks and official releases in ter
 	</tr >
 	<tr >
 	    <td>blender_chair</td>
-        <td>32.927</td> <td>32.71</td> 
+        <td>32.927</td> <td>32.71</td>
 	</tr>
 	<tr >
 	    <td>blender_drums</td>
         <td>26.02</td> <td>26.9</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_ficus</td>
         <td>33.51</td> <td>33.97</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>blender_hotdog</td>
         <td>37.40</td> <td>	37.17</td>
 	</tr>
 	<tr >
 	    <td>blender_lego</td>
-        <td>36.39</td> <td>35.1</td> 
+        <td>36.39</td> <td>35.1</td>
 	</tr>
 	<tr >
 	    <td>blender_materials</td>
-        <td>29.78</td> <td>30.73</td> 
-	</tr>    
+        <td>29.78</td> <td>30.73</td>
+	</tr>
 	<tr >
 	    <td>blender_mic</td>
         <td>36.22</td> <td>34.05</td>
@@ -275,11 +275,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>315</td>
         <td>33.07</td> <td>35.99</td> <td>0.988</td> <td>0.992</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>377</td>
         <td>33.86</td> <td>33.86</td> <td>0.985</td> <td>0.986</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>386</td>
         <td>36.07</td> <td>34.24</td> <td>0.984</td> <td>0.984</td>
@@ -328,11 +328,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>S5</td>
         <td>32.60</td> <td>33.25</td> <td>0.987</td> <td>0.990</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>S6</td>
         <td>29.49</td> <td>30.12</td> <td>0.972</td> <td>0.974</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>S7</td>
         <td>31.54</td> <td>34.47</td> <td>0.984</td> <td>0.988</td>
@@ -373,11 +373,11 @@ We compare our results with some popular frameworks and official releases in ter
 	<tr >
 	    <td>barry</td>
         <td>29.28</td> <td>30.71</td> <td>0.94</td> <td>0.95</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>fuzhizhi</td>
         <td>21.96</td> <td>21.42</td> <td>0.90</td> <td>0.89</td>
-	</tr>    
+	</tr>
 	<tr >
 	    <td>jinyutong</td>
         <td>23.90</td> <td>24.08</td> <td>0.90</td> <td>0.91</td>

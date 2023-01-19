@@ -5,10 +5,8 @@ from .load_deepvoxels import load_dv_data
 from .load_LINEMOD import load_LINEMOD_data
 from .load_llff import load_llff_data
 from .load_multiscale import load_multiscale_data
-from .load_nsvf_dataset import load_nsvf_dataset
 from .load_multiscale_google import load_google_data
-
-
+from .load_nsvf_dataset import load_nsvf_dataset
 
 
 def load_data(args):
@@ -144,27 +142,27 @@ def load_data(args):
         if render_subset != 'custom_path':
             render_poses = np.array(poses[i_render])
 
-
     elif args.dataset_type == 'mutiscale_google':
-        images, poses, scene_scale, scene_origin, scale_split = load_google_data(args.datadir, args.factor)
+        images, poses, scene_scale, scene_origin, scale_split = load_google_data(
+            args.datadir, args.factor)
         n_images = len(images)
         print('Load Multiscale Google', n_images)
         if args.white_bkgd:
-            images = images[...,:3]*images[...,-1:] + (1.-images[...,-1:])
+            images = images[..., :3] * images[..., -1:] + (1. -
+                                                           images[..., -1:])
         else:
-            images = images[...,:3]
+            images = images[..., :3]
         images = images[scale_split[args.cur_stage]:]
         poses = poses[scale_split[args.cur_stage]:]
-        
 
         if args.holdout > 0:
             i_test = np.arange(images.shape[0])[::args.holdout]
         i_val = i_test
-        i_train = np.array([i for i in np.arange(int(images.shape[0])) if
-                (i not in i_test)])
-        
+        i_train = np.array(
+            [i for i in np.arange(int(images.shape[0])) if (i not in i_test)])
+
         hwf = poses[0, :3, -1]
-        poses = poses[:,:3,:4]
+        poses = poses[:, :3, :4]
         H, W, focal = hwf
         H, W = int(H), int(W)
         hwf = [H, W, focal]
@@ -189,4 +187,3 @@ def load_data(args):
     # exit(0)
 
     return images, poses, render_poses, hwf, K, near, far, i_train, i_val, i_test
-

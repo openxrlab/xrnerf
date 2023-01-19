@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+
 import pytest
 
 try:
@@ -8,13 +9,14 @@ try:
     sys.path.extend(['.', '..'])
     import numpy as np
     from mmcv import Config, ConfigDict
+
     from xrnerf.models.builder import build_network
 except:
-    print("please install env")
+    print('please install env')
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), 
-    reason='No GPU device has been found.')
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason='No GPU device has been found.')
 def test_base_network():
     phase = 'train_pose'
     num_train_pose = 250

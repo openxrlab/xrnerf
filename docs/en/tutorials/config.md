@@ -72,7 +72,7 @@ The fllowing content explain these configuration components one by one.
     # some shared params by model and data, to avoid define twice
     dataset_type = 'blender'
     no_batching = True  # only take random rays from 1 image at a time
-    no_ndc = True 
+    no_ndc = True
 
     white_bkgd = True  # set to render synthetic data on a white bkgd (always use for dvoxels)
     is_perturb = True  # set to 0. for no jitter, 1. for jitter
@@ -116,19 +116,19 @@ The fllowing content explain these configuration components one by one.
         mlp_fine=dict(  # fine model
             type='NerfMLP',
             skips=[4],
-            netdepth=8, 
-            netwidth=256, 
+            netdepth=8,
+            netwidth=256,
             netchunk=1024 * 32,
-            output_ch=5, 
-            use_viewdirs=use_viewdirs,  
+            output_ch=5,
+            use_viewdirs=use_viewdirs,
             embedder=dict(
                 type='BaseEmbedder',
-                i_embed=0, 
-                multires=10, 
-                multires_dirs=4, 
+                i_embed=0,
+                multires=10,
+                multires_dirs=4,
             ),
         ),
-        render=dict(  
+        render=dict(
             type='NerfRender', # render cloass name
             white_bkgd=white_bkgd,  # see above
             raw_noise_std=0,  # std dev of noise added to regularize sigma_a output, 1e0 recommended
@@ -139,7 +139,7 @@ The fllowing content explain these configuration components one by one.
 
 * data
     define network structure, a network is usually composed of embedder, mlp and render.
-    ```python    
+    ```python
 
     basedata_cfg = dict(
         dataset_type=dataset_type,
@@ -165,7 +165,7 @@ The fllowing content explain these configuration components one by one.
         dict(type='DeleteUseless', keys=['images', 'poses', 'i_data', 'idx']),
         dict(type='ToTensor', keys=['pose', 'target_s']),
         dict(type='GetRays'),
-        dict(type='SelectRays', 
+        dict(type='SelectRays',
             sel_n=N_rand_per_sampler,
             precrop_iters=500,
             precrop_frac=0.5),  # in the first 500 iter, select rays inside center of image

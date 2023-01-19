@@ -2,10 +2,10 @@ from mmcv.runner import EpochBasedRunner, IterBasedRunner
 
 
 class NerfTrainRunner(IterBasedRunner):
-    """NerfTrainRunner"""
+    """NerfTrainRunner."""
     pass
 
 
 class NerfTestRunner(EpochBasedRunner):
-    """NerfTestRunner"""
+    """NerfTestRunner."""
     pass

@@ -24,7 +24,7 @@ class DistllCycleHook(Hook):
         self.cfg = cfg
 
     def before_run(self, runner):
-        """DistllCycleHook"""        
+        """DistllCycleHook."""
         if self.cfg.total_num_networks % self.cfg.max_num_networks == 0:
             runner._max_iters = (
                 self.cfg.total_num_networks //
@@ -36,7 +36,7 @@ class DistllCycleHook(Hook):
         print('max_iters:', runner._max_iters)
 
     def after_val_iter(self, runner):
-        """DistllCycleHook"""        
+        """DistllCycleHook."""
         if (runner.iter % self.cfg.max_iters
                 == 0) and runner.iter < runner._max_iters:
             print('current iter:', runner.iter)
@@ -44,7 +44,7 @@ class DistllCycleHook(Hook):
             self._update_train_distill_cyle(runner, index)
 
     def _update_train_distill_cyle(self, runner, index):
-        """DistllCycleHook"""        
+        """DistllCycleHook."""
         self.cfg.data['train'].cfg.update({'batch_index': index})
         train_loader, trainset = build_dataloader(self.cfg, mode='train')
 

@@ -119,7 +119,7 @@ __global__ void insert_grid_surface_kernel(
 	|| dim <= 0 || step <= 0 || n <= 0 || id >= n)
         return;
     const index *surf = _surf + id * dim;
-        
+
     index bbox[dim * 2], bbox_num = 1;
     for(unsigned char d = 0; d < dim; ++d) {
         scalar_t minmax[2] = {
@@ -191,7 +191,7 @@ at::Tensor insert_grid_surface_cuda(
 
     const int threads = 512;
     const dim3 blocks (num_faces / threads + 1, 1, 1);
-    
+
 	tri_num.zero_();        // clear tri_num buffer
 	AT_DISPATCH_FLOATING_TYPES(verts.type(), "insert_grid_surface_cuda", ([&] {
         insert_grid_surface_kernel<scalar_t, int32_t, 3><<<blocks, threads>>>(
@@ -205,9 +205,9 @@ at::Tensor insert_grid_surface_cuda(
             NULL
         );
         }));
-    
+
     cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
+    if (err != cudaSuccess)
             printf("Error in first insert_grid_surface_cuda: %s\n", cudaGetErrorString(err));
 
     tri_num.set_(at::_cast_Int(tri_num.cumsum(0)));     // cumsum determines the size of tri_idx buffer
@@ -231,11 +231,11 @@ at::Tensor insert_grid_surface_cuda(
         }));
 
     err = cudaGetLastError();
-    if (err != cudaSuccess) 
+    if (err != cudaSuccess)
             printf("Error in second insert_grid_surface_cuda: %s\n", cudaGetErrorString(err));
 
 	return tri_idx;
-    
+
 }
 
 template<typename scalar_t, typename index, unsigned char dim>
@@ -245,7 +245,7 @@ __global__ void search_nearest_point_kenerel(
 		const scalar_t *points_base, const index *tri,
 		const scalar_t *point_search_, const index points_num,
 		scalar_t *coeff_ = NULL, scalar_t *proj_ = NULL,
-		index *near_idx_ = NULL, scalar_t max_r2 = 0) 
+		index *near_idx_ = NULL, scalar_t max_r2 = 0)
 {
     const int id = blockIdx.x * blockDim.x + threadIdx.x;
     const scalar_t *point_search = point_search_ + 3 * id;
@@ -257,7 +257,7 @@ __global__ void search_nearest_point_kenerel(
 	|| tri_num == NULL || tri_idx == NULL || size == NULL || _min == NULL
 	|| step <= 0 || id >= points_num)
         return;
-        
+
 	index x[dim*2+1], maxLinf = 0, n = 1, nearest = tri_num[size[dim]-1];
 	for(unsigned char d = 0; d < dim; ++d) {
 		scalar_t xf = (point_search[d] - _min[d]) / step;
@@ -399,14 +399,14 @@ void search_nearest_point_cuda (
     }));
 
     cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
+    if (err != cudaSuccess)
             printf("Error in search_nearest_point_cuda: %s\n", cudaGetErrorString(err));
 
 }
 
 template<typename scalar_t>
 bool __device__ intersect_tri(
-		const scalar_t* src, unsigned char dir, 
+		const scalar_t* src, unsigned char dir,
 		scalar_t* patch, unsigned char dim
 ) {
 	if(dir > 2 * dim) return false;
@@ -442,13 +442,13 @@ bool __device__ intersect_tri(
 	}
 	for(unsigned char i = 0; i < dim*dim; ++i)
 		patch[i] -= src[i%dim];
-	/* For 3-dimension, dir % 2 == 0, dir / 2 == 0, we have 
+	/* For 3-dimension, dir % 2 == 0, dir / 2 == 0, we have
 		[Xa Xb Xc 1][  Ca  ]   [X]    Ca  >= 0
-		[Ya Yb Yc 0][  Cb  ] = [Y],   Cb  >= 0 
+		[Ya Yb Yc 0][  Cb  ] = [Y],   Cb  >= 0
 		[Za Zb Zc 0][  Cc  ]   [Z]    Cc  >= 0
 		[ 1  1  1 0][lambda]   [1]  lambda>= 0
 	solve	[Xa-X Xb-X Xc-X 1]-1[0]
-		[Ya-Y Yb-Y Yc-Y 0]  [0] 
+		[Ya-Y Yb-Y Yc-Y 0]  [0]
 		[Za-Z Zb-Z Zc-Z 0]  [0] >= 0
 		[  1    1    1  0]  [1]
 	For arbitrary case, (i = dir/2)
@@ -624,7 +624,7 @@ void search_inside_mesh_cuda (
     }));
 
     cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
+    if (err != cudaSuccess)
             printf("Error in search_inside_mesh_cuda: %s\n", cudaGetErrorString(err));
 
 }
@@ -975,11 +975,11 @@ __device__ bool intersect_tri2(const scalar_t src[3], const scalar_t dir[3],
 
 template<typename scalar_t, typename index, unsigned char dim>
 __global__ void search_ray_grid_kernel(
-		const index *tri_num, const index *tri_idx, 
+		const index *tri_num, const index *tri_idx,
 		const index *size, const scalar_t *_min, scalar_t step,
 		const scalar_t *points_base, const index *tri,
 		const scalar_t *_origin, const scalar_t *_direction,
-		bool *_valid, index points_num, 
+		bool *_valid, index points_num,
 		scalar_t *coeff = NULL, index exclude_ind = 0,
 		bool both_dir = false, scalar_t max_r2 = 0) {
 	// const unsigned char dim = 3;
@@ -1139,11 +1139,11 @@ __global__ void search_ray_grid_kernel(
 					x[dim*2+1] = d > 0 ?
 						x[dim*2+1]*size[d]+x[dim+1+d]:x[dim+1+d];
 			} else if(out_dim[0] >= 2 * dim) {
-				valid[0] = (inter_ind != tri_num[size[dim]-1]); 
+				valid[0] = (inter_ind != tri_num[size[dim]-1]);
 				return;
 			}
 		} else if(out_dim[0] >= 2 * dim){
-			valid[0] = (inter_ind != tri_num[size[dim]-1]); 
+			valid[0] = (inter_ind != tri_num[size[dim]-1]);
 			return;
 		}
 		out_dim[0] = ray_intersect_grid<scalar_t,index,dim>(origin, direction,
@@ -1173,7 +1173,7 @@ __global__ void search_ray_grid_kernel(
 					x[dim] = d > 0 ? x[dim]*size[d]+x[d] : x[d];
 		}
 	}
-	valid[0] = (inter_ind != tri_num[size[dim]-1]); 
+	valid[0] = (inter_ind != tri_num[size[dim]-1]);
 	return;
 }
 
@@ -1216,17 +1216,16 @@ void search_intersect_cuda (
 		);
 	}));
 	// __global__ void search_ray_grid_kernel(
-	// 	const index *tri_num, const index *tri_idx, 
+	// 	const index *tri_num, const index *tri_idx,
 	// 	const index *size, const scalar_t *_min, scalar_t step,
 	// 	const scalar_t *points_base, const index *tri,
 	// 	const scalar_t *_origin, const scalar_t *_direction,
-	// 	bool *_valid, index points_num, 
+	// 	bool *_valid, index points_num,
 	// 	scalar_t *coeff = NULL, index exclude_ind = 0,
 	// 	bool both_dir = false, scalar_t max_r2 = 0)
 
 	cudaError_t err = cudaGetLastError();
-	if (err != cudaSuccess) 
+	if (err != cudaSuccess)
 			printf("Error in search_intersect_cuda: %s\n", cudaGetErrorString(err));
 
 }
-

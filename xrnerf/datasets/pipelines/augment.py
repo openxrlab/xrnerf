@@ -7,6 +7,7 @@ from mmcv.runner import get_dist_info
 
 from ..builder import PIPELINES
 
+
 @PIPELINES.register_module()
 class SelectRays:
     """random select rays when training

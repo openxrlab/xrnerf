@@ -24,8 +24,8 @@ We provide some tips for XRNeRF installation in this file.
 
 - Linux
 - Python 3.7+
-- **PyTorch 1.10+ (necessary)** 
-- **CUDA 11.0+ (necessary)** 
+- **PyTorch 1.10+ (necessary)**
+- **CUDA 11.0+ (necessary)**
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)
@@ -40,7 +40,7 @@ We provide some tips for XRNeRF installation in this file.
 - [spconv](https://github.com/dmlc/decord): Install proper vision that matches your cuda-vision, for example `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): Install by `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"`
 
-About hardware requirements: 
+About hardware requirements:
 Instant-NGP need GPU-ARCH>=75, which means that at least a RTX 20X0 is required to have a full support.
 
 | RTX 30X0 | A100 | RTX 20X0 | TITAN V / V100 | GTX 10X0 / TITAN Xp | GTX 9X0 | K80 |
@@ -90,7 +90,7 @@ conda activate xrnerf
 
 ## Another option: Docker Image
 
-You need to set docker daemon, to enable docker-build's gpu support (for cuda extension install). 
+You need to set docker daemon, to enable docker-build's gpu support (for cuda extension install).
 ```shell
 sudo apt-get install nvidia-container-runtime -f -y
 sudo cp -f docker/daemon.json /etc/docker
@@ -133,4 +133,3 @@ Notice that ```coverage``` and ```pytest``` need to be installed before that
 ```
 pip install coverage pytest -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
-

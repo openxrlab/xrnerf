@@ -50,6 +50,7 @@
 - [X] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
 - [X] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
 - [X] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+- [X] [BungeeNeRF](https://city-super.github.io/citynerf/) (ECCV'2022)
 
 
 支持的人体类神经渲染方法如下：
@@ -77,6 +78,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 
@@ -119,7 +121,7 @@ xrnerf
 
         def __init__(self, cfg, mlp=None, mlp_fine=None, render=None):
             super().__init__(cfg, mlp, mlp_fine, render)
-        
+
         def forward(self, data):
             ....
 
@@ -136,7 +138,7 @@ xrnerf
     from .my_networks import MyNerfNetwork
     ```
 
-3. 修改配置文件[config file](configs/nerf/nerf_blender_base01.py) 
+3. 修改配置文件[config file](configs/nerf/nerf_blender_base01.py)
    原来
 
     ```python
@@ -165,7 +167,7 @@ xrnerf
 
 XRnerf 使用 `mmcv.runner.IterBasedRunner` 来控制训练, 并用 `mmcv.runner.EpochBasedRunner` 来测试.
 
-训练时, 配置文件的 `max_iters` 表示最多训练多少次. 
+训练时, 配置文件的 `max_iters` 表示最多训练多少次.
 测试时, `max_iters` 被强制改为1, 表示进行一次完整的epoch.
 
 ### 训练命令

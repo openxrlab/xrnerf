@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 
+
 def get_rays_np(H, W, K, c2w):
     i, j = np.meshgrid(np.arange(W, dtype=np.float32),
                        np.arange(H, dtype=np.float32),
@@ -153,43 +154,51 @@ def load_rays_multiscale(meta, n_examples):
 
 
 def get_rays_np_bungee(H, W, focal, c2w):
-    i, j = np.meshgrid(np.arange(W, dtype=np.float32), np.arange(H, dtype=np.float32), indexing='xy')
-    dirs = np.stack([(i-W*.5)/focal, -(j-H*.5)/focal, -np.ones_like(i)], -1)
-    dirs = dirs/np.linalg.norm(dirs, axis=-1)[..., None]
-    rays_d = np.sum(dirs[..., np.newaxis, :] * c2w[:3,:3], -1) 
-    rays_o = np.broadcast_to(c2w[:3,-1], np.shape(rays_d))
+    i, j = np.meshgrid(np.arange(W, dtype=np.float32),
+                       np.arange(H, dtype=np.float32),
+                       indexing='xy')
+    dirs = np.stack(
+        [(i - W * .5) / focal, -(j - H * .5) / focal, -np.ones_like(i)], -1)
+    dirs = dirs / np.linalg.norm(dirs, axis=-1)[..., None]
+    rays_d = np.sum(dirs[..., np.newaxis, :] * c2w[:3, :3], -1)
+    rays_o = np.broadcast_to(c2w[:3, -1], np.shape(rays_d))
     return rays_o, rays_d
 
-def load_rays_bungee(H, W, focal, poses, images, i_data, n_images, scale_split, cur_stage):
+
+def load_rays_bungee(H, W, focal, poses, images, i_data, n_images, scale_split,
+                     cur_stage):
     # get scale codes
     scale_codes = []
     prev_spl = n_images
     cur_scale = 0
-    for spl in scale_split[:cur_stage+1]:
-        scale_codes.append(np.tile(np.ones(((prev_spl-spl),1,1,1))*cur_scale, (1,H,W,1)))
+    for spl in scale_split[:cur_stage + 1]:
+        scale_codes.append(
+            np.tile(
+                np.ones(((prev_spl - spl), 1, 1, 1)) * cur_scale,
+                (1, H, W, 1)))
         prev_spl = spl
         cur_scale += 1
     scale_codes = np.concatenate(scale_codes, 0)
     scale_codes = scale_codes.astype(np.int64)
     # [N, ro+rd, H, W, 3]
     rays = np.stack([get_rays_np_bungee(H, W, focal, p) for p in poses], 0)
-    directions = rays[:,1,:,:,:]
+    directions = rays[:, 1, :, :, :]
     dx = np.sqrt(
         np.sum((directions[:, :-1, :, :] - directions[:, 1:, :, :])**2, -1))
     dx = np.concatenate([dx, dx[:, -2:-1, :]], 1)
     radii = dx[..., None] * 2 / np.sqrt(12)
-    
+
     # [N, ro+rd+rgb, H, W, 3]
-    rays_rgb = np.concatenate([rays, images[:,None]], 1)
-    rays_rgb = np.transpose(rays_rgb, [0,2,3,1,4]) 
-    rays_rgb = np.stack([rays_rgb[i] for i in i_data], 0) 
+    rays_rgb = np.concatenate([rays, images[:, None]], 1)
+    rays_rgb = np.transpose(rays_rgb, [0, 2, 3, 1, 4])
+    rays_rgb = np.stack([rays_rgb[i] for i in i_data], 0)
     radii = np.stack([radii[i] for i in i_data], 0)
     scale_codes = np.stack([scale_codes[i] for i in i_data], 0)
-    
-    rays_rgb = np.reshape(rays_rgb, [-1,3,3])
+
+    rays_rgb = np.reshape(rays_rgb, [-1, 3, 3])
     radii = np.reshape(radii, [-1, 1])
-    scale_codes = np.reshape(scale_codes, [-1, 1]) 
-          
+    scale_codes = np.reshape(scale_codes, [-1, 1])
+
     rand_idx = torch.randperm(rays_rgb.shape[0])
     rays_rgb = rays_rgb[rand_idx.cpu().data.numpy()]
     radii = radii[rand_idx.cpu().data.numpy()]
