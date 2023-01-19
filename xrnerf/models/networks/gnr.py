@@ -1,22 +1,20 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import numpy as np
 import torch
-from torch import nn
 import torch.nn.functional as F
+from mmcv.runner import get_dist_info, load_checkpoint
+from torch import nn
 from tqdm import tqdm
-from mmcv.runner import load_checkpoint, get_dist_info
-from mmcv.runner import get_dist_info
 
 from .. import builder
 from ..builder import NETWORKS
 from .nerf import NerfNetwork
 from .utils import *
-import numpy as np
 from .utils.gnr import index, init_weights
 
 
 @NETWORKS.register_module()
 class GnrNetwork(NerfNetwork):
-
     def __init__(self, cfg):
 
         super(GnrNetwork, self).__init__(cfg)
@@ -70,8 +68,6 @@ class GnrNetwork(NerfNetwork):
         error = self.nerf_renderer.render(**data)
         return error
 
-
-
     def render_path(self, data):
         with torch.no_grad():
             rgbs = None
@@ -100,7 +96,6 @@ class GnrNetwork(NerfNetwork):
         local_rank = 0
         render_gt = test_data['render_gt'][0].to(local_rank)
 
-
         data_ren = self.get_image_feature(data)
         rgbs, depths = self.nerf_renderer.render_path(**data_ren)
 
@@ -110,16 +105,17 @@ class GnrNetwork(NerfNetwork):
             att_rgbs = rgbs[..., :3]
 
         re_att_rgbs = np.array([att_rgb for att_rgb in att_rgbs.cpu().numpy()])
-        re_render_gt = np.array([gt for gt in render_gt.permute(0, 2, 3, 1).cpu().numpy()])
+        re_render_gt = np.array(
+            [gt for gt in render_gt.permute(0, 2, 3, 1).cpu().numpy()])
 
-
-        outputs = {'rgbs': re_att_rgbs,
-                   'disps': depths.cpu(),
-                   'rgb': re_att_rgbs,
-                   'gt_img': re_render_gt,
-                   'gt_imgs': re_render_gt,
-                   'idx': int(test_data['idx'].cpu())
-                   }
+        outputs = {
+            'rgbs': re_att_rgbs,
+            'disps': depths.cpu(),
+            'rgb': re_att_rgbs,
+            'gt_img': re_render_gt,
+            'gt_imgs': re_render_gt,
+            'idx': int(test_data['idx'].cpu())
+        }
 
         return outputs
 
@@ -139,8 +135,10 @@ class GnrNetwork(NerfNetwork):
         calib_tensor = data['calib'][0].to(device=local_rank)
         mask_tensor = data['mask'][0].to(device=local_rank)
         bbox = list(data['bbox'][0].cpu().numpy().astype(np.int32))
-        mesh_param = {'center': data['center'][0].to(device=local_rank),
-                      'spatial_freq': data['spatial_freq'][0].cpu().numpy().item()}
+        mesh_param = {
+            'center': data['center'][0].to(device=local_rank),
+            'spatial_freq': data['spatial_freq'][0].cpu().numpy().item()
+        }
         if any([opt.use_smpl_sdf, opt.use_t_pose]):
             smpl = {'rot': data['smpl_rot'].to(device=local_rank)}
             if opt.use_smpl_sdf or opt.use_t_pose:
@@ -150,18 +148,23 @@ class GnrNetwork(NerfNetwork):
                 smpl['t_verts'] = data['smpl_t_verts'][0].to(device=local_rank)
                 smpl['t_faces'] = data['smpl_t_faces'][0].to(device=local_rank)
             if opt.use_smpl_depth:
-                smpl['depth'] = data['smpl_depth'][0].to(device=local_rank)[:, None, ...]
+                smpl['depth'] = data['smpl_depth'][0].to(
+                    device=local_rank)[:, None, ...]
 
         else:
             smpl = None
 
         if 'scan_verts' in data.keys():
-            scan = [data['scan_verts'][0].to(device=local_rank), data['scan_faces'][0].to(device=local_rank)]
+            scan = [
+                data['scan_verts'][0].to(device=local_rank),
+                data['scan_faces'][0].to(device=local_rank)
+            ]
         else:
             scan = None
 
-        persps = data['persps'][0].to(device=local_rank) if opt.projection_mode == 'perspective' else None
-
+        persps = data['persps'][0].to(
+            device=local_rank
+        ) if opt.projection_mode == 'perspective' else None
 
         return {
             'images': image_tensor,
@@ -185,6 +188,3 @@ class GnrNetwork(NerfNetwork):
             img = img * 255.
         img = np.clip(img, 0, 255)
         return img.astype(np.uint8)
-
-
-

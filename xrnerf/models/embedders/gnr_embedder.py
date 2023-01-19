@@ -1,22 +1,26 @@
-"""
-    This file is directly borrowed from PIFu
-    GNR uses PIFu's Stacked-Hour-Glass for image encoding
-"""
+"""This file is directly borrowed from PIFu GNR uses PIFu's Stacked-Hour-Glass
+for image encoding."""
 
 # from ..net_util import *
 
+import math
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from ..builder import EMBEDDERS
-import math
-import numpy as np
+
 
 def conv3x3(in_planes, out_planes, strd=1, padding=1, bias=False):
-    "3x3 convolution with padding"
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3,
-                     stride=strd, padding=padding, bias=bias)
+    """3x3 convolution with padding."""
+    return nn.Conv2d(in_planes,
+                     out_planes,
+                     kernel_size=3,
+                     stride=strd,
+                     padding=padding,
+                     bias=bias)
 
 
 class ConvBlock(nn.Module):
@@ -41,8 +45,11 @@ class ConvBlock(nn.Module):
             self.downsample = nn.Sequential(
                 self.bn4,
                 nn.ReLU(True),
-                nn.Conv2d(in_planes, out_planes,
-                          kernel_size=1, stride=1, bias=False),
+                nn.Conv2d(in_planes,
+                          out_planes,
+                          kernel_size=1,
+                          stride=1,
+                          bias=False),
             )
         else:
             self.downsample = None
@@ -71,13 +78,16 @@ class ConvBlock(nn.Module):
 
         return out3
 
+
 @EMBEDDERS.register_module()
 class PositionalEncoding:
-    """
-    GNR uses positional encoding in NeRF for coordinate embedding
-    """
-
-    def __init__(self, d, num_freqs=10, min_freq=None, max_freq=None, freq_type='linear'):
+    """GNR uses positional encoding in NeRF for coordinate embedding."""
+    def __init__(self,
+                 d,
+                 num_freqs=10,
+                 min_freq=None,
+                 max_freq=None,
+                 freq_type='linear'):
         self.num_freqs = num_freqs
         self.min_freq = min_freq
         self.max_freq = max_freq
@@ -94,18 +104,23 @@ class PositionalEncoding:
 
         if self.freq_type == 'linear':
             min_freq = 0 if self.min_freq is None else self.min_freq
-            max_freq = 2 ** (self.num_freqs - 1) if self.max_freq is None else self.max_freq
-            freq_bands = torch.linspace(min_freq * math.pi * 2, max_freq * math.pi * 2,
-                                        steps=N_freqs)  # linear freq band, Fourier expansion
+            max_freq = 2**(self.num_freqs -
+                           1) if self.max_freq is None else self.max_freq
+            freq_bands = torch.linspace(
+                min_freq * math.pi * 2, max_freq * math.pi * 2,
+                steps=N_freqs)  # linear freq band, Fourier expansion
         else:
             min_freq = 0 if self.min_freq is None else math.log2(self.min_freq)
-            max_freq = self.num_freqs - 1 if self.max_freq is None else math.log2(self.max_freq)
-            freq_bands = 2. ** torch.linspace(min_freq * math.pi * 2, max_freq * math.pi * 2,
-                                              steps=N_freqs)  # log expansion
+            max_freq = self.num_freqs - 1 if self.max_freq is None else math.log2(
+                self.max_freq)
+            freq_bands = 2.**torch.linspace(min_freq * math.pi * 2,
+                                            max_freq * math.pi * 2,
+                                            steps=N_freqs)  # log expansion
 
         for freq in freq_bands:
             for p_fn in [torch.sin, torch.cos]:
-                embed_fns.append(lambda x, p_fn=p_fn, freq=freq: p_fn(x * freq))
+                embed_fns.append(
+                    lambda x, p_fn=p_fn, freq=freq: p_fn(x * freq))
                 out_dim += d
 
         self.embed_fns = embed_fns
@@ -114,12 +129,10 @@ class PositionalEncoding:
     def embed(self, inputs):
         return torch.cat([fn(inputs) for fn in self.embed_fns], -1)
 
+
 @EMBEDDERS.register_module()
 class SphericalHarmonics:
-    """
-    GNR uses Sepherical Harmonics for view direction embedding
-    """
-
+    """GNR uses Sepherical Harmonics for view direction embedding."""
     def __init__(self, d=3, rank=3):
         assert d % 3 == 0
         self.rank = max([int(rank), 0])
@@ -163,26 +176,35 @@ class SphericalHarmonics:
     def embed(self, inputs):
         return self.SH(inputs)
 
+
 @EMBEDDERS.register_module()
 class SRFilters(nn.Module):
-    """
-    Upsample the pixel-aligned feature
-    """
+    """Upsample the pixel-aligned feature."""
     def __init__(self, order=2, in_ch=256, out_ch=128):
         super(SRFilters, self).__init__()
         self.in_ch = in_ch
         self.out_ch = out_ch
-        self.image_factor = [0.5**(order-i) for i in range(0, order+1)]
-        self.convs = nn.ModuleList([nn.Conv2d(in_ch+3, out_ch, kernel_size=3, padding=1)] +
-                    [nn.Conv2d(out_ch+3, out_ch, kernel_size=3, padding=1) for i in range(order)])
+        self.image_factor = [0.5**(order - i) for i in range(0, order + 1)]
+        self.convs = nn.ModuleList(
+            [nn.Conv2d(in_ch + 3, out_ch, kernel_size=3, padding=1)] + [
+                nn.Conv2d(out_ch + 3, out_ch, kernel_size=3, padding=1)
+                for i in range(order)
+            ])
 
     def forward(self, feat, images):
         for i, conv in enumerate(self.convs):
-            im = F.interpolate(images, scale_factor=self.image_factor[i], mode='bicubic', align_corners=True) if self.image_factor[i] is not 1 else images
-            feat = F.interpolate(feat, scale_factor=2, mode='bicubic', align_corners=True) if i is not 0 else feat
+            im = F.interpolate(images,
+                               scale_factor=self.image_factor[i],
+                               mode='bicubic',
+                               align_corners=True
+                               ) if self.image_factor[i] is not 1 else images
+            feat = F.interpolate(
+                feat, scale_factor=2, mode='bicubic',
+                align_corners=True) if i is not 0 else feat
             feat = torch.cat([feat, im], dim=1)
             feat = self.convs[i](feat)
         return feat
+
 
 @EMBEDDERS.register_module()
 class HourGlass(nn.Module):
@@ -196,16 +218,24 @@ class HourGlass(nn.Module):
         self._generate_network(self.depth)
 
     def _generate_network(self, level):
-        self.add_module('b1_' + str(level), ConvBlock(self.features, self.features, norm=self.norm))
+        self.add_module(
+            'b1_' + str(level),
+            ConvBlock(self.features, self.features, norm=self.norm))
 
-        self.add_module('b2_' + str(level), ConvBlock(self.features, self.features, norm=self.norm))
+        self.add_module(
+            'b2_' + str(level),
+            ConvBlock(self.features, self.features, norm=self.norm))
 
         if level > 1:
             self._generate_network(level - 1)
         else:
-            self.add_module('b2_plus_' + str(level), ConvBlock(self.features, self.features, norm=self.norm))
+            self.add_module(
+                'b2_plus_' + str(level),
+                ConvBlock(self.features, self.features, norm=self.norm))
 
-        self.add_module('b3_' + str(level), ConvBlock(self.features, self.features, norm=self.norm))
+        self.add_module(
+            'b3_' + str(level),
+            ConvBlock(self.features, self.features, norm=self.norm))
 
     def _forward(self, level, inp):
         # Upper branch
@@ -228,13 +258,17 @@ class HourGlass(nn.Module):
         # NOTE: for newer PyTorch (1.3~), it seems that training results are degraded due to implementation diff in F.grid_sample
         # if the pretrained model behaves weirdly, switch with the commented line.
         # NOTE: I also found that "bicubic" works better.
-        up2 = F.interpolate(low3, scale_factor=2, mode='bicubic', align_corners=True)
+        up2 = F.interpolate(low3,
+                            scale_factor=2,
+                            mode='bicubic',
+                            align_corners=True)
         # up2 = F.interpolate(low3, scale_factor=2, mode='nearest)
 
         return up1 + up2
 
     def forward(self, x):
         return self._forward(self.depth, x)
+
 
 @EMBEDDERS.register_module()
 class HGFilter(nn.Module):
@@ -254,10 +288,18 @@ class HGFilter(nn.Module):
 
         if self.opt.hg_down == 'conv64':
             self.conv2 = ConvBlock(64, 64, self.opt.norm)
-            self.down_conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1)
+            self.down_conv2 = nn.Conv2d(64,
+                                        128,
+                                        kernel_size=3,
+                                        stride=2,
+                                        padding=1)
         elif self.opt.hg_down == 'conv128':
             self.conv2 = ConvBlock(64, 128, self.opt.norm)
-            self.down_conv2 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
+            self.down_conv2 = nn.Conv2d(128,
+                                        128,
+                                        kernel_size=3,
+                                        stride=2,
+                                        padding=1)
         elif self.opt.hg_down == 'ave_pool':
             self.conv2 = ConvBlock(64, 128, self.opt.norm)
         else:
@@ -268,24 +310,40 @@ class HGFilter(nn.Module):
 
         # Stacking part
         for hg_module in range(self.num_modules):
-            self.add_module('m' + str(hg_module), HourGlass(1, opt.num_hourglass, 256, self.opt.norm))
+            self.add_module(
+                'm' + str(hg_module),
+                HourGlass(1, opt.num_hourglass, 256, self.opt.norm))
 
-            self.add_module('top_m_' + str(hg_module), ConvBlock(256, 256, self.opt.norm))
-            self.add_module('conv_last' + str(hg_module),
-                            nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0))
+            self.add_module('top_m_' + str(hg_module),
+                            ConvBlock(256, 256, self.opt.norm))
+            self.add_module(
+                'conv_last' + str(hg_module),
+                nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0))
             if self.opt.norm == 'batch':
                 self.add_module('bn_end' + str(hg_module), nn.BatchNorm2d(256))
             elif self.opt.norm == 'group':
-                self.add_module('bn_end' + str(hg_module), nn.GroupNorm(32, 256))
+                self.add_module('bn_end' + str(hg_module),
+                                nn.GroupNorm(32, 256))
 
-            self.add_module('l' + str(hg_module), nn.Conv2d(256,
-                                                            opt.hourglass_dim, kernel_size=1, stride=1, padding=0))
+            self.add_module(
+                'l' + str(hg_module),
+                nn.Conv2d(256,
+                          opt.hourglass_dim,
+                          kernel_size=1,
+                          stride=1,
+                          padding=0))
 
             if hg_module < self.num_modules - 1:
                 self.add_module(
-                    'bl' + str(hg_module), nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0))
-                self.add_module('al' + str(hg_module), nn.Conv2d(opt.hourglass_dim,
-                                                                 256, kernel_size=1, stride=1, padding=0))
+                    'bl' + str(hg_module),
+                    nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0))
+                self.add_module(
+                    'al' + str(hg_module),
+                    nn.Conv2d(opt.hourglass_dim,
+                              256,
+                              kernel_size=1,
+                              stride=1,
+                              padding=0))
 
     def forward(self, x):
         x = F.relu(self.bn1(self.conv1(x)), True)
@@ -312,8 +370,9 @@ class HGFilter(nn.Module):
             ll = hg
             ll = self._modules['top_m_' + str(i)](ll)
 
-            ll = F.relu(self._modules['bn_end' + str(i)]
-                        (self._modules['conv_last' + str(i)](ll)), True)
+            ll = F.relu(
+                self._modules['bn_end' + str(i)](
+                    self._modules['conv_last' + str(i)](ll)), True)
 
             # Predict heatmaps
             tmp_out = self._modules['l' + str(i)](ll)
@@ -326,5 +385,3 @@ class HGFilter(nn.Module):
 
         # return outputs, tmpx.detach(), normx
         return tmp_out
-
-

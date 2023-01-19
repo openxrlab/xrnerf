@@ -112,4 +112,3 @@ template bool zbuffer_forward_gpu<scalar,int64_t>(int64_t,int64_t,int64_t,int64_
 	const scalar*,const int64_t*,int64_t*,scalar*, bool*,bool,scalar);
 
 IMPLEMENT(float)
-

@@ -22,8 +22,8 @@ class BungeeEmbedder(nn.Module):
                 multires, input_ch=input_ch)
             self.embed_fns_dirs, self.embed_ch_dirs = self.create_embedding_fn(
                 multires_dirs, input_ch=input_ch)
-            
-    def create_mip_embedding_fn(self,                            
+
+    def create_mip_embedding_fn(self,
                                 multires,
                                 input_ch=3,
                                 cat_input=True,
@@ -35,7 +35,7 @@ class BungeeEmbedder(nn.Module):
         out_dim = 0
         d = input_ch
         if cat_input:
-            embed_fns.append(lambda x: x[:,:d])
+            embed_fns.append(lambda x: x[:, :d])
             out_dim += d
         N_freqs = num_freqs
         max_freq = max_freq_log2
@@ -48,7 +48,9 @@ class BungeeEmbedder(nn.Module):
             freq_bands_w = torch.linspace(4.**0, 4.**max_freq, steps=N_freqs)
         for freq_y, freq_w in zip(freq_bands_y, freq_bands_w):
             for p_fn in periodic_fns:
-                embed_fns.append(lambda inputs, p_fn=p_fn, freq_y=freq_y, freq_w=freq_w : p_fn(inputs[:,:d] * freq_y) * torch.exp((-0.5) * freq_w * inputs[:,d:]))
+                embed_fns.append(lambda inputs, p_fn=p_fn, freq_y=freq_y,
+                                 freq_w=freq_w: p_fn(inputs[:, :d] * freq_y) *
+                                 torch.exp((-0.5) * freq_w * inputs[:, d:]))
                 out_dim += d
         return embed_fns, out_dim
 
@@ -89,13 +91,12 @@ class BungeeEmbedder(nn.Module):
         cov_diags_flat = torch.reshape(cov_diags, [-1, cov_diags.shape[-1]])
         inputs_flat = torch.cat((means_flat, cov_diags_flat), -1)
         embedded = self.run_embed(inputs_flat, self.embed_fns)
-        
+
         viewdirs = data['viewdirs']
-        input_dirs = viewdirs[:,None].expand(means.shape)
+        input_dirs = viewdirs[:, None].expand(means.shape)
         input_dirs_flat = torch.reshape(input_dirs, [-1, input_dirs.shape[-1]])
         embedded_dirs = self.run_embed(input_dirs_flat, self.embed_fns_dirs)
-        
-        
+
         embedded = torch.cat([embedded, embedded_dirs], -1)
         data['unflatten_shape'] = data['samples'][0].shape[:-1]
         data['embedded'] = embedded

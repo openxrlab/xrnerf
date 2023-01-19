@@ -15,8 +15,8 @@ class SetValPipelineHook(Hook):
     def __init__(self, valset=None):
         self.val_pipeline = valset.pipeline
 
-    def before_run(self, runner):  
-        """ only run once """
+    def before_run(self, runner):
+        """only run once."""
         runner.model.module.set_val_pipeline(self.val_pipeline)
         del self.val_pipeline
 
@@ -29,7 +29,7 @@ class SaveSpiralHook(Hook):
         self.save_folder = save_folder
 
     def after_val_iter(self, runner):
-        """ SaveSpiralHook """
+        """SaveSpiralHook."""
         rank, _ = get_dist_info()
         if rank == 0:
             cur_iter = runner.iter
@@ -61,7 +61,7 @@ class NBSaveSpiralHook(Hook):
         self.disps = []
 
     def after_val_iter(self, runner):
-        """ NBSaveSpiralHook """
+        """NBSaveSpiralHook."""
         rank, _ = get_dist_info()
         if rank == 0:
             cur_iter = runner.iter
@@ -69,7 +69,7 @@ class NBSaveSpiralHook(Hook):
             self.disps.append(runner.outputs['disps'][0])
 
     def after_val_epoch(self, runner):
-        """ NBSaveSpiralHook """
+        """NBSaveSpiralHook."""
         spiral_dir = os.path.join(runner.work_dir, self.save_folder)
         os.makedirs(spiral_dir, exist_ok=True)
 
@@ -99,7 +99,7 @@ class ValidateHook(Hook):
         self.save_folder = save_folder
 
     def after_val_iter(self, runner):
-        """ValidateHook"""
+        """ValidateHook."""
         rank, _ = get_dist_info()
         if rank == 0:
             cur_iter = runner.iter
@@ -158,7 +158,7 @@ class CalElapsedTimeHook(Hook):
         self.cfg = cfg
 
     def after_val_iter(self, runner):
-        """after_val_iter"""
+        """after_val_iter."""
         rank, _ = get_dist_info()
         if rank == 0:
             if 'elapsed_time' in runner.outputs:

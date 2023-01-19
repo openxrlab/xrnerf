@@ -55,7 +55,7 @@ RUN cd pytorch3d && pip install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN git clone https://gitclone.com/github.com/nvlabs/tiny-cuda-nn
 RUN cd tiny-cuda-nn/dependencies && git clone https://gitclone.com/github.com/fmtlib/fmt.git
 RUN cd tiny-cuda-nn/dependencies && git clone https://gitclone.com/github.com/NVIDIA/cutlass.git
-RUN cd tiny-cuda-nn/bindings/torch && python setup.py install 
+RUN cd tiny-cuda-nn/bindings/torch && python setup.py install
 
 # gitclone收录日，家祭无忘告乃翁
 # 0907 update:已收录，以下取消注释

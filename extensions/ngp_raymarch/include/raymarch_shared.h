@@ -680,7 +680,7 @@ __global__ void block_reduce(
 	if (std::is_same<T_DECAYED, __half>::value || std::is_same<T_DECAYED, ::half>::value)
 	{
 		;
-        // Note that the following code snippet fails to process 
+        // Note that the following code snippet fails to process
         // the tensor with type of `torch.half` or 'torch.float16'.
 
 		// if (i < n_elements)

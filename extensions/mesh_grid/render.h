@@ -97,7 +97,7 @@ __device__ __host__ unsigned char process_one_tri(const scalar v[9],
 			type = (1<<i);
 			Ainv[0] = v[3*i];
 			Ainv[1] = v[3*i+1];
-		}		
+		}
 	} else {
 		type = 7;
 		for(unsigned char i = 0; i < 9; ++i)
@@ -245,4 +245,3 @@ __device__ __host__ index zbuffer_forward(index h, index w, index n, index f,
 	return count;
 }
 #endif
-

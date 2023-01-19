@@ -36,6 +36,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 
@@ -79,7 +80,7 @@ To be specific, if we want to implement some new components, there are several t
 
         def __init__(self, cfg, mlp=None, mlp_fine=None, render=None):
             super().__init__(cfg, mlp, mlp_fine, render)
-        
+
         def forward(self, data):
             ....
 
@@ -136,7 +137,7 @@ For more information, please follow our [installation tutorial](installation.md)
 
 XRnerf use `mmcv.runner.IterBasedRunner` to control training, and `mmcv.runner.EpochBasedRunner` to for test mode.
 
-In training mode, the `max_iters` in config file decide how many iters. 
+In training mode, the `max_iters` in config file decide how many iters.
 In test mode, `max_iters` is forced to change to 1, which represents only 1 epoch to test.
 
 ### Train
@@ -162,7 +163,7 @@ Arguments are:
 - `--load_from`: load which checkpoint to test, this will overwrite the original `load_from` in config file to for convenience.
 
 ## Tutorials
-Currently, we provide some tutorials for users to 
+Currently, we provide some tutorials for users to
 * [learn about configs](tutorials/config.md)
 * [customize data pipelines](tutorials/data_pipeline.md)
 * [model define](tutorials/model.md)
@@ -172,5 +173,3 @@ Except for that，The document also includes the following
 * [api](api.md)
 * [dataset_preparation](dataset_preparation.md)
 * [installation](installation.md)
-
-

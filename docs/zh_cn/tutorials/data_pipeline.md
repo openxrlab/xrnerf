@@ -54,7 +54,7 @@ train_pipeline = [
     dict(type='DeleteUseless', keys=['images', 'poses', 'i_data', 'idx']),
     dict(type='ToTensor', keys=['pose', 'target_s']),
     dict(type='GetRays'),
-    dict(type='SelectRays', 
+    dict(type='SelectRays',
         sel_n=N_rand_per_sampler,
         precrop_iters=500,
         precrop_frac=0.5),  # in the first 500 iter, select rays inside center of image
@@ -85,4 +85,3 @@ data = {'poses': self.poses, 'images': self.images, 'i_data': self.i_train, 'idx
 * `GetZvals` 在射线上采样区间采点
 * `PerturbZvals` 数据增强
 * `GetPts` 获取点的坐标
-
