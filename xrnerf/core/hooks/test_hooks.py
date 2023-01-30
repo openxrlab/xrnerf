@@ -27,7 +27,7 @@ class TestHook(Hook):
         self.save_folder = save_folder
 
     def before_val_epoch(self, runner):
-        """init list"""        
+        """init list."""
         self.psnr = {}
         self.ssim = {}
         self.mse = {}
@@ -37,7 +37,7 @@ class TestHook(Hook):
             self.ssim[i] = []
 
     def after_val_iter(self, runner):
-        """after_val_iter"""       
+        """after_val_iter."""
         rank, _ = get_dist_info()
         if rank == 0:
             cur_iter = runner.iter
@@ -65,7 +65,7 @@ class TestHook(Hook):
             self.ssim[scale].append(float(ssim))
 
     def after_val_epoch(self, runner):
-        """after_val_epoch"""       
+        """after_val_epoch."""
         rank, _ = get_dist_info()
         if rank == 0:
             metrics = 'In test phase on whole testset, \n  '

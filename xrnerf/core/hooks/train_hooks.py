@@ -31,7 +31,7 @@ class OccupationHook(Hook):
         self.first_run = True
 
     def func(self, runner):
-        """OccupationHook func"""
+        """OccupationHook func."""
         flag_folder = os.path.join(runner.work_dir, 'delete_me_to_stop')
         if self.first_run:
             os.makedirs(flag_folder, exist_ok=True)
@@ -43,18 +43,17 @@ class OccupationHook(Hook):
                 exit(0)
 
     def after_train_iter(self, runner):
-        """OccupationHook after_train_iter"""
+        """OccupationHook after_train_iter."""
         self.func(runner)
 
     def after_val_iter(self, runner):
-        """OccupationHook after_train_iter"""
+        """OccupationHook after_train_iter."""
         self.func(runner)
 
 
 @HOOKS.register_module()
 class MipLrUpdaterHook(LrUpdaterHook):
-    """MipLrUpdaterHook"""
-
+    """MipLrUpdaterHook."""
     def __init__(self,
                  lr_init,
                  lr_final,
@@ -70,7 +69,7 @@ class MipLrUpdaterHook(LrUpdaterHook):
         self.lr_delay_mult = lr_delay_mult
 
     def get_lr(self, runner, base_lr):
-        """get_lr"""
+        """get_lr."""
         step = runner.epoch if self.by_epoch else runner.iter
         if self.lr_delay_steps > 0:
             # A kind of reverse cosine decay.

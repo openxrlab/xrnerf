@@ -11,6 +11,7 @@ from ..builder import NETWORKS
 from .base import BaseNerfNetwork
 from .utils import *
 
+
 @NETWORKS.register_module()
 class BungeeNerfNetwork(BaseNerfNetwork):
     """There are 3 kinds of forward mode for Network:
@@ -40,9 +41,9 @@ class BungeeNerfNetwork(BaseNerfNetwork):
         data, ret = self.render(self.mlp(data), is_test)
         if self.N_importance > 0:
             data = resample_along_rays(data, randomized, self.ray_shape,
-                           self.resample_padding)
+                                       self.resample_padding)
             _, ret2 = self.render(self.mlp(data), is_test)
-            
+
             ret = merge_ret(ret, ret2)  # add fine-net's returns to ret
 
         return ret
@@ -74,13 +75,16 @@ class BungeeNerfNetwork(BaseNerfNetwork):
         stage = kwargs['stage']
         self.render.stage = stage
         ret = self.forward(data, is_test=False)
-    
-        img_loss = img2mse(ret['rgb']*(data['scale_code']<=stage), data['target_s']*(data['scale_code']<=stage))
+
+        img_loss = img2mse(ret['rgb'] * (data['scale_code'] <= stage),
+                           data['target_s'] * (data['scale_code'] <= stage))
         psnr = mse2psnr(img_loss)
         loss = img_loss
 
         if 'coarse_rgb' in ret:
-            coarse_img_loss = img2mse(ret['coarse_rgb']*(data['scale_code']<=stage), data['target_s']*(data['scale_code']<=stage))
+            coarse_img_loss = img2mse(
+                ret['coarse_rgb'] * (data['scale_code'] <= stage),
+                data['target_s'] * (data['scale_code'] <= stage))
             loss = loss + coarse_img_loss
 
         log_vars = {'loss': loss.item(), 'psnr': psnr.item()}
@@ -171,7 +175,3 @@ class BungeeNerfNetwork(BaseNerfNetwork):
     def set_val_pipeline(self, func):
         self.val_pipeline = func
         return
-
-
-
-

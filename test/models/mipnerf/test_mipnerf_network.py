@@ -1,19 +1,21 @@
 import os
 import shutil
 import sys
+
 import pytest
+
 try:
     import torch
-    import numpy as np
     from mmcv import Config, ConfigDict
+
     from xrnerf.datasets.pipelines import Compose
     from xrnerf.models.builder import build_network
 except:
-    print("please install env")
+    print('please install env')
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), 
-    reason='No GPU device has been found.')
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason='No GPU device has been found.')
 def test_nerf_network():
 
     ########################## get data ##########################

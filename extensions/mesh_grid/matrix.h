@@ -45,7 +45,7 @@ __device__ __host__ bool solve3(scalar A[9], scalar b[3], scalar eps = 1e-6) {
 			A[1] /= A[pivot];
 			A[4] = A[4] - A[1]*A[pivot+3];
 			A[7] = A[7] - A[1]*A[pivot+6];
-			b[1] = b[1] - A[1]*b[pivot]; 
+			b[1] = b[1] - A[1]*b[pivot];
 		}
 		if(pivot == 2) {
 			A[0] /= A[2];
@@ -57,7 +57,7 @@ __device__ __host__ bool solve3(scalar A[9], scalar b[3], scalar eps = 1e-6) {
 			A[2] /= A[pivot];
 			A[5] = A[5] - A[2]*A[pivot+3];
 			A[8] = A[8] - A[2]*A[pivot+6];
-			b[2] = b[2] - A[2]*b[pivot]; 
+			b[2] = b[2] - A[2]*b[pivot];
 		}
 		if(rank > 1) {
 			pivot = (ABS(A[4]) < ABS(A[5]) ? 2 : 1);
@@ -82,7 +82,7 @@ __device__ __host__ bool solve3(scalar A[9], scalar b[3], scalar eps = 1e-6) {
 			} else {
 				A[5] /= A[4];
 				A[8] = A[8] - A[5]*A[7];
-				b[2] = b[2] - A[5]*b[1]; 
+				b[2] = b[2] - A[5]*b[1];
 			}
 			if(rank >= 3 && ABS(A[8]) <= eps) permute[--rank] = 2;
 		}
@@ -232,7 +232,7 @@ __device__ __host__ bool solve4(scalar A[16], scalar b[4], scalar eps = 1e-6) {
 			A[6] /= A[pivot+4];
 			A[10]= A[10]- A[6]*A[pivot+8];
 			A[14]= A[14]- A[6]*A[pivot+12];
-			b[2] = b[2] - A[6]*b[pivot]; 
+			b[2] = b[2] - A[6]*b[pivot];
 		}
 		if(pivot == 3) {
 			A[5] /= A[7];
@@ -244,7 +244,7 @@ __device__ __host__ bool solve4(scalar A[16], scalar b[4], scalar eps = 1e-6) {
 			A[7] /= A[pivot+4];
 			A[11]= A[11]- A[7]*A[pivot+8];
 			A[15]= A[15]- A[7]*A[pivot+12];
-			b[3] = b[3] - A[7]*b[pivot]; 
+			b[3] = b[3] - A[7]*b[pivot];
 		}
 	}
 	if(rank > 2) {
@@ -278,7 +278,7 @@ __device__ __host__ bool solve4(scalar A[16], scalar b[4], scalar eps = 1e-6) {
 			A[10] = A[11];
 		} else {
 			A[11] /= A[pivot+8];
-			A[15]= A[15]- A[11]*A[pivot+12]; 
+			A[15]= A[15]- A[11]*A[pivot+12];
 			b[3] = b[3] - A[11]*b[pivot];
 		}
 		if(rank > 3 && ABS(A[15]) <= eps) permute[--rank] = 3;
@@ -315,4 +315,3 @@ __device__ __host__ bool solve4(scalar A[16], scalar b[4], scalar eps = 1e-6) {
 	return valid;
 }
 #endif
-

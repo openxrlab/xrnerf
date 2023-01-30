@@ -70,10 +70,10 @@ class KiloNerfDistillTrainRunner(IterBasedRunner):
 
 
 class KiloNerfTrainRunner(IterBasedRunner):
-    """KiloNerfTrainRunner"""        
+    """KiloNerfTrainRunner."""
     pass
 
 
 class KiloNerfTestRunner(EpochBasedRunner):
-    """KiloNerfTestRunner"""        
+    """KiloNerfTestRunner."""
     pass

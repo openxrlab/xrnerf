@@ -18,7 +18,7 @@ __all__ = ['parse_args', 'build_dataloader', 'get_optimizer', 'register_hooks', 
 
 
 def parse_args():
-    """parse args"""
+    """parse args."""
     parser = argparse.ArgumentParser(description='train a nerf')
     parser.add_argument('--config',
                         help='train config file path',
@@ -50,7 +50,7 @@ def replace_dataname(dataname, cfg):
 
 
 def kilo_replace(dataname, cfg):
-    """Recursively replace in the input args."""    
+    """Recursively replace in the input args."""
     resolution = cfg.resolution_table[dataname]
     # print("resolution:", resolution)
     if cfg.phase == 'pretrain':
@@ -66,7 +66,7 @@ def kilo_replace(dataname, cfg):
 
 
 def update_config(dataname, cfg):
-    """update_config"""
+    """update_config."""
     cfg = replace_dataname(dataname, cfg)
     if cfg.method == 'kilo_nerf':
         cfg = kilo_replace(dataname, cfg)
@@ -74,14 +74,14 @@ def update_config(dataname, cfg):
 
 
 def update_loadfrom(load_from, cfg):
-    """update_loadfrom"""
+    """update_loadfrom."""
     if len(load_from) > 0:
         cfg.load_from = os.path.join(cfg.work_dir, load_from)
     return cfg
 
 
 def build_dataloader(cfg, mode='train'):
-    """build_dataloader"""
+    """build_dataloader."""
     num_gpus = cfg.num_gpus
     dataset = build_dataset(cfg.data[mode])
     if num_gpus > 0:  # ddp多卡模式
@@ -111,7 +111,7 @@ def build_dataloader(cfg, mode='train'):
 
 
 def get_optimizer(model, cfg):
-    """get_optimizer"""
+    """get_optimizer."""
     if cfg.method == 'animatable_nerf':
         params = model.get_params()
         optimizer = torch.optim.Adam(params=params, lr=cfg.optimizer.lr)
@@ -121,7 +121,7 @@ def get_optimizer(model, cfg):
 
 
 def register_hooks(hook_cfgs, **variables):
-    """auto register hooks"""
+    """auto register hooks."""
     def get_variates(hook_cfg):
         variates = {}
         if 'variables' in hook_cfg:
@@ -139,7 +139,7 @@ def register_hooks(hook_cfgs, **variables):
 
 
 def get_runner(runner_cfg):
-    """get_runner"""
+    """get_runner."""
     runner_module = importlib.import_module('xrnerf.core.runner')
     RunnerClass = getattr(runner_module, runner_cfg['type'])
     return RunnerClass

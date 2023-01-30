@@ -3,12 +3,12 @@ from .aninerf import (NovelPoseTraining, pose_dirs_to_tpose_dirs,
                       tpose_dirs_to_pose_dirs, tpose_points_to_pose_points,
                       world_dirs_to_pose_dirs, world_points_to_pose_points)
 from .batching import unfold_batching
+from .gnr import LPIPS, SSIM, index, init_weights, psnr
 from .hierarchical_sample import sample_pdf
 from .metrics import HuberLoss, img2mse, mse2psnr
 from .mip import resample_along_rays, sample_along_rays
 from .transforms import (merge_ret, nb_recover_shape, recover_shape,
                          reorder_points_and_dirs, transform_examples)
-from .gnr import index, LPIPS, SSIM, psnr, init_weights
 
 __all__ = [
     'sample_pdf',

@@ -1,20 +1,22 @@
 import os
 import shutil
 import sys
+
 import pytest
 
 try:
     import torch
     import numpy as np
     from mmcv import Config, ConfigDict
+
     # sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
     from xrnerf.models.builder import build_network
 except:
     pass
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), 
-    reason='No GPU device has been found.')
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason='No GPU device has been found.')
 def test_hasnerf_network():
 
     model_cfg = dict(

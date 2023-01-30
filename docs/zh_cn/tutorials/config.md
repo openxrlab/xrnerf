@@ -48,7 +48,7 @@ XRNeRF 提供的所有配置文件都放置在 `$PROJECT/configs` 文件夹下�
             params=dict(save_folder='visualizations/validation')),
         dict(type='SaveSpiralHook',
             params=dict(save_folder='visualizations/spiral')),
-        dict(type='PassIterHook', params=dict()),  # 将当前iter数告诉dataset 
+        dict(type='PassIterHook', params=dict()),  # 将当前iter数告诉dataset
     ]
     test_hooks = [
         dict(type='SetValPipelineHook',
@@ -70,7 +70,7 @@ XRNeRF 提供的所有配置文件都放置在 `$PROJECT/configs` 文件夹下�
     # some shared params by model and data, to avoid define twice
     dataset_type = 'blender'
     no_batching = True  # 每次选择1张图片来抽取射线
-    no_ndc = True 
+    no_ndc = True
 
     white_bkgd = True  # 渲染时背景设定为全白
     is_perturb = True  # set to 0. for no jitter, 1. for jitter
@@ -114,19 +114,19 @@ XRNeRF 提供的所有配置文件都放置在 `$PROJECT/configs` 文件夹下�
         mlp_fine=dict(  # fine model
             type='NerfMLP',
             skips=[4],
-            netdepth=8, 
-            netwidth=256, 
+            netdepth=8,
+            netwidth=256,
             netchunk=1024 * 32,
-            output_ch=5, 
-            use_viewdirs=use_viewdirs,  
+            output_ch=5,
+            use_viewdirs=use_viewdirs,
             embedder=dict(
                 type='BaseEmbedder',
-                i_embed=0, 
-                multires=10, 
-                multires_dirs=4, 
+                i_embed=0,
+                multires=10,
+                multires_dirs=4,
             ),
         ),
-        render=dict(  
+        render=dict(
             type='NerfRender', # render cloass name
             white_bkgd=white_bkgd,  # see above
             raw_noise_std=0,  # std dev of noise added to regularize sigma_a output, 1e0 recommended
@@ -136,7 +136,7 @@ XRNeRF 提供的所有配置文件都放置在 `$PROJECT/configs` 文件夹下�
 
 * 数据
     数据部分的配置信息，定义了数据集类型，数据的处理流程，batchsize等等信息。
-    ```python    
+    ```python
     basedata_cfg = dict(
         dataset_type=dataset_type,
         datadir='data/nerf_synthetic/#DATANAME#',
@@ -161,7 +161,7 @@ XRNeRF 提供的所有配置文件都放置在 `$PROJECT/configs` 文件夹下�
         dict(type='DeleteUseless', keys=['images', 'poses', 'i_data', 'idx']),
         dict(type='ToTensor', keys=['pose', 'target_s']),
         dict(type='GetRays'),
-        dict(type='SelectRays', 
+        dict(type='SelectRays',
             sel_n=N_rand_per_sampler,
             precrop_iters=500,
             precrop_frac=0.5),  # in the first 500 iter, select rays inside center of image

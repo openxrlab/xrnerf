@@ -56,6 +56,7 @@ Supported scene-NeRF methods:
 - [X] [Mip-NeRF](https://jonbarron.info/mipnerf/) (ICCV'2021)
 - [X] [KiloNeRF](https://arxiv.org/abs/2103.13744) (ICCV'2021)
 - [X] [Instant NGP](https://nvlabs.github.io/instant-ngp/) (SIGGRAPH'2022)
+- [X] [BungeeNeRF](https://city-super.github.io/citynerf/) (ECCV'2022)
 
 Supported human-NeRF methods:
 
@@ -88,6 +89,7 @@ xrnerf
 │   ├── nerf_llff_data
 │   ├── nerf_synthetic
 │   ├── multiscale
+│   ├── multiscale_google
 │   ├── ...
 ```
 

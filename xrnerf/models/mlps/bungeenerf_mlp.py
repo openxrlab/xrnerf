@@ -11,11 +11,13 @@ from .base import BaseMLP
 class BungeeNerfBaseBlock(nn.Module):
     def __init__(self, netwidth=256, input_ch=3, input_ch_views=3):
         super(BungeeNerfBaseBlock, self).__init__()
-        self.pts_linears = nn.ModuleList([nn.Linear(input_ch, netwidth)] + [nn.Linear(netwidth, netwidth) for _ in range(3)])
-        self.views_linear = nn.Linear(input_ch_views + netwidth, netwidth//2)
+        self.pts_linears = nn.ModuleList(
+            [nn.Linear(input_ch, netwidth)] +
+            [nn.Linear(netwidth, netwidth) for _ in range(3)])
+        self.views_linear = nn.Linear(input_ch_views + netwidth, netwidth // 2)
         self.feature_linear = nn.Linear(netwidth, netwidth)
         self.alpha_linear = nn.Linear(netwidth, 1)
-        self.rgb_linear = nn.Linear(netwidth//2, 3)
+        self.rgb_linear = nn.Linear(netwidth // 2, 3)
 
     def forward(self, input_pts, input_views):
         h = input_pts.float()
@@ -34,11 +36,14 @@ class BungeeNerfBaseBlock(nn.Module):
 class BungeeNerfResBlock(nn.Module):
     def __init__(self, netwidth=256, input_ch=3, input_ch_views=3):
         super(BungeeNerfResBlock, self).__init__()
-        self.pts_linears = nn.ModuleList([nn.Linear(input_ch+netwidth, netwidth), nn.Linear(netwidth, netwidth)])
-        self.views_linear = nn.Linear(input_ch_views + netwidth, netwidth//2)
+        self.pts_linears = nn.ModuleList([
+            nn.Linear(input_ch + netwidth, netwidth),
+            nn.Linear(netwidth, netwidth)
+        ])
+        self.views_linear = nn.Linear(input_ch_views + netwidth, netwidth // 2)
         self.feature_linear = nn.Linear(netwidth, netwidth)
         self.alpha_linear = nn.Linear(netwidth, 1)
-        self.rgb_linear = nn.Linear(netwidth//2, 3)
+        self.rgb_linear = nn.Linear(netwidth // 2, 3)
 
     def forward(self, input_pts, input_views, h):
         h = torch.cat([input_pts, h], -1)
@@ -53,9 +58,9 @@ class BungeeNerfResBlock(nn.Module):
         rgb = self.rgb_linear(h0)
         return rgb, alpha, h
 
+
 @MLPS.register_module()
 class BungeeNerfMLP(BaseMLP):
-
     def __init__(self,
                  cur_stage=0,
                  netwidth=256,
@@ -71,9 +76,14 @@ class BungeeNerfMLP(BaseMLP):
     def init_mlp(self, netwidth):
         W = netwidth
         self.input_ch, self.input_ch_dirs = self.embedder.get_embed_ch()
-        self.baseblock = BungeeNerfBaseBlock(netwidth=W, input_ch=self.input_ch, input_ch_views=self.input_ch_dirs)
+        self.baseblock = BungeeNerfBaseBlock(netwidth=W,
+                                             input_ch=self.input_ch,
+                                             input_ch_views=self.input_ch_dirs)
         self.resblocks = nn.ModuleList([
-            BungeeNerfResBlock(netwidth=W, input_ch=self.input_ch, input_ch_views=self.input_ch_dirs) for _ in range(self.num_resblocks)
+            BungeeNerfResBlock(netwidth=W,
+                               input_ch=self.input_ch,
+                               input_ch_views=self.input_ch_dirs)
+            for _ in range(self.num_resblocks)
         ])
         return
 
@@ -99,17 +109,19 @@ class BungeeNerfMLP(BaseMLP):
             return outputs
 
     def run_mlp(self, x):
-        input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_dirs], dim=-1)
+        input_pts, input_views = torch.split(
+            x, [self.input_ch, self.input_ch_dirs], dim=-1)
         alphas = []
         rgbs = []
         base_rgb, base_alpha, h = self.baseblock(input_pts, input_views)
         alphas.append(base_alpha)
         rgbs.append(base_rgb)
         for i in range(self.num_resblocks):
-            res_rgb, res_alpha, h = self.resblocks[i](input_pts, input_views, h)
+            res_rgb, res_alpha, h = self.resblocks[i](input_pts, input_views,
+                                                      h)
             alphas.append(res_alpha)
             rgbs.append(res_rgb)
 
-        outputs = torch.cat([torch.stack(rgbs,1),torch.stack(alphas,1)],-1)
+        outputs = torch.cat([torch.stack(rgbs, 1), torch.stack(alphas, 1)], -1)
 
         return outputs

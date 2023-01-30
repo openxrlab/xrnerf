@@ -64,4 +64,3 @@ std::vector<Tensor> render_forward(Tensor verts, Tensor tri,
 PYBIND11_MODULE(_render, m) {
 	m.def("forward", &render_forward);
 }
-

@@ -24,8 +24,8 @@
 
 - Linux
 - Python 3.7+
-- **PyTorch 1.10+ (低版本可能无法支持)** 
-- **CUDA 11.0+ (低版本可能无法支持)** 
+- **PyTorch 1.10+ (低版本可能无法支持)**
+- **CUDA 11.0+ (低版本可能无法支持)**
 - GCC 7.5+
 - build-essential: Install by `apt-get install -y build-essential git ninja-build ffmpeg libsm6 libxext6 libgl1`
 - [mmcv-full](https://github.com/open-mmlab/mmcv)
@@ -40,7 +40,7 @@
 - [spconv](https://github.com/dmlc/decord): 从支持的版本中选择跟你本地cuda版本一致的安装, 比如 `pip install spconv-cu113`
 - [pytorch3d](https://github.com/dmlc/decord): 可通过 `pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"` 安装
 
-关于硬件依赖: 
+关于硬件依赖:
 Instant-NGP需要GPU架构>=75, 也就是说至少需要RTX 20X0及以上的显卡，才能获得xrnerf的完整支持。
 
 | RTX 30X0 | A100 | RTX 20X0 | TITAN V / V100 | GTX 10X0 / TITAN Xp | GTX 9X0 | K80 |
@@ -85,10 +85,10 @@ conda activate xrnerf
   cd tiny-cuda-nn/dependencies
   git clone https://gitclone.com/github.com/fmtlib/fmt.git
   git clone https://gitclone.com/github.com/NVIDIA/cutlass.git
-  cd ../bindings/torch && python setup.py install 
+  cd ../bindings/torch && python setup.py install
   ```
   (非必须，运行instant-ngp方法需要)
-  
+
 #### e. 安装cuda扩展
 * 为了支持instant-ngp算法，需要编译安装cuda扩展 ```raymarch```, 查看[具体教程](../../extensions/ngp_raymarch/README.md)
 * 为了支持gnr算法，需要编译安装cuda扩展 ```mesh_grid```, 查看[具体教程](../../extensions/mesh_grid/README.md)
@@ -137,8 +137,7 @@ sudo systemctl restart docker
 coverage run --source xrnerf/models -m pytest -s test/models && coverage report -m
 ```
 
-注意，运行单元测试模块前需要额外安装 ```coverage``` 和 ```pytest``` 
+注意，运行单元测试模块前需要额外安装 ```coverage``` 和 ```pytest```
 ```
 pip install coverage pytest -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
-

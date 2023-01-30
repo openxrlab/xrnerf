@@ -31,13 +31,11 @@ class BungeeNerfRender(BaseRender):
         else:
             raise NotImplementedError
 
-
     def get_disp_map(self, weights, z_vals):
         depth_map = torch.sum(weights * z_vals, -1)
         disp_map = 1. / torch.max(1e-10 * torch.ones_like(depth_map),
                                   depth_map / torch.sum(weights, -1))
         return disp_map
-    
 
     def get_weights(self, density_delta):
         alpha = 1 - torch.exp(density_delta)
@@ -68,7 +66,7 @@ class BungeeNerfRender(BaseRender):
         viewdirs = data['viewdirs']
         raw_noise_std = 0 if is_test else self.raw_noise_std
         device = raw.device
-        z_vals = .5 * (z_vals[...,1:] + z_vals[...,:-1])
+        z_vals = .5 * (z_vals[..., 1:] + z_vals[..., :-1])
         dists = z_vals[..., 1:] - z_vals[..., :-1]
         if dists.shape[1] != raw.shape[1]:  # if z_val: [N_rays, N_samples]
             dists = torch.cat([
@@ -77,11 +75,12 @@ class BungeeNerfRender(BaseRender):
             ], -1)  # [N_rays, N_samples]
         dists = dists * torch.norm(viewdirs[..., None, :], dim=-1)
 
-        acc_rgb = torch.sum(raw[...,:self.stage+1,:3], dim=2)
+        acc_rgb = torch.sum(raw[..., :self.stage + 1, :3], dim=2)
 
-        rgb = (1 + 2 * self.rgb_padding) / (1 + torch.exp(-acc_rgb)) - self.rgb_padding
+        rgb = (1 + 2 * self.rgb_padding) / (
+            1 + torch.exp(-acc_rgb)) - self.rgb_padding
 
-        acc_alpha = torch.sum(raw[...,:self.stage+1,3], dim=2)
+        acc_alpha = torch.sum(raw[..., :self.stage + 1, 3], dim=2)
 
         noise = 0.
         if raw_noise_std > 0.:
@@ -89,7 +88,7 @@ class BungeeNerfRender(BaseRender):
             noise = noise.to(device)
 
         density_delta = -self.density_activation(acc_alpha + noise +
-                                                self.density_bias) * dists
+                                                 self.density_bias) * dists
 
         weights = self.get_weights(density_delta)
 
@@ -104,5 +103,3 @@ class BungeeNerfRender(BaseRender):
         data['weights'] = weights  # 放在data里面，给sample函数用
 
         return data, ret
-
-
