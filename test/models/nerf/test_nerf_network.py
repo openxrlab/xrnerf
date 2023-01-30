@@ -1,11 +1,14 @@
 import os
 import shutil
 import sys
+
 import pytest
+
 try:
     import torch
     import numpy as np
     from mmcv import Config, ConfigDict
+
     from xrnerf.datasets import build_dataset
     from xrnerf.models.builder import build_network
 except:
@@ -13,8 +16,9 @@ except:
 
 # sys.path.append('/home/zhengchengyao/Document/Nerf/git/xrnerf')
 
-@pytest.mark.skipif(not torch.cuda.is_available(), 
-    reason='No GPU device has been found.')
+
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason='No GPU device has been found.')
 def get_train_dataset():
 
     K = np.array([[555.5555156, 0., 200.], [0., 555.5555156, 200.],
@@ -57,8 +61,9 @@ def get_train_dataset():
 
     return dataset
 
-@pytest.mark.skipif(not torch.cuda.is_available(), 
-    reason='No GPU device has been found.')
+
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason='No GPU device has been found.')
 def test_nerf_network():
 
     model_cfg = dict(
